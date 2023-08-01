@@ -1,0 +1,104 @@
+@font-face {
+    font-family: Noto;
+    src: url("../fonts/NotoSans-Regular.ttf");
+}
+* {
+    font-family: Noto, "Times New Roman", Times, serif;
+}
+
+$primaryColor: #0077b6;
+$secondaryColor: #00b4d8;
+
+.logo-title {
+    font-weight: bold;
+    color: $primaryColor;
+    text-decoration: none;
+}
+.nav-search {
+    width: 100%;
+    border-radius: 30px;
+    padding: 5px 5px 5px 20px;
+    border: 2px solid $primaryColor;
+    transition: 500ms;
+    font-size: 14px;
+    color: $primaryColor;
+    &::placeholder{
+        color: $primaryColor;
+    }
+    &:hover,
+    &:focus,
+    &:focus-within,
+    &:active,
+    &:focus-visible {
+        border: 2px solid $secondaryColor;
+        outline: 0;
+    }
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    li {
+        margin: 0 0 0 40px;
+        color: $primaryColor;
+        &.active,
+        &:hover {
+            color: $secondaryColor;
+            font-weight: bold;
+        }
+    }
+}
+
+.register-form,
+.login-form {
+    width: 50%;
+    margin: 0 auto;
+    padding: 3% 0;
+}
+
+.f-size-20 {
+    font-size: 20px;
+}
+
+.main-link {
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 2px solid;
+    padding-bottom: 2px;
+}
+
+.third-login {
+    margin-bottom: 10px;
+    a {
+        margin: 0 10px;
+    }
+}
+
+.third-register {
+    .third-register-link {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        padding: 0 15px;
+        text-align: left;
+        height: 40px;
+        span {
+            color: #212529;
+            margin-left: 10px;
+            font-weight: bold;
+            font-size: 17px;
+        }
+    }
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.grid-center {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
