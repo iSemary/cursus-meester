@@ -11,26 +11,26 @@ const ResetPassword = () => {
                         remember
                     </p>
                     <form>
-                        <div class="form-group">
-                            <label for="inputEmail4">New Password</label>
+                        <div className="form-group">
+                            <label htmlFor="inputEmail4">New Password</label>
                             <input
                                 type="password"
                                 name="password"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="New Password"
                             />
                         </div>
-                        <div class="form-group my-3">
-                            <label for="inputEmail4">Re-Type Password</label>
+                        <div className="form-group my-3">
+                            <label htmlFor="inputEmail4">Re-Type Password</label>
                             <input
                                 type="password"
                                 name="re_password"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="Re-Type Password"
                             />
                         </div>
                         <div className="mt-2">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" className="btn btn-primary w-100">
                                 Reset Password
                             </button>
                         </div>

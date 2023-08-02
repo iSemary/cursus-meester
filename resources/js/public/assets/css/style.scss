@@ -7,7 +7,28 @@
 }
 
 $primaryColor: #0077b6;
+$primaryColorTransparent: #0077b6a1;
 $secondaryColor: #00b4d8;
+$secondaryColorTransparent: #00b4d88f;
+
+
+$headerHeight: 70px;
+header {
+    position: fixed;
+    top: 0;
+    margin: 0 0 0 0;
+    width: 100%;
+    height: $headerHeight;
+    padding-top: $headerHeight - 55px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.container {
+    margin-top: $headerHeight;
+}
 
 .logo-title {
     font-weight: bold;
@@ -18,11 +39,13 @@ $secondaryColor: #00b4d8;
     width: 100%;
     border-radius: 30px;
     padding: 5px 5px 5px 20px;
+    background-color: transparent;
     border: 2px solid $primaryColor;
+    border: 2px solid $primaryColorTransparent;
     transition: 500ms;
     font-size: 14px;
     color: $primaryColor;
-    &::placeholder{
+    &::placeholder {
         color: $primaryColor;
     }
     &:hover,
@@ -30,7 +53,7 @@ $secondaryColor: #00b4d8;
     &:focus-within,
     &:active,
     &:focus-visible {
-        border: 2px solid $secondaryColor;
+        border: 2px solid $secondaryColorTransparent;
         outline: 0;
     }
 }
@@ -101,4 +124,70 @@ $secondaryColor: #00b4d8;
     display: grid;
     align-items: center;
     justify-content: center;
+}
+
+.no-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.stars-rate {
+    span {
+        font-size: 12px;
+    }
+    .star-icon {
+        color: #c0c0c0;
+        &.active {
+            color: #ffd700;
+        }
+    }
+}
+.home-hr {
+    border-style: dashed;
+    border-width: 1px;
+    border-color: $primaryColor;
+}
+
+.home-page {
+    .home-categories {
+        justify-content: space-between;
+
+        .home-category-box {
+            width: 375px;
+            margin: 5px 5px 0 0;
+            background-color: #8080801f;
+            img {
+                width: 200px;
+                height: 200px;
+                margin: 20%;
+            }
+            h5 {
+                font-weight: bold;
+            }
+        }
+    }
+}
+.home-page {
+    .partners-container {
+        .row {
+            justify-content: space-between;
+        }
+    }
+}
+.font-weight-bold {
+    font-weight: bold !important;
+}
+
+.grayscale-image {
+    filter: grayscale(1);
+    opacity: 0.8;
+    transition: 500ms;
+    &:hover {
+        filter: grayscale(0);
+        opacity: 1;
+    }
+}
+
+.align-items-center {
+    align-items: center;
 }

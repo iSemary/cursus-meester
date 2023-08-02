@@ -47,49 +47,49 @@ const Register = () => {
                 </div>
                 <div className="my-2 text-center">-OR-</div>
                 <form>
-                    <div class="form-group">
-                        <label for="inputAddress">Full Name</label>
+                    <div className="form-group">
+                        <label htmlFor="inputAddress">Full Name</label>
                         <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Your full name"
                         />
                     </div>
-                    <div class="row mt-2">
-                        <div class="form-group col-6">
-                            <label for="inputEmail4">Email</label>
+                    <div className="row mt-2">
+                        <div className="form-group col-6">
+                            <label htmlFor="inputEmail4">Email</label>
                             <input
                                 type="email"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="Your Email Address"
                             />
                         </div>
-                        <div class="form-group col-6">
-                            <label for="inputPassword4">Phone Number</label>
-                            <input type="text" class="form-control" />
+                        <div className="form-group col-6">
+                            <label htmlFor="inputPassword4">Phone Number</label>
+                            <input type="text" className="form-control" />
                         </div>
                     </div>
-                    <div class="form-group mt-2">
-                        <label for="inputPassword4">Password</label>
+                    <div className="form-group mt-2">
+                        <label htmlFor="inputPassword4">Password</label>
                         <input
                             type="password"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Your Password"
                         />
                     </div>
-                    <div class="form-group my-3">
-                        <div class="form-check">
+                    <div className="form-group my-3">
+                        <div className="form-check">
                             <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="gridCheck"
                             />
-                            <label class="form-check-label" for="gridCheck">
+                            <label className="form-check-label" htmlFor="gridCheck">
                                 I've read the terms and conditions
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" className="btn btn-primary w-100">
                         Sign up
                     </button>
                 </form>

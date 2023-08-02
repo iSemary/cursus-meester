@@ -4,6 +4,22 @@
 * {
   font-family: Noto, "Times New Roman", Times, serif; }
 
+header {
+  position: fixed;
+  top: 0;
+  margin: 0 0 0 0;
+  width: 100%;
+  height: 70px;
+  padding-top: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3); }
+
+.container {
+  margin-top: 70px; }
+
 .logo-title {
   font-weight: bold;
   color: #0077b6;
@@ -13,14 +29,16 @@
   width: 100%;
   border-radius: 30px;
   padding: 5px 5px 5px 20px;
+  background-color: transparent;
   border: 2px solid #0077b6;
+  border: 2px solid #0077b6a1;
   transition: 500ms;
   font-size: 14px;
   color: #0077b6; }
   .nav-search::placeholder {
     color: #0077b6; }
   .nav-search:hover, .nav-search:focus, .nav-search:focus-within, .nav-search:active, .nav-search:focus-visible {
-    border: 2px solid #00b4d8;
+    border: 2px solid #00b4d88f;
     outline: 0; }
 
 .nav-links {
@@ -77,5 +95,51 @@
   display: grid;
   align-items: center;
   justify-content: center; }
+
+.no-link {
+  text-decoration: none;
+  color: inherit; }
+
+.stars-rate span {
+  font-size: 12px; }
+.stars-rate .star-icon {
+  color: #c0c0c0; }
+  .stars-rate .star-icon.active {
+    color: #ffd700; }
+
+.home-hr {
+  border-style: dashed;
+  border-width: 1px;
+  border-color: #0077b6; }
+
+.home-page .home-categories {
+  justify-content: space-between; }
+  .home-page .home-categories .home-category-box {
+    width: 375px;
+    margin: 5px 5px 0 0;
+    background-color: #8080801f; }
+    .home-page .home-categories .home-category-box img {
+      width: 200px;
+      height: 200px;
+      margin: 20%; }
+    .home-page .home-categories .home-category-box h5 {
+      font-weight: bold; }
+
+.home-page .partners-container .row {
+  justify-content: space-between; }
+
+.font-weight-bold {
+  font-weight: bold !important; }
+
+.grayscale-image {
+  filter: grayscale(1);
+  opacity: 0.8;
+  transition: 500ms; }
+  .grayscale-image:hover {
+    filter: grayscale(0);
+    opacity: 1; }
+
+.align-items-center {
+  align-items: center; }
 
 /*# sourceMappingURL=style.css.map */

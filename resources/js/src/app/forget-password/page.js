@@ -11,16 +11,16 @@ const ForgetPassword = () => {
                         password.
                     </p>
                     <form>
-                        <div class="form-group">
-                            <label for="inputEmail4">Email</label>
+                        <div className="form-group">
+                            <label htmlFor="inputEmail4">Email</label>
                             <input
                                 type="email"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="Your Email Address"
                             />
                         </div>
-                        <div class="form-group mt-3">
-                            <button type="submit" class="btn btn-primary w-100">
+                        <div className="form-group mt-3">
+                            <button type="submit" className="btn btn-primary w-100">
                                 Forget Password
                             </button>
                         </div>

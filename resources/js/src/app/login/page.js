@@ -11,23 +11,23 @@ const Login = () => {
                         Welcome Back! Log in to Continue Your Learning Adventure
                     </h3>
                     <form>
-                        <div class="form-group">
-                            <label for="inputEmail4">Email</label>
+                        <div className="form-group">
+                            <label htmlFor="inputEmail4">Email</label>
                             <input
                                 type="email"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="Your Email Address"
                             />
                         </div>
-                        <div class="form-group my-2">
-                            <label for="inputPassword4">Password</label>
+                        <div className="form-group my-2">
+                            <label htmlFor="inputPassword4">Password</label>
                             <input
                                 type="password"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="Your Password"
                             />
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" className="btn btn-primary w-100">
                             Login
                         </button>
                     </form>
