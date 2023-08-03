@@ -1,6 +1,11 @@
 import Image from "next/image";
 import CourseTemplate from "./components/template/CourseTemplate";
 import HomeCategoryTemplate from "./components/template/HomeCategoryTemplate";
+import { BsStars } from "react-icons/bs";
+import { TbCategory2 } from "react-icons/tb";
+import CoursesTemplate from "./components/template/CoursesTemplate";
+import JoinInstructorsImage from "/public/assets/images/landing/instructor-1.jpg";
+import Link from "next/link";
 
 export default function Home() {
     const courses = [
@@ -11,7 +16,8 @@ export default function Home() {
                 average: 4.2,
                 total: 4454852,
             },
-            final_price: "500 $",
+            final_price: "$500",
+            original_price: "$500",
             image: "https://placehold.co/600x450.png",
             instructor: {
                 name: "Ahmed",
@@ -24,7 +30,8 @@ export default function Home() {
                 average: 4.2,
                 total: 4454852,
             },
-            final_price: "500 $",
+            final_price: "$500",
+            original_price: "$500",
             image: "https://placehold.co/600x450.png",
             instructor: {
                 name: "Ahmed",
@@ -37,7 +44,8 @@ export default function Home() {
                 average: 4.2,
                 total: 4454852,
             },
-            final_price: "500 $",
+            final_price: "$500",
+            original_price: "$500",
             image: "https://placehold.co/600x450.png",
             instructor: {
                 name: "Ahmed",
@@ -50,7 +58,8 @@ export default function Home() {
                 average: 4.2,
                 total: 4454852,
             },
-            final_price: "500 $",
+            final_price: "$500",
+            original_price: "$700",
             image: "https://placehold.co/600x450.png",
             instructor: {
                 name: "Ahmed",
@@ -99,17 +108,10 @@ export default function Home() {
             <hr className="home-hr" />
             {/* Most watched courses */}
             <div className="courses">
-                <h3>Most watched courses</h3>
-                <div className="row">
-                    {courses &&
-                        courses.length > 0 &&
-                        courses.map((course, index) => (
-                            <CourseTemplate
-                                course={course}
-                                containerClass={"col-3"}
-                            />
-                        ))}
-                </div>
+                <h3>
+                    <BsStars /> Most watched courses
+                </h3>
+                <CoursesTemplate courses={courses} childClass={"col-3"} />
             </div>
             <hr className="home-hr" />
             {/* Our Partners */}
@@ -175,7 +177,9 @@ export default function Home() {
             <hr className="home-hr" />
             {/* Top Categories Clicked */}
             <div className="home-categories">
-                <h3>Top categories clicked</h3>
+                <h3>
+                    <TbCategory2 /> Top categories clicked
+                </h3>
                 <div className="row">
                     {categories &&
                         categories.length > 0 &&
@@ -188,6 +192,40 @@ export default function Home() {
                 </div>
             </div>
             <hr className="home-hr" />
+
+            <div className="join-instructors">
+                <div className="w-75 m-auto">
+                    <div className="row">
+                        <div className="col-6">
+                            <Image
+                                src={JoinInstructorsImage}
+                                width={420}
+                                height={250}
+                                alt="logo"
+                            />
+                        </div>
+                        <div className="col-6">
+                            <div className="mt-4">
+                                <h3 className="font-weight-bold">
+                                    Become a teacher
+                                </h3>
+                                <p>
+                                    Educators spanning the globe are imparting
+                                    knowledge to countless learners on Udemy. We
+                                    equip you with the necessary resources and
+                                    expertise to share your passion.
+                                </p>
+                                <Link
+                                    href="/register/instructor"
+                                    className="join-btn"
+                                >
+                                    Join now
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

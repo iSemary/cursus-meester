@@ -5,7 +5,7 @@ import React from "react";
 export default function HomeCategoryTemplate({ category, containerClass }) {
     return (
         <div className={"home-category-box " + containerClass}>
-            <Link href={`categories/${category.slug}`} className="no-link">
+            <Link href={`/categories/${category.slug}`} className="no-link">
                 <Image
                     src={category.image}
                     width={300}

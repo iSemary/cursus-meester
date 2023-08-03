@@ -1,11 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import { AiOutlineClear, AiOutlineShoppingCart } from "react-icons/ai";
 import Logo from "/public/assets/images/logo.svg";
+
 const Header = () => {
     return (
-        <header className="">
+        <header className="main-header">
             <nav className="row align-items-center">
                 <div className="col-2">
                     <div className="logo flex-center">
@@ -21,11 +22,41 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="col-5">
-                    <input
-                        type="text"
-                        className="nav-search"
-                        placeholder="Search for courses, insturctors, career, and categories..."
-                    />
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            className="nav-search"
+                            placeholder="Search for courses, instructors, career, and categories..."
+                        />
+                        <div className="search-results">
+                            <ul>
+                                <li>
+                                    <div>PHP course</div>
+                                    <div>
+                                        <AiOutlineClear />
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>PHP course</div>
+                                    <div>
+                                        <AiOutlineClear />
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>PHP course</div>
+                                    <div>
+                                        <AiOutlineClear />
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>PHP course</div>
+                                    <div>
+                                        <AiOutlineClear />
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div className="col-5">
                     <ul className="nav-links my-0">
@@ -35,18 +66,23 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="categories" className="nav-link">
+                            <Link href="/categories" className="nav-link">
                                 Categories
                             </Link>
                         </li>
                         <li>
-                            <Link href="register" className="nav-link">
-                                Register
+                            <Link href="/cart" className="nav-link cart-link">
+                                <AiOutlineShoppingCart size={25} />
                             </Link>
                         </li>
                         <li>
-                            <Link href="login" className="nav-link">
+                            <Link href="/login" className="nav-link">
                                 Login
+                            </Link>
+                        </li>
+                        <li className="bordered">
+                            <Link href="/register" className="nav-link">
+                                Create account
                             </Link>
                         </li>
                     </ul>

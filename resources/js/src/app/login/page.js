@@ -12,16 +12,18 @@ const Login = () => {
                     </h3>
                     <form>
                         <div className="form-group">
-                            <label htmlFor="inputEmail4">Email</label>
+                            <label htmlFor="inputEmail">Email</label>
                             <input
+                                id="inputEmail"
                                 type="email"
                                 className="form-control"
                                 placeholder="Your Email Address"
                             />
                         </div>
                         <div className="form-group my-2">
-                            <label htmlFor="inputPassword4">Password</label>
+                            <label htmlFor="inputPassword">Password</label>
                             <input
+                                id="inputPassword"
                                 type="password"
                                 className="form-control"
                                 placeholder="Your Password"
@@ -69,7 +71,7 @@ const Login = () => {
                 <hr className="w-50 mx-auto" />
                 <div className="text-center">
                     Don't have an account?{" "}
-                    <Link href="register" className="main-link border-0">
+                    <Link href="/register" className="main-link border-0">
                         Register Now
                     </Link>
                 </div>

@@ -16,7 +16,7 @@ export default function StarsRate({ rate }) {
                     }
                 />
             ))}
-            <span className="text-muted">
+            <span className="text-muted mx-2">
                 {"(" + rate.total + ") Students"}
             </span>
         </div>

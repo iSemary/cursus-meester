@@ -11,9 +11,8 @@ $primaryColorTransparent: #0077b6a1;
 $secondaryColor: #00b4d8;
 $secondaryColorTransparent: #00b4d88f;
 
-
 $headerHeight: 70px;
-header {
+.main-header {
     position: fixed;
     top: 0;
     margin: 0 0 0 0;
@@ -37,10 +36,9 @@ header {
 }
 .nav-search {
     width: 100%;
-    border-radius: 30px;
+    border-radius: 15px;
     padding: 5px 5px 5px 20px;
     background-color: transparent;
-    border: 2px solid $primaryColor;
     border: 2px solid $primaryColorTransparent;
     transition: 500ms;
     font-size: 14px;
@@ -56,17 +54,56 @@ header {
         border: 2px solid $secondaryColorTransparent;
         outline: 0;
     }
+
+    &:focus {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom: 0;
+    }
 }
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
     li {
-        margin: 0 0 0 40px;
+        margin: 0 0 0 20px;
         color: $primaryColor;
-        &.active,
-        &:hover {
+        position: relative;
+        a {
+            transition: 200ms;
+        }
+        a:active,
+        a:hover {
             color: $secondaryColor;
             font-weight: bold;
+        }
+
+        &::after{
+            content: "";
+            background-color: #0d6efd75;
+            width: 3px;
+            height: 3px;
+            border-radius: 25px;        
+            display: inline-block;
+            position: absolute;
+            top: 45%;
+            right: -13px;
+        }
+
+        &.bordered {
+            padding: 5px;
+            border: 1px solid #0d6efd1c;
+            background-color: #0d6efd1c;
+            border-radius: 10px;
+            font-weight: bold;
+            &:hover {
+            }
+        }
+
+        &:last-of-type {
+            &::after {
+                content: unset;
+            }
         }
     }
 }
@@ -146,6 +183,17 @@ header {
     border-style: dashed;
     border-width: 1px;
     border-color: $primaryColor;
+    background-color: #0d6efd14;
+    border: 1px solid #0d6efd14;
+}
+
+.course-box {
+    &.col-12 {
+        margin-bottom: 10px;
+        .course-details {
+            padding: 0 25px;
+        }
+    }
 }
 
 .home-page {
@@ -190,4 +238,114 @@ header {
 
 .align-items-center {
     align-items: center;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+.text-14 {
+    font-size: 14px;
+}
+
+.instructors {
+    .instructor-box {
+        background-color: #0d6efd14;
+        border: 1px solid #0d6efd14;
+        padding: 15px;
+        border-radius: 7px;
+        padding: 12px;
+        width: 20vw;
+        img {
+            border-radius: 25px;
+        }
+    }
+}
+.color-primary {
+    color: $primaryColor !important;
+}
+.justify-content-space-between {
+    justify-content: space-between;
+}
+
+.form-group {
+    label {
+        font-weight: bold;
+        color: #46494c;
+    }
+}
+.form-control {
+    border: 1px solid #0d6efd1c;
+    background-color: #0d6efd1c;
+    color: #46494c;
+    font-size: 14px;
+    &::placeholder {
+        color: #46494c;
+        font-size: 14px;
+    }
+
+    &:focus {
+        border-color: #0d6efd3d;
+        box-shadow: 0 0 0 1px #0d6efd36;
+        background-color: #0d6efd08;
+    }
+}
+
+.btn-primary {
+    border-color: $primaryColor;
+    background-color: $primaryColor;
+    box-shadow: 0 0 0 1px $primaryColor;
+
+    &:hover {
+        border-color: $primaryColorTransparent;
+        background-color: $primaryColorTransparent;
+        box-shadow: 0 0 0 1px $primaryColorTransparent;
+    }
+}
+
+.search-container {
+    position: relative;
+    .search-results {
+        width: 100%;
+        padding: 10px;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+        border-top: 0;
+        position: absolute;
+        background: #f9fbfff7;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(149, 192, 255, 0.47);
+
+        visibility: hidden;
+
+        ul {
+            padding-left: 10px;
+            margin-bottom: 5px;
+            list-style: none;
+            li {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 7px;
+                color: #212529;
+            }
+        }
+    }
+}
+
+
+.join-btn {
+    border: 1px solid #0d6efd1c;
+    background-color: #0d6efd1c;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 12px;
+    text-transform: uppercase;
+    border-radius: 29px;
+    width: fit-content;
 }
