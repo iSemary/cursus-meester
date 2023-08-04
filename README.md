@@ -51,3 +51,4 @@ npx next dev
 ```
 sass --watch resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
 ```
+
