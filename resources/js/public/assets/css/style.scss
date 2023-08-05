@@ -11,14 +11,15 @@ $primaryColorTransparent: #0077b6a1;
 $secondaryColor: #00b4d8;
 $secondaryColorTransparent: #00b4d88f;
 
-$headerHeight: 70px;
+$headerHeight: 80px;
 .main-header {
     position: fixed;
     top: 0;
     margin: 0 0 0 0;
     width: 100%;
-    height: $headerHeight;
-    padding-top: $headerHeight - 55px;
+    height: $headerHeight - 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
@@ -28,7 +29,10 @@ $headerHeight: 70px;
 .container {
     margin-top: $headerHeight;
 }
-
+.align-flex-center {
+    align-items: center;
+    display: flex;
+}
 .logo-title {
     font-weight: bold;
     color: $primaryColor;
@@ -78,12 +82,12 @@ $headerHeight: 70px;
             font-weight: bold;
         }
 
-        &::after{
+        &::after {
             content: "";
             background-color: #0d6efd75;
             width: 3px;
             height: 3px;
-            border-radius: 25px;        
+            border-radius: 25px;
             display: inline-block;
             position: absolute;
             top: 45%;
@@ -258,7 +262,7 @@ $headerHeight: 70px;
         padding: 15px;
         border-radius: 7px;
         padding: 12px;
-        width: 20vw;
+        width: 18vw;
         img {
             border-radius: 25px;
         }
@@ -306,6 +310,17 @@ $headerHeight: 70px;
     }
 }
 
+.btn-outline-primary {
+    border-color: $primaryColor;
+    box-shadow: 0 0 0 1px $primaryColor;
+    color:$primaryColor;
+    &:hover {
+        border-color: $primaryColorTransparent;
+        background-color:$primaryColorTransparent;
+        box-shadow: 0 0 0 1px $primaryColorTransparent;
+    }
+}
+
 .search-container {
     position: relative;
     .search-results {
@@ -337,7 +352,49 @@ $headerHeight: 70px;
     }
 }
 
+.lecture-viewer {
+    .preview-image {
+        position: relative;
+        img {
+            width: 100%;
+        }
+        h5 {
+            bottom: 0;
+            position: absolute;
+            right: 50%;
+            width: 100%;
+            transform: translateX(75%);
+        }
+    }
+}
 
+.resource {
+    border: 1px solid #21252961;
+    padding: 10px;
+
+    border-bottom: 1px solid #21252961;
+    &:first-of-type {
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+    }
+    &:last-of-type {
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border-top: 0;
+        border-bottom: 1px solid #21252961;
+    }
+
+    .lecture{ 
+        margin-bottom: 3px;
+    }
+}
+.course-includes {
+    .includes {
+        p {
+            margin-bottom: 3px;
+        }
+    }
+}
 .join-btn {
     border: 1px solid #0d6efd1c;
     background-color: #0d6efd1c;

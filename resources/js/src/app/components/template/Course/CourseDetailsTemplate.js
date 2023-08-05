@@ -2,15 +2,18 @@ import React from "react";
 import StarsRate from "../../utilities/StarsRate";
 import Link from "next/link";
 import CourseResourcesTemplate from "./CourseResourcesTemplate";
-import {BsBoxes} from "react-icons/bs";
-import {FaChalkboardTeacher} from "react-icons/fa";
-import {PiTarget} from "react-icons/pi";
+import { BsBoxes, BsDownload } from "react-icons/bs";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { MdOndemandVideo } from "react-icons/md";
+import { GoDeviceDesktop } from "react-icons/go";
+import { PiExam, PiTarget, PiCertificateDuotone } from "react-icons/pi";
+import Image from "next/image";
 
 export default function CourseDetailsTemplate({ course, containerClass }) {
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
-                <div className="col-12">
+                <div className="col-8">
                     <h1 className="font-weight-bold">{course.name}</h1>
                     <p>{course.description}</p>
 
@@ -35,7 +38,9 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                 <div className="col-8">
                     {/* Requirements */}
                     <div className="requirements">
-                        <h3 className="font-weight-bold"><PiTarget /> Requirements</h3>
+                        <h3 className="font-weight-bold">
+                            <PiTarget /> Requirements
+                        </h3>
                         <div
                             dangerouslySetInnerHTML={{
                                 __html: course.requirements,
@@ -45,7 +50,9 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                     <hr className="home-hr" />
                     {/* Requirements */}
                     <div className="content">
-                        <h3 className="font-weight-bold"><FaChalkboardTeacher /> Course Content</h3>
+                        <h3 className="font-weight-bold">
+                            <FaChalkboardTeacher /> Course Content
+                        </h3>
                         <div
                             dangerouslySetInnerHTML={{
                                 __html: course.content,
@@ -55,11 +62,64 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                     <hr className="home-hr" />
                     {/* Course Resources */}
                     <div className="resources">
-                        <h3 className="font-weight-bold"><BsBoxes /> Resources</h3>
+                        <h3 className="font-weight-bold">
+                            <BsBoxes /> Resources
+                        </h3>
                         <div className="row">
                             <CourseResourcesTemplate
                                 resources={course.resources}
                             />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="lecture-viewer">
+                        <div className="preview-image">
+                            <Image
+                                src="https://placehold.co/250x150.png"
+                                alt="course preview"
+                                width={250}
+                                height={150}
+                            />
+                            <h5>Preview the course</h5>
+                        </div>
+                        <h4 className="font-weight-bold mt-2">
+                            {course.currency + course.total_price}
+                        </h4>
+                        <div className="row m-auto">
+                            <button className="w-100 btn btn-primary">
+                                Add to cart
+                            </button>
+                            <button className="w-100 mt-2 btn btn-outline-primary">
+                                Purchase Now
+                            </button>
+                        </div>
+
+                        <div className="course-includes mt-3">
+                            <h6 className="font-weight-bold">
+                                This course includes:
+                            </h6>
+                            <div className="includes">
+                                <p>
+                                    <MdOndemandVideo /> {course.total_hours}{" "}
+                                    on-demand video
+                                </p>
+                                <p>
+                                    <PiExam /> {course.total_assignments}{" "}
+                                    Assignments
+                                </p>
+                                <p>
+                                    <BsDownload /> {course.total_files}{" "}
+                                    downloadable file resources
+                                </p>
+                                <p>
+                                    <GoDeviceDesktop /> Access on mobile and TV
+                                </p>
+                                <p>
+                                    <PiCertificateDuotone /> Certificate after
+                                    completing the course
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

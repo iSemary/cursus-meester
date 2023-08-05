@@ -1,5 +1,4 @@
 import Image from "next/image";
-import CourseTemplate from "./components/template/CourseTemplate";
 import HomeCategoryTemplate from "./components/template/HomeCategoryTemplate";
 import { BsStars } from "react-icons/bs";
 import { TbCategory2 } from "react-icons/tb";

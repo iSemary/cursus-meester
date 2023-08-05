@@ -16,7 +16,7 @@ export default function CourseResourcesTemplate({ resources }) {
                                 resource.lectures.map((lecture, i) => (
                                     <div className="row lecture">
                                         <div className="col-12 row">
-                                            <div className="col-6">
+                                            <div className="col-6 align-flex-center">
                                                 {lecture.type === 1 ? (
                                                     <GoVideo className="mx-1" />
                                                 ) : (
