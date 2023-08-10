@@ -49,6 +49,6 @@ npx next dev
 
 ### Convert SCSS to CSS
 ```
-sass --watch resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
+sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
 ```
 
