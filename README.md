@@ -46,9 +46,8 @@ npm install
 npx next dev
 ```
 
-
 ### Convert SCSS to CSS
+
 ```
 sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
 ```
-
