@@ -29,7 +29,7 @@ class Handler extends ExceptionHandler {
      * @return JsonResponse
      */
     public function render($request, Throwable $exception): JsonResponse {
-        return (new ApiController)->return(400, $exception->getMessage(), [], env("APP_DEBUG") ?
+        return (new ApiController)->return(400, env("APP_DEBUG") ? $exception->getMessage() : "Something went wrong!", [], env("APP_DEBUG") ?
             ['line' => $exception->getLine(), 'file' => $exception->getFile(), 'trace' => $exception->getTrace(),]
             : []);
     }
