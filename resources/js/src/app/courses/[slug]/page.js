@@ -1,3 +1,4 @@
+import StudentTemplate from "../../Templates/StudentTemplate";
 import CoursePageTemplate from "../../components/template/CoursePageTemplate";
 
 export default function Course({ params }) {
@@ -76,8 +77,10 @@ export default function Course({ params }) {
         instructor: instructor,
     };
     return (
-        <div className="container">
-            <CoursePageTemplate course={course} />
-        </div>
+        <StudentTemplate>
+            <div className="container">
+                <CoursePageTemplate course={course} />
+            </div>
+        </StudentTemplate>
     );
 }

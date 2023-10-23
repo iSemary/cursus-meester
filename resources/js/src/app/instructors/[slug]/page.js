@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import CourseTemplate from "../../components/template/CourseTemplate";
+import StudentTemplate from "../../Templates/StudentTemplate";
 
 export default function Instructor({ params }) {
     const courses = [
@@ -149,77 +150,79 @@ export default function Instructor({ params }) {
         courses: courses,
     };
     return (
-        <div className="container instructor-page">
-            <div className="row pt-4 justify-content-space-between">
-                <div className="col-md-6">
-                    <div className="instructor-details">
-                        <div className="row">
-                            <div className="col-6 text-center">
-                                <Image
-                                    className="instructor-profile-image"
-                                    width={150}
-                                    src={instructor.image}
-                                    height={150}
+        <StudentTemplate>
+            <div className="container instructor-page">
+                <div className="row pt-4 justify-content-space-between">
+                    <div className="col-md-6">
+                        <div className="instructor-details">
+                            <div className="row">
+                                <div className="col-6 text-center">
+                                    <Image
+                                        className="instructor-profile-image"
+                                        width={150}
+                                        src={instructor.image}
+                                        height={150}
+                                    />
+                                </div>
+                                <div className="col-6 text-left pt-5">
+                                    <h3 className="color-primary font-weight-bold">
+                                        {instructor.name}
+                                    </h3>
+                                    <p>{instructor.specialty}</p>
+                                </div>
+                            </div>
+                            <hr className="home-hr" />
+                            <div className="row">
+                                <div className="col-4">
+                                    <h6 className="font-weight-bold text-center color-primary">
+                                        Total Courses{" "}
+                                        <div className="text-muted">
+                                            {instructor.total_courses}
+                                        </div>
+                                    </h6>
+                                </div>
+                                <div className="col-4">
+                                    <h6 className="font-weight-bold text-center color-primary">
+                                        Total Students{" "}
+                                        <div className="text-muted">
+                                            {instructor.total_students}
+                                        </div>
+                                    </h6>
+                                </div>
+                                <div className="col-4">
+                                    <h6 className="font-weight-bold text-center color-primary">
+                                        Rate{" "}
+                                        <div className="text-muted">
+                                            {instructor.rate.average}
+                                        </div>
+                                    </h6>
+                                </div>
+                            </div>
+
+                            <hr className="home-hr" />
+
+                            <h5 className="font-weight-bold">Summary</h5>
+                            <p className="text-muted">{instructor.summary}</p>
+                        </div>
+                    </div>
+
+                    <div className="col-md-6"></div>
+                </div>
+                <hr className="home-hr" />
+                <div className="instructor-courses">
+                    <h5 className="font-weight-bold">Courses</h5>
+                    <div className="row">
+                        {instructor.courses &&
+                            instructor.courses.length > 0 &&
+                            instructor.courses.map((course, index) => (
+                                <CourseTemplate
+                                    course={course}
+                                    containerClass={"col-3"}
                                 />
-                            </div>
-                            <div className="col-6 text-left pt-5">
-                                <h3 className="color-primary font-weight-bold">
-                                    {instructor.name}
-                                </h3>
-                                <p>{instructor.specialty}</p>
-                            </div>
-                        </div>
-                        <hr className="home-hr" />
-                        <div className="row">
-                            <div className="col-4">
-                                <h6 className="font-weight-bold text-center color-primary">
-                                    Total Courses{" "}
-                                    <div className="text-muted">
-                                        {instructor.total_courses}
-                                    </div>
-                                </h6>
-                            </div>
-                            <div className="col-4">
-                                <h6 className="font-weight-bold text-center color-primary">
-                                    Total Students{" "}
-                                    <div className="text-muted">
-                                        {instructor.total_students}
-                                    </div>
-                                </h6>
-                            </div>
-                            <div className="col-4">
-                                <h6 className="font-weight-bold text-center color-primary">
-                                    Rate{" "}
-                                    <div className="text-muted">
-                                        {instructor.rate.average}
-                                    </div>
-                                </h6>
-                            </div>
-                        </div>
-
-                        <hr className="home-hr" />
-
-                        <h5 className="font-weight-bold">Summary</h5>
-                        <p className="text-muted">{instructor.summary}</p>
+                            ))}
                     </div>
                 </div>
-
-                <div className="col-md-6"></div>
             </div>
-            <hr className="home-hr" />
-            <div className="instructor-courses">
-                <h5 className="font-weight-bold">Courses</h5>
-                <div className="row">
-                    {instructor.courses &&
-                        instructor.courses.length > 0 &&
-                        instructor.courses.map((course, index) => (
-                            <CourseTemplate
-                                course={course}
-                                containerClass={"col-3"}
-                            />
-                        ))}
-                </div>
-            </div>
-        </div>
+        </StudentTemplate>
     );
 }
