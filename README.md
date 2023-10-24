@@ -52,3 +52,8 @@ npx next dev
 sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
 ```
 
+
+```
+sass resources/js/public/assets/css/panel.scss:resources/js/public/assets/css/panel.css
+```
+

@@ -1,0 +1,38 @@
+.counter-card {
+    &.card {
+      background: linear-gradient(135deg, #3498db, #9b59b6);
+      border: 1px solid #2980b9;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+  
+      .card-title {
+        font-size: 24px;
+        i {
+          font-size: 24px;
+          margin-right: 10px;
+        }
+      }
+  
+      .card-body {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+  
+      transition: transform 0.2s ease-in-out;
+  
+      &:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #2980b9, #8e44ad);
+      }
+    }
+  }
+  

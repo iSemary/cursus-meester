@@ -23,18 +23,23 @@ export default function DashboardHeader() {
             <header className="p-3 mb-3 border-bottom">
                 <div className="container mt-0 ">
                     <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                        <a
-                            href="/dashboard/"
-                            className="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none"
-                        >
+                        {/* Left Side */}
+                        <Link href="/dashboard/">
                             <i className="pi pi-user"></i>
-                        </a>
+                        </Link>
                         <div className="col-12 col-lg-auto me-lg-auto mb-2 ">
                             <Button
                                 icon="pi pi-bars"
                                 onClick={() => setIsVisible(true)}
                                 link
                             />
+                        </div>
+                        {/* Right Side */}
+                        <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                            <Button icon="pi pi-bell" link size="large" />
+                        </div>
+                        <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                            <Button icon="pi pi-envelope" link size="large" />
                         </div>
                         <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
                             <Link href="/dashboard/courses/create">
@@ -44,25 +49,26 @@ export default function DashboardHeader() {
                                 />
                             </Link>
                         </div>
-
-                        <SplitButton
-                            label={
-                                <Link href="/dashboard/profile">
-                                    <img
-                                        src="https://github.com/mdo.png"
-                                        alt="mdo"
-                                        width="32"
-                                        height="32"
-                                        className="rounded-circle"
-                                    />
-                                </Link>
-                            }
-                            raised
-                            text
-                            size="small"
-                            rounded
-                            model={dropDownItems}
-                        />
+                        <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                            <SplitButton
+                                label={
+                                    <Link href="/dashboard/profile">
+                                        <img
+                                            src="https://github.com/mdo.png"
+                                            alt="mdo"
+                                            width="32"
+                                            height="32"
+                                            className="rounded-circle"
+                                        />
+                                    </Link>
+                                }
+                                raised
+                                text
+                                size="small"
+                                rounded
+                                model={dropDownItems}
+                            />
+                        </div>
                     </div>
                 </div>
             </header>

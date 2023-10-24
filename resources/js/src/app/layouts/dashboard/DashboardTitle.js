@@ -12,7 +12,7 @@ export default function DashboardTitle({ title, path }) {
     };
     return (
         <div>
-            <BreadCrumb model={items} home={home} />
+            <BreadCrumb className="border-0" model={items} home={home} />
             <h1>{title}</h1>
         </div>
     );
