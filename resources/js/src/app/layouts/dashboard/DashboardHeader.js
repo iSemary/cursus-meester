@@ -3,10 +3,20 @@ import Link from "next/link";
 import { Button } from "primereact/button";
 import React, { Suspense } from "react";
 import { useVisibility } from "../../components/utilities/dashboard/SidebarVisibility";
-import { Dropdown } from "react-bootstrap";
+import { SplitButton } from "primereact/splitbutton";
 
 export default function DashboardHeader() {
     const { isVisible, setIsVisible } = useVisibility();
+    const dropDownItems = [
+        {
+            label: "Settings",
+            icon: "pi pi-refresh",
+        },
+        {
+            label: "Logout",
+            icon: "pi pi-times",
+        },
+    ];
 
     return (
         <Suspense fallback={<h2>"Loading header..."</h2>}>
@@ -23,35 +33,36 @@ export default function DashboardHeader() {
                             <Button
                                 icon="pi pi-bars"
                                 onClick={() => setIsVisible(true)}
-                                className="btn btn-sm"
-                                unstyled={true}
+                                link
                             />
                         </div>
                         <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                            <Link
-                                href="/dashboard/courses/create"
-                                className="btn btn-sm btn-primary"
-                            >
-                                Create new course
+                            <Link href="/dashboard/courses/create">
+                                <Button
+                                    label="Create new course"
+                                    size="small"
+                                />
                             </Link>
                         </div>
 
-                        <Dropdown>
-                            <Dropdown.Toggle variant="" id="dropdown-basic">
-                                <img
-                                    src="https://github.com/mdo.png"
-                                    alt="mdo"
-                                    width="32"
-                                    height="32"
-                                    className="rounded-circle"
-                                />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item href="#">Profile</Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item href="#">Sign out</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SplitButton
+                            label={
+                                <Link href="/dashboard/profile">
+                                    <img
+                                        src="https://github.com/mdo.png"
+                                        alt="mdo"
+                                        width="32"
+                                        height="32"
+                                        className="rounded-circle"
+                                    />
+                                </Link>
+                            }
+                            raised
+                            text
+                            size="small"
+                            rounded
+                            model={dropDownItems}
+                        />
                     </div>
                 </div>
             </header>
