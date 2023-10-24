@@ -23,9 +23,23 @@ const DashboardSidebar = () => {
     ];
     return (
         <div>
+            <div
+                style={{ display: isVisible ? "block" : "none" }}
+                onHide={() => setIsVisible(false)}
+            >
+                <ul>
+                    <li>Hello 1</li>
+                    <li>Hello 1</li>
+                    <li>Hello 1</li>
+                    <li>Hello 1</li>
+                    <li>Hello 1</li>
+                    <li>Hello 1</li>
+                </ul>
+            </div>
+            {/*             
             <Sidebar visible={isVisible} onHide={() => setIsVisible(false)}>
                 <Menu model={items} />
-            </Sidebar>
+            </Sidebar> */}
         </div>
     );
 };
