@@ -20,7 +20,7 @@ export default function DashboardHeader() {
 
     return (
         <Suspense fallback={<h2>"Loading header..."</h2>}>
-            <header className="p-3 mb-3 border-bottom">
+            <header className="px-3 mb-3 border-bottom">
                 <div className="container mt-0 ">
                     <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                         {/* Left Side */}
@@ -64,6 +64,7 @@ export default function DashboardHeader() {
                                 }
                                 raised
                                 text
+                                className="header-split-button"
                                 size="small"
                                 rounded
                                 model={dropDownItems}

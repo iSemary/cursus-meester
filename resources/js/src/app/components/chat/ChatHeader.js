@@ -7,11 +7,11 @@ export default function ChatHeader({ userDetails }) {
                 <img
                     src={userDetails.avatar}
                     alt={userDetails.name}
-                    width="50"
-                    height="50"
+                    width="30"
+                    height="30"
                     className="rounded-circle"
                 />
-                <h3 className="ms-2">{userDetails.name}</h3>
+                <h4 className="ms-2 my-0">{userDetails.name}</h4>
             </div>
         </div>
     );

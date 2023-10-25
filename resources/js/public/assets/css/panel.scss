@@ -1,6 +1,26 @@
-.position-relative {
-    position: relative;
+.no-shadows {
+    box-shadow: none;
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible,
+    &:focus-within {
+        box-shadow: none;
+    }
 }
+.no-resize {
+    resize: none;
+}
+.no-border-bottom-radius {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.header-split-button button {
+    padding-top: 6px;
+    padding-bottom: 2px;
+}
+
 .counter-card {
     &.card {
         background: linear-gradient(135deg, #3498db, #9b59b6);
@@ -40,7 +60,15 @@
 }
 
 /** Chat Styles **/
-
+.chat-page-container {
+    height: 75vh;
+    overflow: hidden;
+    box-shadow: 0px 3px 7px #c3c3c3;
+    border-radius: 5px;
+    & > div {
+        padding: 0;
+    }
+}
 .default-background-screen {
     position: relative;
     max-height: 100vh;
@@ -60,12 +88,21 @@
         text-align: center;
     }
 }
-
+.chat-screen {
+    height: 100%;
+    // display: grid;
+    // align-content: space-between;
+}
 .chat-user-list {
+    height: 100%;
+    background-color: #f3f3fe;
     ul {
+        height: 50%;
+        overflow-y: scroll;
         list-style: none;
         padding: 0;
         margin: 0;
+        padding-bottom: 100px;
     }
 
     li {
@@ -114,6 +151,7 @@
     background-color: #6265ee14;
     border-radius: 5px;
     padding: 5px 5px;
+    height: 40px;
 }
 .users-search-container {
     span,
@@ -123,13 +161,22 @@
 }
 
 .message-list-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: grid;
+    max-height: 36%;
+    background-color: #f3f3f394;
+    padding: 0 5px;
     .message-bubble {
         padding: 10px;
+        font-size: 12px;
         margin: 10px;
         border-radius: 10px;
         max-width: 60%;
         word-wrap: break-word;
-
+        width: fit-content;
+        position: relative;
+        min-width: 100px;
         .d-flex {
             align-items: center;
         }
@@ -151,24 +198,52 @@
         }
 
         small {
-            color: #999;
+            color: #6a6a6a;
+            position: absolute;
+            bottom: 3px;
+            right: 10px;
         }
 
         &.in {
             background-color: #e5e5ea;
+            &::before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 12px 10px 0;
+                border-color: transparent #e5e5ea transparent transparent;
+                left: -12px;
+                top: 10px;
+            }
         }
 
         &.out {
             background-color: #007bff;
+            margin-left: auto;
             color: #fff;
             small {
                 color: #fff;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 0 10px 12px;
+                border-color: transparent transparent transparent #007bff;
+                right: -12px;
+                top: 10px;
             }
         }
     }
 }
 
+
 .message-input-container {
+    background-color: #f3f3fe;
     width: 100%;
     textarea {
         width: 100%;

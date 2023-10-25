@@ -13,10 +13,10 @@ export default function MessageInput() {
                         value={WrittenMessage}
                         placeholder="What are you thinking?"
                         onChange={(e) => setWrittenMessage(e.target.value)}
+                        className="no-shadows no-resize"
                     />
                 </Col>
                 <Col md={3} className="d-grid align-items-center">
-                    <hr />
                     <InputActions />
                 </Col>
             </Row>

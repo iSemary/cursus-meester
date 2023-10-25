@@ -11,6 +11,7 @@ export default function UsersSearch() {
                     value={Keyword}
                     placeholder="Search or start new chat"
                     onChange={(e) => setKeyword(e.target.value)}
+                    className="no-shadows no-border-bottom-radius"
                 />
             </span>
         </div>

@@ -53,7 +53,7 @@ export default function UsersList({
     return (
         <div className="chat-user-list">
             <UsersSearch />
-            <ul className="mt-2">{list}</ul>
+            <ul>{list}</ul>
         </div>
     );
 }

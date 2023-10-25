@@ -37,12 +37,54 @@ export default function Messages() {
                 avatar: "https://github.com/mdo.png",
                 message: "Hello from list new list",
             },
+            {
+                id: 5,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
+            {
+                id: 6,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
+            {
+                id: 7,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
+            {
+                id: 5,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
+            {
+                id: 6,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
+            {
+                id: 7,
+                name: "Ahmed ali",
+                timestamp: "15:10am",
+                avatar: "https://github.com/mdo.png",
+                message: "Hello from list new list",
+            },
         ]);
     }, []);
 
     return (
         <DashboardTemplate>
-            <Row>
+            <Row className="chat-page-container">
                 <Col md={4}>
                     <UsersList
                         users={Users}
