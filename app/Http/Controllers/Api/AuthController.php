@@ -3,9 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\OTP\SendRequest;
+use App\Http\Requests\OTP\VerifyRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Models\EmailToken;
 use App\Models\User;
+use App\Models\UserOTP;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,6 +34,9 @@ class AuthController extends ApiController {
         /* Requested data passed the validation */
         // Create new user record
         $user = User::create($request->validated());
+
+        // Create email token
+        $token = EmailToken::createToken($user->id);
         // TODO Fire Email Confirmation Queue
 
         // collect user details to return in the json response
@@ -67,7 +77,10 @@ class AuthController extends ApiController {
      */
     public function collectUserDetails(User $user): User {
         // Invoke authentication token
-        $user['access_token'] = $user->createToken('web-app')->accessToken;
+        $accessToken = $user->createToken('web-app')->accessToken;
+        // Fetch only specific data of user model
+        $user = $user->select('full_name', 'email', 'created_at')->first();
+        $user['access_token'] = $accessToken;
         return $user;
     }
 
@@ -100,18 +113,107 @@ class AuthController extends ApiController {
         }
     }
 
-    public function verifyEmail(Request $request): JsonResponse {
+    /**
+     * The function `verifyEmail` takes a token as input, verifies it, and updates the `email_verified_at`
+     * field of the user if the token is valid.
+     * 
+     * @param string token The `token` parameter is a string that represents a verification token. This
+     * token is used to verify the user's email address.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function verifyEmail(string $token): JsonResponse {
+        if (isset($token)) {
+            try {
+                User::verifyToken($token)->update([
+                    'email_verified_at' => Carbon::now()
+                ]);
+                return $this->return(200, "Email Verified Successfully");
+            } catch (Exception $e) {
+                return $this->return(400, "Invalid Token");
+            }
+        }
     }
 
-    public function sendOTP(Request $request): JsonResponse {
+    /**
+     * The function generates a random OTP (One-Time Password), saves it in the database for the
+     * authenticated user, and returns a success message.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200 and a message of "OTP sent
+     * successfully".
+     */
+    public function sendOTP(): JsonResponse {
+        $otp = random_int(1000, 9999);
+        UserOTP::create([
+            'user_id' => auth()->guard('api')->id(),
+            'otp' => $otp
+        ]);
+        // TODO Fire send SMS queue with $otp  
+        return $this->return(200, "OTP sent successfully");
     }
 
-    public function verifyOTP(Request $request): JsonResponse {
+    /**
+     * The function `verifyOTP` verifies the OTP (One-Time Password) provided by the user and updates the
+     * user's phone number verification status accordingly.
+     * 
+     * @param VerifyRequest request The request parameter is an instance of the VerifyRequest class, which
+     * is likely a custom class that contains the data needed to verify the OTP (One-Time Password).
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function verifyOTP(VerifyRequest $request): JsonResponse {
+        $user = User::join('user_otps', 'user_otps.user_id', 'users.id')
+            ->where('user_otps.otp', $request->otp)
+            ->where('user_otps.user_id', auth()->guard('api')->id())
+            ->first();
+        if ($user) {
+            User::verifyPhoneNumber(auth()->guard('api')->id());
+            return $this->return(200, "OTP verified successfully");
+        } else {
+            return $this->return(400, "Invalid OTP");
+        }
     }
 
-    public function sendForgetPasswordMail(Request $request): JsonResponse {
+
+    /**
+     * The forgetPassword function generates a reset token for a user's email and sends a reset email.
+     * 
+     * @param ForgetPasswordRequest request The  parameter is an instance of the
+     * ForgetPasswordRequest class. It is used to retrieve the email entered by the user who wants to
+     * reset their password.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200 and a message "Reset email has been
+     * sent successfully".
+     */
+    public function forgetPassword(ForgetPasswordRequest $request): JsonResponse {
+        $token = User::where("email", $request->email)->first()->createResetToken();
+        // TODO Fire Reset Email Queue with $token
+        return $this->return(200, "Reset email has been sent successfully");
     }
 
-    public function resetPassword(Request $request): JsonResponse {
+    /**
+     * The function resets a user's password by fetching the user from the database using a token, updating
+     * the password, and deleting the reset token from the database.
+     * 
+     * @param ResetPasswordRequest request The request parameter is an instance of the ResetPasswordRequest
+     * class. It contains the data sent in the request, such as the token and the new password.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse {
+        // Fetch the user by the token from the database
+        $user = User::join("password_reset_tokens", "password_reset_tokens.user_id", "users.id")
+            ->select(['users.id'])
+            ->where("password_reset_tokens.token", $request->token)
+            ->first();
+        if ($user) {
+            // Reset the user's password
+            $user->updatePassword($request->password);
+            // clear reset token from database
+            DB::table('password_reset_tokens')->where("token", $request->token)->delete();
+            return $this->return(200, "Password has been reset successfully");
+        } else {
+            return $this->return(400, "User not exists");
+        }
     }
 }
