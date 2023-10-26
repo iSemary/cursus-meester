@@ -5,21 +5,28 @@ import React, { Suspense, useRef } from "react";
 import { useVisibility } from "../../components/utilities/dashboard/SidebarVisibility";
 import { SplitButton } from "primereact/splitbutton";
 import { OverlayPanel } from "primereact/overlaypanel";
+import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
     const messagesPanel = useRef(null);
     const notificationsPanel = useRef(null);
     const { isVisible, setIsVisible } = useVisibility();
+    const router = useRouter();
     const dropDownItems = [
         {
             label: "Settings",
             icon: "pi pi-cog",
-            url: "/dashboard/settings",
+            command: () => {
+                router.push('/dashboard/settings');
+            },
         },
         {
             label: "Logout",
             icon: "pi pi-times",
-            url: "/dashboard/logout",
+            command: () => {
+                // TODO Call logout API
+                // TODO Then redirect to login page
+            },
         },
     ];
 
@@ -91,7 +98,10 @@ export default function DashboardHeader() {
                         <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
                             <SplitButton
                                 label={
-                                    <Link href="/dashboard/profile">
+                                    <Link
+                                        href="/instructors/ahmedali"
+                                        target="_blank"
+                                    >
                                         <img
                                             src="https://github.com/mdo.png"
                                             alt="mdo"

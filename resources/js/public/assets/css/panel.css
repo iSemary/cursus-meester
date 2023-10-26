@@ -199,4 +199,15 @@
       width: 2.7rem;
       height: 2.7rem; }
 
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #dee2e6;
+  margin: 1em 0;
+  padding: 0; }
+
+.text-right {
+  text-align: right; }
+
 /*# sourceMappingURL=panel.css.map */
