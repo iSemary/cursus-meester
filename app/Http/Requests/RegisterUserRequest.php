@@ -20,10 +20,11 @@ class RegisterUserRequest extends FormRequest {
     public function rules(): array {
         return [
             'full_name' => 'required|max:164',
-            'email' => 'required|max:255|unique:users,email|email:dns',
+            'email' => 'required|max:255|unique:users,email',
             'password' => 'required|confirmed|max:255|min:8',
             'phone' => 'required|numeric|unique:users,phone',
-            'country_id' => 'required|numeric',
+            'country_id' => 'required',
+            'country_dial_code' => 'required|max:15',
         ];
     }
 }

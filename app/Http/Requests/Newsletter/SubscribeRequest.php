@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Newsletter;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginUserRequest extends FormRequest {
+class SubscribeRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -19,8 +19,7 @@ class LoginUserRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'email' => 'required|max:255|exists:users,email',
-            'password' => 'required|max:255|min:8',
+            'email' => 'required|max:255|unique:newsletters,email'
         ];
     }
 }

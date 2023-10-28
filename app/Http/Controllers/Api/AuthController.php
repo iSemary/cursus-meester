@@ -10,6 +10,7 @@ use App\Http\Requests\OTP\VerifyRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\EmailToken;
+use App\Models\LoginAttempt;
 use App\Models\User;
 use App\Models\UserOTP;
 use Carbon\Carbon;
@@ -64,6 +65,14 @@ class AuthController extends ApiController {
             // Return Success Json Response
             return $this->return(200, 'User Logged in Successfully', ['user' => $response]);
         } else {
+            $user = User::where("email", $request->email)->first();
+            if ($user) {
+                LoginAttempt::create([
+                    'user_id' => $user->id,
+                    'agent' => $request->userAgent(),
+                    'ip' => $request->ip(),
+                ]);
+            }
             return $this->return(400, 'Invalid credentials');
         }
     }
@@ -215,5 +224,18 @@ class AuthController extends ApiController {
         } else {
             return $this->return(400, "User not exists");
         }
+    }
+
+    /**
+     * The function checks if the user is authenticated and returns a JSON response indicating the
+     * authentication status.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function checkAuthentication(): JsonResponse {
+        if (auth()->guard('api')->check()) {
+            return $this->return(200, "Authenticated successfully");
+        }
+        return $this->return(400, "Session expired");
     }
 }

@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import HomeCategoryTemplate from "./components/template/HomeCategoryTemplate";
 import { BsStars } from "react-icons/bs";
@@ -6,8 +7,17 @@ import CoursesTemplate from "./components/template/CoursesTemplate";
 import JoinInstructorsImage from "/public/assets/images/landing/instructor-1.jpg";
 import Link from "next/link";
 import StudentTemplate from "./Templates/StudentTemplate";
+import { useAuth } from "./components/hooks/AuthProvider";
+import { useEffect } from "react";
 
 export default function Home() {
+    const { user } = useAuth();
+    useEffect(() => {
+        if (user) {
+            console.log(user);
+        }
+    }, [user]);
+
     const courses = [
         {
             name: "Course 1",
