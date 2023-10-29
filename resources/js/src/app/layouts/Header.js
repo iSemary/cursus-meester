@@ -99,22 +99,27 @@ const Header = () => {
                                 </li>
                                 <li className="d-flex">
                                     <Dropdown className="split-button">
-                                        <Button
+                                        <Link
                                             variant="primary"
-                                            className="split-main-button"
+                                            href="/profile"
+                                            className="btn btn-primary split-main-button"
                                         >
                                             Name
-                                        </Button>
+                                        </Link>
                                         <Dropdown.Toggle
                                             split
                                             variant="primary"
                                         />
                                         <Dropdown.Menu className="split-sub-buttons">
                                             <Dropdown.Item eventKey="1">
-                                                Settings
+                                                <Link className="no-link" href="/settings">
+                                                    Settings
+                                                </Link>
                                             </Dropdown.Item>
                                             <Dropdown.Item eventKey="2">
-                                                My Courses
+                                                <Link className="no-link" href="/my-courses">
+                                                    My Courses
+                                                </Link>
                                             </Dropdown.Item>
                                             <Dropdown.Divider />
                                             <Dropdown.Item

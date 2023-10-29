@@ -10,6 +10,7 @@ use App\Http\Requests\OTP\VerifyRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Jobs\AttemptMailJob;
+use App\Jobs\ForgetPasswordMailJob;
 use App\Jobs\RegistrationMailJob;
 use App\Models\EmailToken;
 use App\Models\LoginAttempt;
@@ -187,7 +188,6 @@ class AuthController extends ApiController {
         }
     }
 
-
     /**
      * The forgetPassword function generates a reset token for a user's email and sends a reset email.
      * 
@@ -199,8 +199,10 @@ class AuthController extends ApiController {
      * sent successfully".
      */
     public function forgetPassword(ForgetPasswordRequest $request): JsonResponse {
-        $token = User::where("email", $request->email)->first()->createResetToken();
-        // TODO Fire Reset Email Queue with $token
+        $user = User::select(['id', 'full_name', 'email'])->where("email", $request->email)->first();
+        $token = $user->createResetToken();
+        // Send reset password link
+        ForgetPasswordMailJob::dispatchAfterResponse($user, $token);
         return $this->return(200, "Reset email has been sent successfully");
     }
 
