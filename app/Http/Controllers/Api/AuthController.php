@@ -9,6 +9,8 @@ use App\Http\Requests\OTP\SendRequest;
 use App\Http\Requests\OTP\VerifyRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Jobs\AttemptMailJob;
+use App\Jobs\RegistrationMailJob;
 use App\Models\EmailToken;
 use App\Models\LoginAttempt;
 use App\Models\User;
@@ -38,8 +40,8 @@ class AuthController extends ApiController {
 
         // Create email token
         $token = EmailToken::createToken($user->id);
-        // TODO Fire Email Confirmation Queue
-
+        // Fire Email Confirmation Queue
+        RegistrationMailJob::dispatchAfterResponse($user, $token);
         // collect user details to return in the json response
         $response = $this->collectUserDetails($user);
         // Return Success Json Response
@@ -67,12 +69,13 @@ class AuthController extends ApiController {
         } else {
             $user = User::where("email", $request->email)->first();
             if ($user) {
-                LoginAttempt::create([
+                $loginAttempt = LoginAttempt::create([
                     'user_id' => $user->id,
                     'agent' => $request->userAgent(),
                     'ip' => $request->ip(),
                 ]);
-                // TODO send email
+                // send warning email
+                AttemptMailJob::dispatchAfterResponse($user, $loginAttempt);
             }
             return $this->return(400, 'Invalid credentials');
         }
