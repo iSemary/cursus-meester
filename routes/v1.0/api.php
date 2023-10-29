@@ -25,6 +25,8 @@ Route::group(['prefix' => 'auth'], function () {
         // Verification Routes
         Route::post("send/otp", [AuthController::class, "sendOTP"]);
         Route::post("verify/otp", [AuthController::class, "verifyOTP"]);
+        // Get Login Attempt
+        Route::get('attempts', [AuthController::class, "attempts"]);
     });
 });
 

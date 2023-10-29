@@ -72,6 +72,7 @@ class AuthController extends ApiController {
                     'agent' => $request->userAgent(),
                     'ip' => $request->ip(),
                 ]);
+                // TODO send email
             }
             return $this->return(400, 'Invalid credentials');
         }
@@ -237,5 +238,16 @@ class AuthController extends ApiController {
             return $this->return(200, "Authenticated successfully");
         }
         return $this->return(400, "Session expired");
+    }
+
+    /**
+     * The function "attempts" retrieves login attempts made by the authenticated user and returns them as
+     * a JSON response.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function attempts(): JsonResponse {
+        $attempts = LoginAttempt::select(['ip', 'agent'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->get();
+        return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
     }
 }
