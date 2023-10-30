@@ -125,8 +125,7 @@ const Header = () => {
                                             <Dropdown.Divider />
                                             <Dropdown.Item
                                                 eventKey="4"
-                                                onClick={handleLogout}
-                                            >
+                                                onClick={handleLogout}>
                                                 Logout
                                             </Dropdown.Item>
                                         </Dropdown.Menu>
