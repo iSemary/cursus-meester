@@ -12,7 +12,7 @@ class CreateOrganizationRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'title' => 'required|max:255|unique:categories,title',
+            'title' => 'required|max:255|unique:organizations,title',
             'parent_id' => 'sometimes|numeric',
             'order_number' => 'sometimes|numeric',
             'status' => 'required|numeric',

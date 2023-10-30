@@ -13,7 +13,7 @@ class UpdateOrganizationRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'title' => 'required|max:255|unique:categories,title,' . $this->organization->id . ',id',
+            'title' => 'required|max:255|unique:organizations,title,' . $this->organization->id . ',id',
             'parent_id' => 'sometimes|numeric',
             'order_number' => 'sometimes|numeric',
             'status' => 'required|numeric',
