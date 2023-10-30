@@ -11,7 +11,7 @@ export const Token = {
     },
     get() {
         // Get token from local storage
-        return localStorage.getItem("AUTH_TOKEN");
+        return  (typeof localStorage !== "undefined") ? localStorage.getItem("AUTH_TOKEN") : null;
     },
     check() {
         // Check storage token is expired or not [Returns True/False]

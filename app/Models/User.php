@@ -76,7 +76,7 @@ class User extends Authenticatable {
      * that the user wants to set.
      */
     public function updatePassword(string $newPassword): void {
-        $this->update(['password', bcrypt($newPassword)]);
+        $this->update(['password' => bcrypt($newPassword)]);
     }
 
     public static function verifyPhoneNumber(int $userId): void {
