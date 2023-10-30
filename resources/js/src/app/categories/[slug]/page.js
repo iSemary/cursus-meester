@@ -4,6 +4,7 @@ import CoursesFiltrationTemplate from "../../components/template/Course/CoursesF
 import CoursesTemplate from "../../components/template/CoursesTemplate";
 import { PiChalkboardTeacherFill, PiShootingStarThin } from "react-icons/pi";
 import { BiSolidVideos } from "react-icons/bi";
+import StudentTemplate from "../../Templates/StudentTemplate";
 
 export default function CategoryCourses({ params }) {
     const category = {
@@ -178,56 +179,62 @@ export default function CategoryCourses({ params }) {
         ],
     };
     return (
-        <div className="container">
-            <div className="category-page">
-                <div className="row">
-                    <div className="col-12">
-                        <h1>{category.title}</h1>
-                        <p>{category.description}</p>
-                    </div>
-                </div>
-                <hr className="home-hr" />
-                <div className="instructors">
-                    <h4 className="font-weight-bold">
-                        <PiChalkboardTeacherFill /> Our popular instructors
-                    </h4>
-                    <div className="row m-auto justify-content-space-between">
-                        {category.instructors &&
-                            category.instructors.length > 0 &&
-                            category.instructors.map((instructor, index) => (
-                                <InstructorProfileBoxTemplate
-                                    instructor={instructor}
-                                    containerClass={"col-3 me-2"}
-                                />
-                            ))}
-                    </div>
-                </div>
-                <hr className="home-hr" />
-                <div className="courses">
-                    <h4 className="font-weight-bold">
-                        <PiShootingStarThin style={{ strokeWidth: "15px" }} />{" "}
-                        Courses to get you started
-                    </h4>
+        <StudentTemplate>
+            <div className="container">
+                <div className="category-page">
                     <div className="row">
-                        <CoursesTemplate
-                            courses={category.top_courses}
-                            childClass={"col-3"}
+                        <div className="col-12">
+                            <h1>{category.title}</h1>
+                            <p>{category.description}</p>
+                        </div>
+                    </div>
+                    <hr className="home-hr" />
+                    <div className="instructors">
+                        <h4 className="font-weight-bold">
+                            <PiChalkboardTeacherFill /> Our popular instructors
+                        </h4>
+                        <div className="row m-auto justify-content-space-between">
+                            {category.instructors &&
+                                category.instructors.length > 0 &&
+                                category.instructors.map(
+                                    (instructor, index) => (
+                                        <InstructorProfileBoxTemplate
+                                            instructor={instructor}
+                                            containerClass={"col-3 me-2"}
+                                        />
+                                    )
+                                )}
+                        </div>
+                    </div>
+                    <hr className="home-hr" />
+                    <div className="courses">
+                        <h4 className="font-weight-bold">
+                            <PiShootingStarThin
+                                style={{ strokeWidth: "15px" }}
+                            />{" "}
+                            Courses to get you started
+                        </h4>
+                        <div className="row">
+                            <CoursesTemplate
+                                courses={category.top_courses}
+                                childClass={"col-3"}
+                            />
+                        </div>
+                    </div>
+                    <hr className="home-hr" />
+                    <div className="filter-courses">
+                        <h4 className="font-weight-bold">
+                            <BiSolidVideos /> All {category.title} courses
+                        </h4>
+                        <CoursesFiltrationTemplate
+                            type={1}
+                            filters={""}
+                            data={category.courses}
+                            cols={["col-4", "col-8"]}
                         />
                     </div>
                 </div>
-                <hr className="home-hr" />
-                <div className="filter-courses">
-                    <h4 className="font-weight-bold">
-                        <BiSolidVideos /> All {category.title} courses
-                    </h4>
-                    <CoursesFiltrationTemplate
-                        type={1}
-                        filters={""}
-                        data={category.courses}
-                        cols={["col-4", "col-8"]}
-                    />
-                </div>
             </div>
-        </div>
+        </StudentTemplate>
     );
 }
