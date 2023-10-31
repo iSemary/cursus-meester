@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,16 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('attempts', [AuthController::class, "attempts"]);
     });
 });
+
+
+// Authenticated routes
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::apiResource('industries', IndustryController::class);
+});
+
+// Public routes
+Route::apiResource('industries', IndustryController::class)->only(['index', 'show']);
+
 
 /* Landing Page APIs */
 // Newsletter
