@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Industry\CreateIndustryRequest;
 use App\Http\Requests\Industry\UpdateIndustryRequest;
-use App\Models\Industry;
+use App\Models\Utilities\Industry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

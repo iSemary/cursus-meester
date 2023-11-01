@@ -1,6 +1,6 @@
 {
     "Categories": true,
     "Organizations": true,
-    "Student": true,
-    "Instructor": true
+    "Students": true,
+    "Instructors": true
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Utilities;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Utilities\Currency\CreateCurrencyRequest;
 use App\Http\Requests\Utilities\Currency\UpdateCurrencyRequest;
-use App\Models\Currency;
+use App\Models\Utilities\Currency;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

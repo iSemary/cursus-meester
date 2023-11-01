@@ -12,10 +12,11 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Jobs\AttemptMailJob;
 use App\Jobs\ForgetPasswordMailJob;
 use App\Jobs\RegistrationMailJob;
-use App\Models\EmailToken;
-use App\Models\LoginAttempt;
+use App\Jobs\SendOTP;
+use App\Models\Utilities\EmailToken;
+use App\Models\Utilities\LoginAttempt;
 use App\Models\User;
-use App\Models\UserOTP;
+use App\Models\Utilities\UserOTP;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -157,13 +158,20 @@ class AuthController extends ApiController {
      * successfully".
      */
     public function sendOTP(): JsonResponse {
-        $otp = random_int(1000, 9999);
-        UserOTP::create([
-            'user_id' => auth()->guard('api')->id(),
-            'otp' => $otp
-        ]);
-        // TODO Fire send SMS queue with $otp  
-        return $this->return(200, "OTP sent successfully");
+        $user = auth()->guard('api')->user();
+        if ($user->phone) {
+            // generate random otp
+            $otp = random_int(1000, 9999);
+            // Create user otp record
+            UserOTP::create([
+                'user_id' => $user->id,
+                'otp' => $otp
+            ]);
+            // Fire send SMS queue with otp
+            SendOTP::dispatch($user->phone, $otp);
+            return $this->return(200, "OTP sent successfully");
+        }
+        return $this->return(400, "Phone number not exists");
     }
 
     /**

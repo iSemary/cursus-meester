@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Utilities;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Utilities\Country\CreateCountryRequest;
 use App\Http\Requests\Utilities\Country\UpdateCountryRequest;
-use App\Models\Country;
+use App\Models\Utilities\Country;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
