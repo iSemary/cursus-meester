@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Utilities\CountryController;
+use App\Http\Controllers\Api\Utilities\CurrencyController;
 use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use Illuminate\Support\Facades\Route;
@@ -35,10 +37,14 @@ Route::group(['prefix' => 'auth'], function () {
 // Authenticated routes
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('industries', IndustryController::class);
+    Route::apiResource('countries', CountryController::class);
+    Route::apiResource('currencies', CurrencyController::class);
 });
 
 // Public routes
 Route::apiResource('industries', IndustryController::class)->only(['index', 'show']);
+Route::apiResource('countries', CountryController::class)->only(['index', 'show']);
+Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
 
 
 /* Landing Page APIs */
