@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Categories\Http\Controllers\Api\CategoryController;
+use modules\Categories\Http\Controllers\Api\CategoryController;
 
 
 Route::group(['middleware' => 'auth:api'], function () {

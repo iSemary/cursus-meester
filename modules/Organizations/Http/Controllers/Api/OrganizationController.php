@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Organizations\Http\Controllers\Api;
+namespace modules\Organizations\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Organizations\Entities\Organization;
-use Modules\Organizations\Http\Requests\CreateOrganizationRequest;
-use Modules\Organizations\Http\Requests\UpdateOrganizationRequest;
+use modules\Organizations\Entities\Organization;
+use modules\Organizations\Http\Requests\CreateOrganizationRequest;
+use modules\Organizations\Http\Requests\UpdateOrganizationRequest;
 
 class OrganizationController extends ApiController {
     /**

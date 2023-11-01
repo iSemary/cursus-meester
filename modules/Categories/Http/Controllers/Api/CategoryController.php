@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Categories\Http\Controllers\Api;
+namespace modules\Categories\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Categories\Entities\Category;
-use Modules\Categories\Http\Requests\CreateCategoryRequest;
-use Modules\Categories\Http\Requests\UpdateCategoryRequest;
+use modules\Categories\Entities\Category;
+use modules\Categories\Http\Requests\CreateCategoryRequest;
+use modules\Categories\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends ApiController {
     /**

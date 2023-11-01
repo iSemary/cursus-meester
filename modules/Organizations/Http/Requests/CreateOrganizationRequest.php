@@ -1,11 +1,10 @@
 <?php
 
-namespace Modules\Organizations\Http\Requests;
+namespace modules\Organizations\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrganizationRequest extends FormRequest {
-
+class CreateOrganizationRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
@@ -13,7 +12,7 @@ class UpdateOrganizationRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'title' => 'required|max:255|unique:organizations,title,' . $this->organization->id . ',id',
+            'title' => 'required|max:255|unique:organizations,title',
             'parent_id' => 'sometimes|numeric',
             'order_number' => 'sometimes|numeric',
             'status' => 'required|numeric',

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'namespace' => 'Modules',
+    'namespace' => 'modules',
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     'paths' => [
         /*
         |--------------------------------------------------------------------------
-        | Modules path
+        | modules path
         |--------------------------------------------------------------------------
         |
         | This path used for save the generated module. This path also will be added
@@ -64,10 +64,10 @@ return [
         |
         */
 
-        'modules' => base_path('Modules'),
+        'modules' => base_path('modules'),
         /*
         |--------------------------------------------------------------------------
-        | Modules assets path
+        | modules assets path
         |--------------------------------------------------------------------------
         |
         | Here you may update the modules assets path.
