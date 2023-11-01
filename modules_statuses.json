@@ -1,4 +1,6 @@
 {
     "Categories": true,
-    "Organizations": true
+    "Organizations": true,
+    "Student": true,
+    "Instructor": true
 }
