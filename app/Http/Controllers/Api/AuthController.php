@@ -13,10 +13,10 @@ use App\Jobs\AttemptMailJob;
 use App\Jobs\ForgetPasswordMailJob;
 use App\Jobs\RegistrationMailJob;
 use App\Jobs\SendOTP;
-use App\Models\Utilities\EmailToken;
-use App\Models\Utilities\LoginAttempt;
+use App\Models\Auth\EmailToken;
+use App\Models\Auth\LoginAttempt;
 use App\Models\User;
-use App\Models\Utilities\UserOTP;
+use App\Models\Auth\UserOTP;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -140,10 +140,15 @@ class AuthController extends ApiController {
     public function verifyEmail(string $token): JsonResponse {
         if (isset($token)) {
             try {
-                User::verifyToken($token)->update([
-                    'email_verified_at' => Carbon::now()
-                ]);
-                return $this->return(200, "Email Verified Successfully");
+                $verifyToken = User::verifyToken($token);
+                if ($verifyToken) {
+                    $verifyToken->update([
+                        'email_verified_at' => Carbon::now()
+                    ]);
+                    return $this->return(200, "Email Verified Successfully");
+                } else {
+                    return $this->return(400, "Token is expired");
+                }
             } catch (Exception $e) {
                 return $this->return(400, "Invalid Token");
             }
