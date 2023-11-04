@@ -19,6 +19,7 @@
         "laravel/socialite": "^5.9",
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
+        "rap2hpoutre/laravel-log-viewer": "^2.3",
         "spatie/laravel-activitylog": "^4.7"
     },
     "require-dev": {

@@ -39,7 +39,6 @@ class AuthController extends ApiController {
         /* Requested data passed the validation */
         // Create new user record
         $user = User::create($request->validated());
-
         // Create email token
         $token = EmailToken::createToken($user->id);
         // Fire Email Confirmation Queue

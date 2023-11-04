@@ -90,4 +90,13 @@ class User extends Authenticatable {
         UserOTP::where("user_id", $userId)->delete();
         User::where('id', $userId)->update(['phone_verified_at' => now()]);
     }
+
+
+    public static function findBySocialOrEmail($socialUser, $socialId) {
+        return self::join("socialite_users", "socialite_users.user_id", "users.id")
+            ->where("socialite_users.social_id", $socialUser->id)
+            ->where("socialite_users.social_type_id", $socialId)
+            ->orWhere("users.email", $socialUser->email)
+            ->first();
+    }
 }
