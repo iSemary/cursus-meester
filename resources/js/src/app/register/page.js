@@ -21,6 +21,7 @@ const Register = () => {
         country_dial_code: "",
     };
     const [formValues, setFormValues] = useState(initialValues);
+    const [countries, setCountries] = useState([]);
 
     const [iti, setIti] = useState(null);
     const inputPhoneRef = useRef(null);
@@ -39,7 +40,6 @@ const Register = () => {
                 ...formValues,
                 phone: numbers.extractNumbers(value),
                 country_dial_code: selectedCountryData.dialCode,
-                country_id: selectedCountryData.dialCode,
             });
         }
     };
@@ -86,16 +86,23 @@ const Register = () => {
                         setFormValues({
                             ...formValues,
                             country_dial_code: data.country_calling_code,
-                            country_id: selectedCountryData.dialCode,
                         });
                     })
                     .catch(function () {
-                        callback("us");
+                        callback("nl");
                     });
             },
         });
 
         setIti(itiInstance);
+
+        axios
+            .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")
+            .then((response) => {
+                if (response.data.status === 200) {
+                    setCountries(response.data.data.countries);
+                }
+            });
     }, []);
 
     return (
@@ -196,9 +203,14 @@ const Register = () => {
                                     <option value="">
                                         Select your country
                                     </option>
-                                    <option value="31">Netherlands</option>
-                                    <option value="20">Egypt</option>
-                                    <option value="1">United States</option>
+                                    {countries &&
+                                        countries.map((country, index) => {
+                                            return (
+                                                <option value={country.id}>
+                                                    {country.name}
+                                                </option>
+                                            );
+                                        })}
                                 </select>
                             </div>
                         </div>

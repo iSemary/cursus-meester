@@ -22,7 +22,12 @@ class CountryController extends ApiController {
      * fetched successfully', and an array of countries.
      */
     public function index(Request $request): JsonResponse {
-        $countries = Country::orderBy('name', "ASC")->paginate(20);
+        $countries = Country::select(['id', 'iso', 'name', 'phone_code'])->where('status', 1)->orderBy('name', 'ASC')->when($request->all, function ($query) {
+            return $query->get();
+        }, function ($query) {
+            return $query->paginate(20);
+        });
+
         return $this->return(200, 'Country fetched successfully', ['countries' => $countries]);
     }
 

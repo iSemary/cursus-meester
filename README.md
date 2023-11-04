@@ -61,6 +61,10 @@ E-learning platform that brings together passionate instructors and curious lear
 
 ### Deployment
 
+#### ~ Backup Command [Backup Database and Files over cloud]
+
+    php artisan app:backup
+
 ## Contact
 
 For any inquiries or support, please email me at [abdelrahmansamirmostafa@gmail.com](mailto:abdelrahmansamirmostafa@gmail.com) or visit my website at [abdelrahman.online](https://www.abdelrahman.online/).

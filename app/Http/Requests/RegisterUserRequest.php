@@ -23,7 +23,7 @@ class RegisterUserRequest extends FormRequest {
             'email' => 'required|max:255|unique:users,email',
             'password' => 'required|confirmed|max:255|min:8',
             'phone' => 'required|numeric|unique:users,phone',
-            'country_id' => 'required',
+            'country_id' => 'required|numeric',
             'country_dial_code' => 'required|max:15',
         ];
     }

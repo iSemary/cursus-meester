@@ -455,3 +455,29 @@ $headerHeight: 80px;
 .icon-spin-2 {
     animation: spin 2s linear infinite;
 }
+
+.split-button {
+    .split-main-button {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .dropdown-toggle-split {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+.avatar-image.settings {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+}
+
+.upload-avatar {
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+}
+
+.w-fit-content {
+    width: fit-content;
+}
