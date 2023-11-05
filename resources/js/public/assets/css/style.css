@@ -351,8 +351,10 @@
 
 .upload-avatar {
   position: absolute;
-  right: 0;
+  right: 1px;
   bottom: 1px; }
+  .upload-avatar button {
+    border-radius: 10px; }
 
 .w-fit-content {
   width: fit-content; }

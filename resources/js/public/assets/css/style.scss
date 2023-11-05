@@ -474,8 +474,11 @@ $headerHeight: 80px;
 
 .upload-avatar {
     position: absolute;
-    right: 0;
+    right: 1px;
     bottom: 1px;
+    button {
+        border-radius: 10px;
+    }
 }
 
 .w-fit-content {

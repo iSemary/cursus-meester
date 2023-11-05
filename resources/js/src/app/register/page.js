@@ -99,9 +99,7 @@ const Register = () => {
         axios
             .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")
             .then((response) => {
-                if (response.data.status === 200) {
-                    setCountries(response.data.data.countries);
-                }
+                setCountries(response.data.data.countries);
             });
     }, []);
 
@@ -130,10 +128,10 @@ const Register = () => {
         window.addEventListener("message", (event) => {
             // Ensure the message is from a trusted source (your backend)
             // if (event.origin === process.env.NEXT_PUBLIC_URL) {
-                // Access the user data from the message
-                const userData = event.data.user;
-                // Do something with the user data (e.g., set it in your React state)
-                console.log(userData);
+            // Access the user data from the message
+            const userData = event.data.user;
+            // Do something with the user data (e.g., set it in your React state)
+            console.log(userData);
             // }
         });
     };

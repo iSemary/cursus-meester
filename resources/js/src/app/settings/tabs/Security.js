@@ -32,11 +32,7 @@ export default function Security() {
                 return axiosConfig
                     .post("/auth/logout", { type: 2 })
                     .then((response) => {
-                        if (response.data.status === 200) {
-                            return true;
-                        } else {
-                            throw new Error(response.statusText);
-                        }
+                        return true;
                     })
                     .catch((error) => {
                         Swal.showValidationMessage(`Something went wrong`);
@@ -66,17 +62,12 @@ export default function Security() {
         axiosConfig
             .post("/auth/update-password", changePassword)
             .then((response) => {
-                // Check the response status
-                if (response.data.status === 200) {
-                    toastAlert(response.data.message, "success", 3000);
-                    // Clear form formValues
-                    setChangePassword(initialValues);
-                } else {
-                    toastAlert(response.data.message, "error", 5000);
-                }
+                toastAlert(response.data.message, "success", 3000);
+                // Clear form formValues
+                setChangePassword(initialValues);
             })
-            .catch((error) => {
-                toastAlert(error, "error");
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error", 5000);
             });
     };
 

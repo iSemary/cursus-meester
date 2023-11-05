@@ -7,8 +7,13 @@ import { BiUpload } from "react-icons/bi";
 import Card from "react-bootstrap/Card";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import CountrySelector from "../../components/forms/CountrySelector";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import toastAlert from "../../components/utilities/Alert";
+import { Token } from "../../components/utilities/Authentication/Token";
 
 export default function Profile() {
+    const router = useRouter();
     const [iti, setIti] = useState(null);
     const inputPhoneRef = useRef(null);
     const [userDetails, setUserDetails] = useState({});
@@ -29,6 +34,35 @@ export default function Profile() {
             setIti(itiInstance);
         });
     }, []);
+
+    const handleAccountDeactivation = () => {
+        Swal.fire({
+            title: "Are you sure you want to deactivate your account?",
+            showCancelButton: true,
+            confirmButtonText: "Deactivate",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return axiosConfig
+                    .post("/auth/deactivate")
+                    .then((response) => {
+                        return true;
+                    })
+                    .catch((error) => {
+                        Swal.showValidationMessage(`Something went wrong`);
+                    });
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastAlert(
+                    "Your account has been deactivated, Will mess you!",
+                    "success"
+                );
+                Token.explode();
+                router.push("/");
+            }
+        });
+    };
 
     return (
         <Card>
@@ -80,7 +114,7 @@ export default function Profile() {
                                             value={userDetails?.email}
                                         />
                                     </Col>
-                                    <Col md={3}>
+                                    <Col md={3} className="text-right">
                                         <button
                                             className={`btn btn-sm btn-${
                                                 userDetails?.email_verified_at
@@ -115,7 +149,7 @@ export default function Profile() {
                                             className="form-control w-100"
                                         />
                                     </Col>
-                                    <Col md={3}>
+                                    <Col md={3} className="text-right">
                                         <button
                                             className={`btn btn-sm btn-${
                                                 userDetails?.phone_verified_at
@@ -255,14 +289,16 @@ export default function Profile() {
                 <hr />
                 <Row>
                     <Col md={12}>
-                        <form>
-                            <h6 className="font-weight-bold">
-                                Account Deactivation
-                            </h6>
-                            <button type="submit" className="btn btn-danger">
-                                Deactivate your account
-                            </button>
-                        </form>
+                        <h6 className="font-weight-bold">
+                            Account Deactivation
+                        </h6>
+                        <button
+                            type="button"
+                            onClick={handleAccountDeactivation}
+                            className="btn btn-danger"
+                        >
+                            Deactivate your account
+                        </button>
                     </Col>
                 </Row>
             </Card.Body>

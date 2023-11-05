@@ -37,6 +37,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('update-password', [UserController::class, "updatePassword"]);
         // toggle 2 factor authenticate [From settings]
         Route::post('toggle-factor-authenticate', [UserController::class, "toggleFactorAuthenticate"]);
+        // deactivate account [From settings]
+        Route::post('deactivate', [UserController::class, "deactivate"]);
     });
 });
 

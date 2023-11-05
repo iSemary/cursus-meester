@@ -34,21 +34,16 @@ const Login = () => {
                 {}
             )
             .then((response) => {
-                // Check the response status
-                if (response.data.status === 200) {
-                    toastAlert(response.data.message, "success", 3000);
-                    // Clear form formValues
-                    setFormValues(initialValues);
-                    // Store Access token
-                    Token.store(response.data.data.user.access_token);
-                    // Navigate to home page
-                    router.push("/");
-                } else {
-                    toastAlert(response.data.message, "error", 5000);
-                }
+                toastAlert(response.data.message, "success", 3000);
+                // Clear form formValues
+                setFormValues(initialValues);
+                // Store Access token
+                Token.store(response.data.data.user.access_token);
+                // Navigate to home page
+                router.push("/");
             })
-            .catch((error) => {
-                toastAlert(error, "error");
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error", 5000);
             });
     };
 

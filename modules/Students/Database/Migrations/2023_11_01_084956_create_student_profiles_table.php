@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->integer('user_id');
             $table->string('position', 5000)->nullable();
             $table->string('bio', 5000)->nullable();
-            $table->string('image', 255)->nullable();
+            $table->string('avatar', 255)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

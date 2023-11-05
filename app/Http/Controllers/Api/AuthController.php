@@ -77,6 +77,21 @@ class AuthController extends ApiController {
                 ]);
                 // send warning email
                 AttemptMailJob::dispatchAfterResponse($user, $loginAttempt);
+            } else {
+                // check if user is deactivated 
+                $checkTrashedUser = User::where("email", $request->email)->withTrashed()->first();
+                if ($checkTrashedUser) {
+                    User::where("email", $request->email)->withTrashed()->restore();
+                    if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+                        $user = auth()->user();
+                        // collect user details to return in the json response
+                        $response = $this->collectUserDetails($user);
+                        return $this->return(200, 'Account recovered successfully', ['user' => $response]);
+                    } else {
+                        // rollback 
+                        User::where("email", $request->email)->update(['deleted_at' => $checkTrashedUser->deleted_at]);
+                    }
+                }
             }
             return $this->return(400, 'Invalid credentials');
         }

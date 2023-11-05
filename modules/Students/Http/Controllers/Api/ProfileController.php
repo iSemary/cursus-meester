@@ -3,6 +3,7 @@
 namespace modules\Students\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use modules\Students\Entities\StudentProfile;
 use modules\Students\Http\Requests\UpdateProfileRequest;
@@ -28,14 +29,20 @@ class ProfileController extends ApiController {
      * successfully'.
      */
     public function updateProfile(UpdateProfileRequest $updateProfileRequest): JsonResponse {
-        $user = auth()->guard('api')->user();
-        // TODO update main user details
-
-        // TODO update student profile
+        $authUser = auth()->guard('api')->user();
+        // update main user details
+        User::find($authUser->id)->update([
+            'full_name' => $updateProfileRequest->full_name,
+            'email' => $updateProfileRequest->email,
+            'phone' => $updateProfileRequest->phone,
+            'country_id' => $updateProfileRequest->country_id,
+        ]);
+        // update student profile
         // Image Uploader
-        StudentProfile::updateOrCreate(['user_id' => $user->id], [
+        StudentProfile::updateOrCreate(['user_id' => $authUser->id], [
             'bio' => $updateProfileRequest->bio,
             'position' => $updateProfileRequest->position,
+            'avatar' => $updateProfileRequest->avatar
         ]);
         // TODO update social links
         return $this->return(200, 'Profile updated successfully');
