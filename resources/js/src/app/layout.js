@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import { AuthProvider } from "./components/hooks/AuthProvider";
 // Create a context for the user state
 export const metadata = {

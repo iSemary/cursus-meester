@@ -357,4 +357,20 @@
 .w-fit-content {
   width: fit-content; }
 
+.card {
+  border: 0;
+  box-shadow: 0px 1px 2px #939393; }
+  .card .card-header {
+    background-color: #f9fafb;
+    border-color: #6b728026; }
+  .card .card-title {
+    color: #646464; }
+
+.tabs-container .nav-pills .nav-link {
+  color: #556cd6; }
+  .tabs-container .nav-pills .nav-link.active {
+    background-color: #ededed; }
+  .tabs-container .nav-pills .nav-link:hover {
+    background-color: #ededed54; }
+
 /*# sourceMappingURL=style.css.map */

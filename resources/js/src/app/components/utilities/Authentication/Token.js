@@ -11,7 +11,9 @@ export const Token = {
     },
     get() {
         // Get token from local storage
-        return  (typeof localStorage !== "undefined") ? localStorage.getItem("AUTH_TOKEN") : null;
+        return typeof localStorage !== "undefined"
+            ? localStorage.getItem("AUTH_TOKEN")
+            : null;
     },
     check() {
         // Check storage token is expired or not [Returns True/False]
@@ -24,6 +26,23 @@ export const Token = {
                 })
                 .then((response) => {
                     resolve(response.data.success);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    },
+    getUser() {
+        // Check storage token is expired or not [Returns True/False]
+        return new Promise((resolve, reject) => {
+            axios
+                .get(process.env.NEXT_PUBLIC_API_URL + "/auth/user", {
+                    headers: {
+                        Authorization: "Bearer " + this.get(),
+                    },
+                })
+                .then((response) => {
+                    resolve(response.data);
                 })
                 .catch((error) => {
                     reject(error);

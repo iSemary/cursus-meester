@@ -29,12 +29,15 @@ class ProfileController extends ApiController {
      */
     public function updateProfile(UpdateProfileRequest $updateProfileRequest): JsonResponse {
         $user = auth()->guard('api')->user();
-        // TODO Image Uploader
+        // TODO update main user details
+
+        // TODO update student profile
+        // Image Uploader
         StudentProfile::updateOrCreate(['user_id' => $user->id], [
             'bio' => $updateProfileRequest->bio,
             'position' => $updateProfileRequest->position,
         ]);
-
+        // TODO update social links
         return $this->return(200, 'Profile updated successfully');
     }
 }

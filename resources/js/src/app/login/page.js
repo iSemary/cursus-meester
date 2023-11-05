@@ -28,7 +28,11 @@ const Login = () => {
         e.preventDefault();
         // Call login API
         axios
-            .post(process.env.NEXT_PUBLIC_API_URL + "/auth/login", formValues, {})
+            .post(
+                process.env.NEXT_PUBLIC_API_URL + "/auth/login",
+                formValues,
+                {}
+            )
             .then((response) => {
                 // Check the response status
                 if (response.data.status === 200) {
@@ -46,6 +50,39 @@ const Login = () => {
             .catch((error) => {
                 toastAlert(error, "error");
             });
+    };
+
+    const handleSocialLogin = (socialName) => {
+        let windowWidth = 500;
+        let windowHeight = 600;
+
+        // Calculate the center position for the new window
+        let windowLeft = window.screen.width / 2 - windowWidth / 2;
+        let windowTop = window.screen.height / 2 - windowHeight / 2;
+
+        let loginWindow = window.open(
+            process.env.NEXT_PUBLIC_URL + "/auth/" + socialName,
+            "Register Window",
+            "width=" +
+                windowWidth +
+                ",height=" +
+                windowHeight +
+                ",left=" +
+                windowLeft +
+                ",top=" +
+                windowTop
+        );
+
+        // Listen for the message from the popup window
+        window.addEventListener("message", (event) => {
+            // Ensure the message is from a trusted source (your backend)
+            // if (event.origin === process.env.NEXT_PUBLIC_URL) {
+            // Access the user data from the message
+            const userData = event.data.user;
+            // Do something with the user data (e.g., set it in your React state)
+            console.log(userData);
+            // }
+        });
     };
 
     return (
@@ -91,30 +128,39 @@ const Login = () => {
                         </form>
                     </div>
                     <div className="third-login mx-auto text-center">
-                        <a>
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialLogin("google")}
+                        >
                             <Image
                                 src="/assets/images/icons/google.png"
                                 width={40}
                                 height={40}
                                 alt="google login"
                             />
-                        </a>
-                        <a>
+                        </button>
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialLogin("facebook")}
+                        >
                             <Image
                                 src="/assets/images/icons/facebook.png"
                                 width={40}
                                 height={40}
                                 alt="facebook login"
                             />
-                        </a>
-                        <a>
+                        </button>
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialLogin("linkedin")}
+                        >
                             <Image
-                                src="/assets/images/icons/microsoft.png"
+                                src="/assets/images/icons/linkedin.png"
                                 width={40}
                                 height={40}
-                                alt="microsoft login"
+                                alt="linkedin login"
                             />
-                        </a>
+                        </button>
                     </div>
                     <div className="text-center">
                         <Link

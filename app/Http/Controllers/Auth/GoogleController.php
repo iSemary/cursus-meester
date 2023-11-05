@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends ApiController {
@@ -24,13 +25,13 @@ class GoogleController extends ApiController {
     }
 
     /**
-     * The function is a callback that handles the registration and login process for a user using Google
-     * authentication.
+     * The function handles the callback from Google OAuth and creates a new user if they don't exist, then
+     * returns the formatted user details.
      * 
-     * @return JsonResponse a JsonResponse.
+     * @return View callback View.
      */
-    public function callback(): JsonResponse {
-        $socialUser = Socialite::driver('google')->user();
+    public function callback(): View {
+        $socialUser = Socialite::driver('google')->stateless()->user();
         if ($socialUser->id) {
             // Check if this user exists
             $user = User::findBySocialOrEmail($socialUser, SocialTypes::GOOGLE->getId());
@@ -50,10 +51,12 @@ class GoogleController extends ApiController {
             // Prepare formatted user
             $formattedUser = (new AuthController)->collectUserDetails($user);
 
-            return $this->return(200, 'User registered successfully', ['user', $formattedUser]);
+            return view("callback.socialite", compact("formattedUser"));
+            // return $this->return(200, 'User registered successfully', ['user', $formattedUser]);
         }
 
         Log::Info($socialUser);
-        return $this->return(400, 'Something went wrong!', []);
+        return view("callback.socialite");
+        // return $this->return(400, 'Something went wrong!', []);
     }
 }

@@ -1,16 +1,9 @@
+import React from "react";
 import { Grid } from "gridjs-react";
-import React, { useMemo } from "react";
 import Card from "react-bootstrap/Card";
+import { Token } from "../../components/utilities/Authentication/Token";
 
 export default function LoginAttempt() {
-    const data = [
-        ["261 Erdman Ford", "East Daphne", "Kentucky"],
-        ["769 Dominic Grove", "Columbus", "Ohio"],
-        ["566 Brakus Inlet", "South Linda", "West Virginia"],
-        ["722 Emie Stream", "Lincoln", "Nebraska"],
-        ["32188 Larkin Turnpike", "Charleston", "South Carolina"],
-    ];
-
     return (
         <Card>
             <Card.Header>
@@ -20,12 +13,26 @@ export default function LoginAttempt() {
             </Card.Header>
             <Card.Body>
                 <Grid
-                    data={data}
-                    columns={["Attempt At", "IP Address", "Device"]}
-                    search={true}
-                    pagination={{
-                        limit: 20,
+                    server={{
+                        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/attempts`,
+                        headers: {
+                            Authorization: "Bearer " + Token.get(),
+                        },
+                        then: (data) =>
+                            data.data.data.data.map((attempt) => [
+                                attempt.created_at,
+                                attempt.ip,
+                                attempt.agent,
+                            ]),
+                        total: (data) => data.data.data.total,
                     }}
+                    pagination={{
+                        limit: 5,
+                        server: {
+                            url: (prev, page, limit) => `${prev}?page=${page}`,
+                        },
+                    }}
+                    columns={["Attempt At", "IP Address", "Device"]}
                 />
             </Card.Body>
         </Card>

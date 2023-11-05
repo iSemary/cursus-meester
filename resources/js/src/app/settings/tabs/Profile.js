@@ -1,21 +1,33 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Col, FormGroup, Row } from "react-bootstrap";
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
 import { BiUpload } from "react-icons/bi";
 import Card from "react-bootstrap/Card";
+import axiosConfig from "../../components/axiosConfig/axiosConfig";
+import CountrySelector from "../../components/forms/CountrySelector";
 
 export default function Profile() {
     const [iti, setIti] = useState(null);
     const inputPhoneRef = useRef(null);
+    const [userDetails, setUserDetails] = useState({});
+    const [profile, setProfile] = useState({});
 
     useEffect(() => {
         const inputPhoneElement = inputPhoneRef.current;
         const itiInstance = intlTelInput(inputPhoneElement, {
-            initialCountry: "auto",
             initialCountry: "NL",
         });
-        setIti(itiInstance);
+
+        // Get Profile Details
+        axiosConfig.get("/user/profile").then((response) => {
+            setUserDetails(response.data.data.data.user);
+            setProfile(response.data.data.data.student_profile);
+
+            itiInstance.setNumber("+" + response.data.data.data.user.phone);
+            setIti(itiInstance);
+        });
     }, []);
 
     return (
@@ -50,7 +62,7 @@ export default function Profile() {
                                     className="form-control"
                                     name="full_name"
                                     required
-                                    value=""
+                                    value={userDetails?.full_name}
                                 />
                             </FormGroup>
                         </Col>
@@ -65,15 +77,23 @@ export default function Profile() {
                                             className="form-control"
                                             name="email"
                                             required
-                                            value=""
+                                            value={userDetails?.email}
                                         />
                                     </Col>
                                     <Col md={3}>
                                         <button
-                                            className="btn btn-sm btn-success"
-                                            disabled
+                                            className={`btn btn-sm btn-${
+                                                userDetails?.email_verified_at
+                                                    ? "success"
+                                                    : "primary"
+                                            }`}
+                                            disabled={
+                                                userDetails?.email_verified_at
+                                            }
                                         >
-                                            Verified
+                                            {userDetails?.email_verified_at
+                                                ? "Verified"
+                                                : "Verify"}
                                         </button>
                                     </Col>
                                 </Row>
@@ -91,12 +111,24 @@ export default function Profile() {
                                             ref={inputPhoneRef}
                                             placeholder=""
                                             name="phone"
+                                            value={userDetails?.phone}
                                             className="form-control w-100"
                                         />
                                     </Col>
                                     <Col md={3}>
-                                        <button className="btn btn-sm btn-primary">
-                                            Verify
+                                        <button
+                                            className={`btn btn-sm btn-${
+                                                userDetails?.phone_verified_at
+                                                    ? "success"
+                                                    : "primary"
+                                            }`}
+                                            disabled={
+                                                userDetails?.phone_verified_at
+                                            }
+                                        >
+                                            {userDetails?.phone_verified_at
+                                                ? "Verified"
+                                                : "Verify"}
                                         </button>
                                     </Col>
                                 </Row>
@@ -104,12 +136,13 @@ export default function Profile() {
                         </Col>
                         <Col md={6}>
                             <FormGroup className="mt-2">
-                                <label htmlFor="">Country</label>
-                                <select className="form-control">
-                                    <option value="">
-                                        Select your country
-                                    </option>
-                                </select>
+                                <label htmlFor="country_id">Country</label>
+                                <CountrySelector
+                                    defaultValue={userDetails?.country_id}
+                                    name="country_id"
+                                    id="countryId"
+                                    required
+                                />
                             </FormGroup>
                         </Col>
                         <Col md={6}>
@@ -133,7 +166,7 @@ export default function Profile() {
                                     autoComplete="off"
                                     className="form-control"
                                     name="position"
-                                    value=""
+                                    value={profile?.position}
                                 />
                             </FormGroup>
                         </Col>
@@ -144,6 +177,7 @@ export default function Profile() {
                                     rows="5"
                                     cols="15"
                                     name="bio"
+                                    value={profile?.bio}
                                     className="form-control"
                                 ></textarea>
                             </FormGroup>
@@ -210,7 +244,12 @@ export default function Profile() {
                         </Col>
                     </Row>
                     <div className="text-right mt-3">
-                        <button className="btn btn-primary">Save</button>
+                        <button
+                            className="btn btn-primary"
+                            style={{ width: "150px" }}
+                        >
+                            Save
+                        </button>
                     </div>
                 </form>
                 <hr />

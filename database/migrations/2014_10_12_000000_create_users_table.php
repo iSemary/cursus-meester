@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->timestamp('last_password_at')->nullable();
+            $table->tinyInteger('factor_authenticate')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

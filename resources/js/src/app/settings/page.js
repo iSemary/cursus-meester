@@ -33,7 +33,7 @@ export default function Settings() {
                     defaultActiveKey={settingTab}
                     activeKey={settingTab}
                 >
-                    <Row>
+                    <Row className="tabs-container">
                         <Col sm={3}>
                             <Nav variant="pills" className="flex-column">
                                 <Nav.Item>

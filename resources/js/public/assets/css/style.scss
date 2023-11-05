@@ -481,3 +481,32 @@ $headerHeight: 80px;
 .w-fit-content {
     width: fit-content;
 }
+
+.third-register button {
+}
+
+.card {
+    border: 0;
+    box-shadow: 0px 1px 2px #939393;
+    .card-header {
+        background-color: #f9fafb;
+        border-color: #6b728026;
+    }
+    .card-title {
+        color: #646464;
+    }
+}
+
+.tabs-container {
+    .nav-pills {
+        .nav-link {
+            color: #556cd6;
+            &.active {
+                background-color: #ededed;
+            }
+            &:hover {
+                background-color: #ededed54;
+            }
+        }
+    }
+}

@@ -105,6 +105,39 @@ const Register = () => {
             });
     }, []);
 
+    const handleSocialRegister = (socialName) => {
+        let windowWidth = 500;
+        let windowHeight = 600;
+
+        // Calculate the center position for the new window
+        let windowLeft = window.screen.width / 2 - windowWidth / 2;
+        let windowTop = window.screen.height / 2 - windowHeight / 2;
+
+        let registerWindow = window.open(
+            process.env.NEXT_PUBLIC_URL + "/auth/" + socialName,
+            "Register Window",
+            "width=" +
+                windowWidth +
+                ",height=" +
+                windowHeight +
+                ",left=" +
+                windowLeft +
+                ",top=" +
+                windowTop
+        );
+
+        // Listen for the message from the popup window
+        window.addEventListener("message", (event) => {
+            // Ensure the message is from a trusted source (your backend)
+            // if (event.origin === process.env.NEXT_PUBLIC_URL) {
+                // Access the user data from the message
+                const userData = event.data.user;
+                // Do something with the user data (e.g., set it in your React state)
+                console.log(userData);
+            // }
+        });
+    };
+
     return (
         <StudentTemplate>
             <div className="container">
@@ -114,8 +147,11 @@ const Register = () => {
                         Learning Revolution
                     </h3>
 
-                    <div className="third-register mx-auto text-center">
-                        <a className="text-decoration-none">
+                    <div className="d-grid third-register mx-auto text-center">
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialRegister("google")}
+                        >
                             <div className="mb-1 third-register-link">
                                 <Image
                                     src="/assets/images/icons/google.png"
@@ -125,8 +161,11 @@ const Register = () => {
                                 />
                                 <span>Login With Google</span>
                             </div>
-                        </a>
-                        <a className="text-decoration-none">
+                        </button>
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialRegister("facebook")}
+                        >
                             <div className="mb-1 third-register-link">
                                 <Image
                                     src="/assets/images/icons/facebook.png"
@@ -136,18 +175,21 @@ const Register = () => {
                                 />
                                 <span>Login With Facebook</span>
                             </div>
-                        </a>
-                        <a className="text-decoration-none">
+                        </button>
+                        <button
+                            className="btn"
+                            onClick={() => handleSocialRegister("linkedin")}
+                        >
                             <div className="mb-1 third-register-link">
                                 <Image
-                                    src="/assets/images/icons/microsoft.png"
+                                    src="/assets/images/icons/linkedin.png"
                                     width={25}
                                     height={25}
                                     alt="microsoft login"
                                 />
-                                <span>Login With Microsoft</span>
+                                <span>Login With Linkedin</span>
                             </div>
-                        </a>
+                        </button>
                     </div>
                     <div className="my-2 text-center">-OR-</div>
                     <form method="POST" onSubmit={handleSubmitForm}>

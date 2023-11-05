@@ -117,13 +117,15 @@ class AuthController extends ApiController {
                 DB::table("oauth_access_tokens")->where("id", $user->token()['id'])->delete();
             } else {
                 // Delete all user tokens
-                $user->tokens->each(function ($token, $key) {
-                    $token->delete();
+                $user->tokens->each(function ($token, $key) use ($user) {
+                    if ($token->id !== $user->token()['id']) {
+                        $token->delete();
+                    }
                 });
             }
             return $this->return(200, 'Logged out successfully');
         } catch (Exception $e) {
-            return $this->return(400, 'Couldn\'t logout using this token', [], ['e' => $e]);
+            return $this->return(400, 'Couldn\'t logout using this token', [], ['e' => $e->getMessage()]);
         }
     }
 
@@ -258,13 +260,25 @@ class AuthController extends ApiController {
     }
 
     /**
+     * The function retrieves the authenticated user details and returns a JSON response with the user
+     * information.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function getUser(): JsonResponse {
+        $auth = auth()->guard('api')->user();
+        $user = $this->collectUserDetails($auth);
+        return $this->return(200, "User fetched successfully", ['user' => $user]);
+    }
+
+    /**
      * The function "attempts" retrieves login attempts made by the authenticated user and returns them as
      * a JSON response.
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
     public function attempts(): JsonResponse {
-        $attempts = LoginAttempt::select(['ip', 'agent'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->get();
+        $attempts = LoginAttempt::select(['ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
         return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
     }
 }
