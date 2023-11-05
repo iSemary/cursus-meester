@@ -18,9 +18,8 @@ trait AvatarAttribute {
             }
             // store uploaded avatar
             $avatar = FileHandler::image($value, $this->filePath);
-            $avatar = basename($avatar);
         }
-        $this->attributes['avatar'] = $avatar;
+        $this->attributes['avatar'] = basename($avatar);
     }
 
     /**

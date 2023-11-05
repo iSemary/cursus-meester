@@ -18,6 +18,7 @@ export default function Profile() {
     const inputPhoneRef = useRef(null);
     const [userDetails, setUserDetails] = useState({});
     const [profile, setProfile] = useState({});
+    const [socialLinks, setSocialLinks] = useState({});
 
     useEffect(() => {
         const inputPhoneElement = inputPhoneRef.current;
@@ -29,6 +30,7 @@ export default function Profile() {
         axiosConfig.get("/user/profile").then((response) => {
             setUserDetails(response.data.data.data.user);
             setProfile(response.data.data.data.student_profile);
+            setSocialLinks(response.data.data.data.social_links);
 
             itiInstance.setNumber("+" + response.data.data.data.user.phone);
             setIti(itiInstance);
@@ -229,6 +231,7 @@ export default function Profile() {
                                     placeholder=""
                                     name="social_link[1]"
                                     className="form-control"
+                                    value={socialLinks[1-1]?.link_url}
                                 />
                             </FormGroup>
                         </Col>
@@ -240,6 +243,7 @@ export default function Profile() {
                                     placeholder=""
                                     name="social_link[2]"
                                     className="form-control"
+                                    value={socialLinks[2-1]?.link_url}
                                 />
                             </FormGroup>
                         </Col>
@@ -251,6 +255,7 @@ export default function Profile() {
                                     placeholder=""
                                     name="social_link[3]"
                                     className="form-control"
+                                    value={socialLinks[3-1]?.link_url}
                                 />
                             </FormGroup>
                         </Col>
@@ -262,6 +267,7 @@ export default function Profile() {
                                     placeholder=""
                                     name="social_link[4]"
                                     className="form-control"
+                                    value={socialLinks[4-1]?.link_url}
                                 />
                             </FormGroup>
                         </Col>
@@ -271,8 +277,21 @@ export default function Profile() {
                                 <input
                                     type="url"
                                     placeholder=""
-                                    name="social_link[4]"
+                                    name="social_link[5]"
                                     className="form-control"
+                                    value={socialLinks[5-1]?.link_url}
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup className="mt-2">
+                                <label htmlFor="">Website</label>
+                                <input
+                                    type="url"
+                                    placeholder=""
+                                    name="social_link[6]"
+                                    className="form-control"
+                                    value={socialLinks[6-1]?.link_url}
                                 />
                             </FormGroup>
                         </Col>
