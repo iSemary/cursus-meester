@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Auth\EmailToken;
+use App\Models\Auth\UserOTP;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -49,9 +52,13 @@ class User extends Authenticatable {
      * @return User an instance of the User model where the id matches the user_id of the EmailToken.
      */
     public static function verifyToken(string $token) {
-        $userToken = EmailToken::where("token", $token)->firstOrFail();
-        EmailToken::where('token', $userToken)->update(["status" => 1]);
-        return User::where("id", $userToken->user_id);
+        $userToken = EmailToken::where("token", $token)->where("status", 0)->first();
+        if ($userToken) {
+            $userToken->update(["status" => 1]);
+            return User::where("id", $userToken->user_id);
+        } else {
+            return false;
+        }
     }
 
 
@@ -82,5 +89,14 @@ class User extends Authenticatable {
     public static function verifyPhoneNumber(int $userId): void {
         UserOTP::where("user_id", $userId)->delete();
         User::where('id', $userId)->update(['phone_verified_at' => now()]);
+    }
+
+
+    public static function findBySocialOrEmail($socialUser, $socialId) {
+        return self::join("socialite_users", "socialite_users.user_id", "users.id")
+            ->where("socialite_users.social_id", $socialUser->id)
+            ->where("socialite_users.social_type_id", $socialId)
+            ->orWhere("users.email", $socialUser->email)
+            ->first();
     }
 }

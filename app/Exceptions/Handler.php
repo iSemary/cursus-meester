@@ -34,11 +34,21 @@ class Handler extends ExceptionHandler {
             : []);
     }
 
+
+    public function report(Throwable $exception) {
+        if ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException && $exception->getCode() == 9) {
+            return;
+        }
+        parent::report($exception);
+    }
+
     /**
      * Register the exception handling callbacks for the application.
      */
     public function register(): void {
-        $this->reportable(function (Throwable $e) {
+        $this->reportable(function (\League\OAuth2\Server\Exception\OAuthServerException $e) {
+            if ($e->getCode() == 9)
+                return false;
         });
     }
 }

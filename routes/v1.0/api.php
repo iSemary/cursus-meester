@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Utilities\CountryController;
+use App\Http\Controllers\Api\Utilities\CurrencyController;
+use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -20,6 +24,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
         // Check Authentication
         Route::get("check", [AuthController::class, "checkAuthentication"]);
+        // Get authenticated user details
+        Route::get("user", [AuthController::class, "getUser"]);
         // Logout / Logout All Devices
         Route::post("logout", [AuthController::class, "logout"]);
         // Verification Routes
@@ -27,8 +33,30 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post("verify/otp", [AuthController::class, "verifyOTP"]);
         // Get Login Attempt
         Route::get('attempts', [AuthController::class, "attempts"]);
+        // Change password [From settings]
+        Route::post('update-password', [UserController::class, "updatePassword"]);
+        // toggle 2 factor authenticate [From settings]
+        Route::post('toggle-factor-authenticate', [UserController::class, "toggleFactorAuthenticate"]);
     });
 });
+
+
+// Authenticated routes
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::apiResource('industries', IndustryController::class);
+    Route::apiResource('countries', CountryController::class);
+    Route::apiResource('currencies', CurrencyController::class);
+
+
+    // Profile Routes
+    Route::get("user/profile", [UserController::class, "getUserDetails"]);
+});
+
+// Public routes
+Route::apiResource('industries', IndustryController::class)->only(['index', 'show']);
+Route::apiResource('countries', CountryController::class)->only(['index', 'show']);
+Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
+
 
 /* Landing Page APIs */
 // Newsletter

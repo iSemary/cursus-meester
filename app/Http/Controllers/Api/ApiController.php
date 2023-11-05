@@ -33,6 +33,6 @@ class ApiController extends Controller {
         $response->data = $data;
         $response->errors = $errors;
         $response->timestamp = time();
-        return response()->json($response);
+        return response()->json($response, $status);
     }
 }

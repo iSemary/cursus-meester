@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AiOutlineClear, AiOutlineShoppingCart } from "react-icons/ai";
@@ -10,12 +10,14 @@ import axiosConfig from "../components/axiosConfig/axiosConfig";
 import { Token } from "../components/utilities/Authentication/Token";
 
 const Header = () => {
-    const { user } = useAuth();
+    const { user } = useAuth(); // Get auth data
+
     const handleLogout = (e) => {
-        axiosConfig.post("/auth/logout").then((response) => {
+        axiosConfig.post("/auth/logout").then(() => {
             Token.explode();
         });
     };
+
     return (
         <header className="main-header">
             <nav className="row align-items-center">
@@ -105,7 +107,7 @@ const Header = () => {
                                             href="/profile"
                                             className="btn btn-primary split-main-button"
                                         >
-                                            Name
+                                            {user.data.user.full_name}
                                         </Link>
                                         <Dropdown.Toggle
                                             split
@@ -113,19 +115,26 @@ const Header = () => {
                                         />
                                         <Dropdown.Menu className="split-sub-buttons">
                                             <Dropdown.Item eventKey="1">
-                                                <Link className="no-link" href="/settings">
+                                                <Link
+                                                    className="no-link"
+                                                    href="/settings"
+                                                >
                                                     Settings
                                                 </Link>
                                             </Dropdown.Item>
                                             <Dropdown.Item eventKey="2">
-                                                <Link className="no-link" href="/my-courses">
+                                                <Link
+                                                    className="no-link"
+                                                    href="/my-courses"
+                                                >
                                                     My Courses
                                                 </Link>
                                             </Dropdown.Item>
                                             <Dropdown.Divider />
                                             <Dropdown.Item
                                                 eventKey="4"
-                                                onClick={handleLogout}>
+                                                onClick={handleLogout}
+                                            >
                                                 Logout
                                             </Dropdown.Item>
                                         </Dropdown.Menu>

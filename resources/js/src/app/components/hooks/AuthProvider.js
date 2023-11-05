@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            setUser(await Token.check());
+            setUser(await Token.getUser());
         };
         fetchUser();
     }, []);

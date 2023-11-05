@@ -12,10 +12,11 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Jobs\AttemptMailJob;
 use App\Jobs\ForgetPasswordMailJob;
 use App\Jobs\RegistrationMailJob;
-use App\Models\EmailToken;
-use App\Models\LoginAttempt;
+use App\Jobs\SendOTP;
+use App\Models\Auth\EmailToken;
+use App\Models\Auth\LoginAttempt;
 use App\Models\User;
-use App\Models\UserOTP;
+use App\Models\Auth\UserOTP;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -38,7 +39,6 @@ class AuthController extends ApiController {
         /* Requested data passed the validation */
         // Create new user record
         $user = User::create($request->validated());
-
         // Create email token
         $token = EmailToken::createToken($user->id);
         // Fire Email Confirmation Queue
@@ -117,13 +117,15 @@ class AuthController extends ApiController {
                 DB::table("oauth_access_tokens")->where("id", $user->token()['id'])->delete();
             } else {
                 // Delete all user tokens
-                $user->tokens->each(function ($token, $key) {
-                    $token->delete();
+                $user->tokens->each(function ($token, $key) use ($user) {
+                    if ($token->id !== $user->token()['id']) {
+                        $token->delete();
+                    }
                 });
             }
             return $this->return(200, 'Logged out successfully');
         } catch (Exception $e) {
-            return $this->return(400, 'Couldn\'t logout using this token', [], ['e' => $e]);
+            return $this->return(400, 'Couldn\'t logout using this token', [], ['e' => $e->getMessage()]);
         }
     }
 
@@ -139,10 +141,15 @@ class AuthController extends ApiController {
     public function verifyEmail(string $token): JsonResponse {
         if (isset($token)) {
             try {
-                User::verifyToken($token)->update([
-                    'email_verified_at' => Carbon::now()
-                ]);
-                return $this->return(200, "Email Verified Successfully");
+                $verifyToken = User::verifyToken($token);
+                if ($verifyToken) {
+                    $verifyToken->update([
+                        'email_verified_at' => Carbon::now()
+                    ]);
+                    return $this->return(200, "Email Verified Successfully");
+                } else {
+                    return $this->return(400, "Token is expired");
+                }
             } catch (Exception $e) {
                 return $this->return(400, "Invalid Token");
             }
@@ -157,13 +164,20 @@ class AuthController extends ApiController {
      * successfully".
      */
     public function sendOTP(): JsonResponse {
-        $otp = random_int(1000, 9999);
-        UserOTP::create([
-            'user_id' => auth()->guard('api')->id(),
-            'otp' => $otp
-        ]);
-        // TODO Fire send SMS queue with $otp  
-        return $this->return(200, "OTP sent successfully");
+        $user = auth()->guard('api')->user();
+        if ($user->phone) {
+            // generate random otp
+            $otp = random_int(1000, 9999);
+            // Create user otp record
+            UserOTP::create([
+                'user_id' => $user->id,
+                'otp' => $otp
+            ]);
+            // Fire send SMS queue with otp
+            SendOTP::dispatch($user->phone, $otp);
+            return $this->return(200, "OTP sent successfully");
+        }
+        return $this->return(400, "Phone number not exists");
     }
 
     /**
@@ -246,13 +260,25 @@ class AuthController extends ApiController {
     }
 
     /**
+     * The function retrieves the authenticated user details and returns a JSON response with the user
+     * information.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function getUser(): JsonResponse {
+        $auth = auth()->guard('api')->user();
+        $user = $this->collectUserDetails($auth);
+        return $this->return(200, "User fetched successfully", ['user' => $user]);
+    }
+
+    /**
      * The function "attempts" retrieves login attempts made by the authenticated user and returns them as
      * a JSON response.
      * 
      * @return JsonResponse A JsonResponse object is being returned.
      */
     public function attempts(): JsonResponse {
-        $attempts = LoginAttempt::select(['ip', 'agent'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->get();
+        $attempts = LoginAttempt::select(['ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
         return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
     }
 }
