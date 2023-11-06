@@ -18,7 +18,7 @@ export default function Profile() {
     const inputPhoneRef = useRef(null);
     const [userDetails, setUserDetails] = useState({});
     const [profile, setProfile] = useState({});
-    const [socialLinks, setSocialLinks] = useState({});
+    const [socialLinks, setSocialLinks] = useState(null);
 
     useEffect(() => {
         const inputPhoneElement = inputPhoneRef.current;
@@ -37,6 +37,7 @@ export default function Profile() {
         });
     }, []);
 
+    /** Deactivate account */
     const handleAccountDeactivation = () => {
         Swal.fire({
             title: "Are you sure you want to deactivate your account?",
@@ -63,6 +64,46 @@ export default function Profile() {
                 Token.explode();
                 router.push("/");
             }
+        });
+    };
+
+    /** Get Social Link By ID */
+    const getSocialLink = (id) => {
+        const link = socialLinks.find((link) => link.link_type === id);
+        if (link) {
+            return link.link_url;
+        }
+    };
+
+    /** Change User Details State */
+    const handleChangeUserDetails = (e) => {
+        const { name, value } = e.target;
+        setUserDetails({
+            ...userDetails,
+            [name]: value,
+        });
+    };
+
+    /** Change Profile State */
+    const handleChangeProfile = (e) => {
+        const { name, value } = e.target;
+        setProfile({
+            ...profile,
+            [name]: value,
+        });
+    };
+
+    /** Change Social Links State */
+    const handleChangeSocialLinks = (e) => {
+        const { name, value } = e.target;
+        const match = name.match(/\[(\d+)\]/);
+        const linkType = match[1];
+        setSocialLinks((socialLinks) => {
+            return socialLinks.map((link) =>
+                link.link_type === linkType
+                    ? { ...link, link_url: value }
+                    : link
+            );
         });
     };
 
@@ -97,6 +138,7 @@ export default function Profile() {
                                     autoComplete="off"
                                     className="form-control"
                                     name="full_name"
+                                    onChange={handleChangeUserDetails}
                                     required
                                     value={userDetails?.full_name}
                                 />
@@ -112,6 +154,7 @@ export default function Profile() {
                                             autoComplete="off"
                                             className="form-control"
                                             name="email"
+                                            onChange={handleChangeUserDetails}
                                             required
                                             value={userDetails?.email}
                                         />
@@ -146,6 +189,7 @@ export default function Profile() {
                                             id="inputPhone"
                                             ref={inputPhoneRef}
                                             placeholder=""
+                                            onChange={handleChangeUserDetails}
                                             name="phone"
                                             value={userDetails?.phone}
                                             className="form-control w-100"
@@ -176,6 +220,7 @@ export default function Profile() {
                                 <CountrySelector
                                     defaultValue={userDetails?.country_id}
                                     name="country_id"
+                                    onChange={handleChangeUserDetails}
                                     id="countryId"
                                     required
                                 />
@@ -202,6 +247,7 @@ export default function Profile() {
                                     autoComplete="off"
                                     className="form-control"
                                     name="position"
+                                    onChange={handleChangeProfile}
                                     value={profile?.position}
                                 />
                             </FormGroup>
@@ -213,6 +259,7 @@ export default function Profile() {
                                     rows="5"
                                     cols="15"
                                     name="bio"
+                                    onChange={handleChangeProfile}
                                     value={profile?.bio}
                                     className="form-control"
                                 ></textarea>
@@ -230,8 +277,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[1]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[1-1]?.link_url}
+                                    value={socialLinks && getSocialLink(1)}
                                 />
                             </FormGroup>
                         </Col>
@@ -242,8 +290,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[2]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[2-1]?.link_url}
+                                    value={socialLinks && getSocialLink(2)}
                                 />
                             </FormGroup>
                         </Col>
@@ -254,8 +303,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[3]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[3-1]?.link_url}
+                                    value={socialLinks && getSocialLink(3)}
                                 />
                             </FormGroup>
                         </Col>
@@ -266,8 +316,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[4]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[4-1]?.link_url}
+                                    value={socialLinks && getSocialLink(4)}
                                 />
                             </FormGroup>
                         </Col>
@@ -278,8 +329,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[5]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[5-1]?.link_url}
+                                    value={socialLinks && getSocialLink(5)}
                                 />
                             </FormGroup>
                         </Col>
@@ -290,8 +342,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[6]"
+                                    onChange={handleChangeSocialLinks}
                                     className="form-control"
-                                    value={socialLinks[6-1]?.link_url}
+                                    value={socialLinks && getSocialLink(6)}
                                 />
                             </FormGroup>
                         </Col>
