@@ -4,6 +4,7 @@ namespace App\Services\Uploader;
 
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Str;
 
 class FileHandler {
 
@@ -23,7 +24,7 @@ class FileHandler {
      */
     public static function image($file, string $path, int $width = 512, int $height = 512): string {
         // `Unique filename
-        $filename = uniqid() . '_' . $file->getClientOriginalName();
+        $filename = Str::uuid();
         $image = Image::make($file);
 
         // Resize the image

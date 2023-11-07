@@ -32,6 +32,8 @@ Route::group(['prefix' => 'auth'], function () {
         // Verification Routes
         Route::post("send/otp", [AuthController::class, "sendOTP"]);
         Route::post("verify/otp", [AuthController::class, "verifyOTP"]);
+        // Send Email Verification
+        Route::post("send/verify/email", [AuthController::class, "sendVerifyEmail"]);
         // Get Login Attempt
         Route::get('attempts', [AuthController::class, "attempts"]);
         // Change password [From settings]

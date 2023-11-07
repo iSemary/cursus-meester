@@ -17,13 +17,18 @@ class EmailToken extends Model {
      * @return string the generated token.
      */
     public static function createToken(int $userId): string {
-        $token = self::generateToken();
-        self::create([
-            'user_id' => $userId,
-            'token' => $token,
-            'status' => 0,
-            'expired_at' => now()->addMonth()
-        ]);
+        $checkToken = EmailToken::where("user_id", $userId)->where("status", 0)->first();
+        if (!$checkToken) {
+            $token = self::generateToken();
+            self::create([
+                'user_id' => $userId,
+                'token' => $token,
+                'status' => 0,
+                'expired_at' => now()->addMonth()
+            ]);
+        } else {
+            $token = $checkToken->token;
+        }
 
         return $token;
     }

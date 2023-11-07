@@ -18,9 +18,14 @@ export default function Profile() {
     const router = useRouter();
     const [iti, setIti] = useState(null);
     const inputPhoneRef = useRef(null);
+    const [newAvatarImage, setNewAvatarImage] = useState(null);
+    const [newAvatar, setNewAvatar] = useState(null);
     const [userDetails, setUserDetails] = useState({});
     const [profile, setProfile] = useState({});
     const [socialLinks, setSocialLinks] = useState(null);
+
+    const verifyEmailBtnRef = useRef(null);
+    const verifyPhoneBtnRef = useRef(null);
 
     useEffect(() => {
         const inputPhoneElement = inputPhoneRef.current;
@@ -125,14 +130,27 @@ export default function Profile() {
         setSocialLinks(updatedLinks);
     };
 
+    /** Save All Profile Settings */
     const handleSaveSettings = (e) => {
         e.preventDefault();
+        // Preparing form data
+        const formData = new FormData();
+        formData.append("new_avatar", newAvatar);
         axiosConfig
-            .post("/student/profile", {
-                ...userDetails,
-                ...profile,
-                social_links: socialLinks,
-            })
+            .post(
+                "/student/profile",
+                {
+                    new_avatar: formData,
+                    ...userDetails,
+                    ...profile,
+                    social_links: socialLinks,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            )
             .then((response) => {
                 toastAlert(response.data.message, "success");
             })
@@ -141,6 +159,78 @@ export default function Profile() {
             });
     };
 
+    /** Handle Verify Email */
+    const handleVerifyEmail = (e) => {
+        verifyEmailBtnRef.current.disabled = true;
+        verifyEmailBtnRef.current.innerText = "Verifying";
+        axiosConfig
+            .post("/auth/send/verify/email")
+            .then((response) => {
+                verifyEmailBtnRef.current.innerText = "Verify";
+                toastAlert(response.data.message, "success");
+            })
+            .catch(({ response }) => {
+                verifyEmailBtnRef.current.disabled = false;
+                verifyEmailBtnRef.current.innerText = "Verify";
+                toastAlert(response.data.message, "error");
+            });
+    };
+
+    /** Handle Verify Phone */
+    const handleVerifyPhone = () => {
+        verifyPhoneBtnRef.current.disabled = true;
+        verifyPhoneBtnRef.current.innerText = "Verifying";
+        axiosConfig
+            .post("/auth/send/otp")
+            .then((response) => {
+                verifyPhoneBtnRef.current.innerText = "Verify";
+                toastAlert(response.data.message, "success");
+                // Write and verify OTP code
+                Swal.fire({
+                    title: "Enter the OTP you recently received",
+                    input: "number",
+                    inputAttributes: {
+                        autocapitalize: "off",
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "Submit",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (otp) => {
+                        return axiosConfig
+                            .post("/auth/verify/otp", { otp: otp })
+                            .then((response) => {
+                                return response.data.message;
+                            })
+                            .catch((error) => {
+                                Swal.showValidationMessage(
+                                    `Something went wrong`
+                                );
+                            });
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        verifyPhoneBtnRef.current.innerText = "Verified";
+                        toastAlert(
+                            "Your phone number has been verified!",
+                            "success"
+                        );
+                    }
+                });
+            })
+            .catch(({ response }) => {
+                verifyPhoneBtnRef.current.disabled = false;
+                verifyPhoneBtnRef.current.innerText = "Verify";
+                toastAlert(response.data.message, "error");
+            });
+    };
+
+    /** Handle uploading avatar image */
+    const handleAvatarUpload = (e) => {
+        const file = e.target.files[0];
+        setNewAvatar(file);
+        setNewAvatarImage(URL.createObjectURL(file));
+    };
     return (
         <Card>
             <Card.Header>
@@ -157,14 +247,28 @@ export default function Profile() {
                         <Col className="mb-2" md={12}>
                             <div className="position-relative w-fit-content">
                                 <img
-                                    src="https://github.com/mdo.png"
+                                    src={
+                                        newAvatarImage
+                                            ? newAvatarImage
+                                            : "https://github.com/mdo.png"
+                                    }
                                     className="avatar-image settings"
                                     alt="avatar"
                                 />
                                 <div className="upload-avatar">
-                                    <button className="btn btn-primary btn-sm">
+                                    <label
+                                        for="avatarUpload"
+                                        class="custom-file-upload btn btn-primary btn-sm"
+                                    >
                                         <BiUpload />
-                                    </button>
+                                    </label>
+                                    <input
+                                        id="avatarUpload"
+                                        onChange={handleAvatarUpload}
+                                        type="file"
+                                        name="new_avatar"
+                                        accept="image/png, image/gif, image/jpg, image/jpeg"
+                                    />
                                 </div>
                             </div>
                         </Col>
@@ -179,6 +283,20 @@ export default function Profile() {
                                     onChange={handleChangeUserDetails}
                                     required
                                     value={userDetails?.full_name}
+                                />
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup className="mt-2">
+                                <label htmlFor="">Username</label>
+                                <input
+                                    type="text"
+                                    autoComplete="off"
+                                    className="form-control"
+                                    name="username"
+                                    onChange={handleChangeUserDetails}
+                                    required
+                                    value={userDetails?.username}
                                 />
                             </FormGroup>
                         </Col>
@@ -207,6 +325,13 @@ export default function Profile() {
                                             disabled={
                                                 userDetails?.email_verified_at
                                             }
+                                            ref={verifyEmailBtnRef}
+                                            onClick={
+                                                userDetails?.email_verified_at
+                                                    ? ""
+                                                    : handleVerifyEmail
+                                            }
+                                            type="button"
                                         >
                                             {userDetails?.email_verified_at
                                                 ? "Verified"
@@ -240,6 +365,13 @@ export default function Profile() {
                                                     ? "success"
                                                     : "primary"
                                             }`}
+                                            ref={verifyPhoneBtnRef}
+                                            onClick={
+                                                userDetails?.phone_verified_at
+                                                    ? ""
+                                                    : handleVerifyPhone
+                                            }
+                                            type="button"
                                             disabled={
                                                 userDetails?.phone_verified_at
                                             }

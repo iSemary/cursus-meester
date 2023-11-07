@@ -181,13 +181,18 @@ class AuthController extends ApiController {
     public function sendOTP(): JsonResponse {
         $user = auth()->guard('api')->user();
         if ($user->phone) {
-            // generate random otp
-            $otp = random_int(1000, 9999);
-            // Create user otp record
-            UserOTP::create([
-                'user_id' => $user->id,
-                'otp' => $otp
-            ]);
+            $checkOTP = UserOTP::where("user_id", $user->id)->first();
+            if (!$checkOTP) {
+                // generate random otp
+                $otp = random_int(1000, 9999);
+                // Create user otp record
+                UserOTP::create([
+                    'user_id' => $user->id,
+                    'otp' => $otp
+                ]);
+            } else {
+                $otp = $checkOTP->otp;
+            }
             // Fire send SMS queue with otp
             SendOTP::dispatch($user->phone, $otp);
             return $this->return(200, "OTP sent successfully");
@@ -295,5 +300,20 @@ class AuthController extends ApiController {
     public function attempts(): JsonResponse {
         $attempts = LoginAttempt::select(['ip', 'agent', 'created_at'])->where('user_id', auth()->guard('api')->id())->orderBy('id', 'DESC')->paginate(5);
         return $this->return(200, 'Attempts fetched successfully', ['data' => $attempts]);
+    }
+
+    /**
+     * The function sends a verification email to the authenticated user and returns a JSON response
+     * indicating that the verification link has been sent.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function sendVerifyEmail(): JsonResponse {
+        $user = auth()->guard('api')->user();
+        // Create email token
+        $token = EmailToken::createToken($user->id);
+        // Fire Email Confirmation Queue
+        RegistrationMailJob::dispatchAfterResponse($user, $token);
+        return $this->return(200, 'Verification link has been sent');
     }
 }

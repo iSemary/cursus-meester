@@ -375,4 +375,7 @@
   .tabs-container .nav-pills .nav-link:hover {
     background-color: #ededed54; }
 
+#avatarUpload {
+  display: none; }
+
 /*# sourceMappingURL=style.css.map */

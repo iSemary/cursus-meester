@@ -32,13 +32,14 @@ class ProfileController extends ApiController {
     public function updateProfile(UpdateProfileRequest $updateProfileRequest): JsonResponse {
         $authUser = auth()->guard('api')->user();
         // update main user details
-        User::find($authUser->id)->update([
-            'full_name' => $updateProfileRequest->full_name,
-            'email' => $updateProfileRequest->email,
-            'phone' => $updateProfileRequest->phone,
-            'country_id' => $updateProfileRequest->country_id,
-            'language_id' => $updateProfileRequest->language_id,
-        ]);
+        // User::find($authUser->id)->update([
+        //     'full_name' => $updateProfileRequest->full_name,
+        //     'email' => $updateProfileRequest->email,
+        //     'username' => $updateProfileRequest->username,
+        //     'phone' => $updateProfileRequest->phone,
+        //     'country_id' => $updateProfileRequest->country_id,
+        //     'language_id' => $updateProfileRequest->language_id,
+        // ]);
         // update student profile
         $this->updateStudentProfile($authUser, $updateProfileRequest);
         // update social links
@@ -60,8 +61,9 @@ class ProfileController extends ApiController {
      */
     public function updateStudentProfile($authUser, $updateProfileRequest) {
         $avatar = null;
-        if ($updateProfileRequest->new_avatar) {
-            $avatar = "NEW";
+        if ($updateProfileRequest->file('new_avatar')) {
+            dd("DS");
+            $avatar = $updateProfileRequest->file('new_avatar');
         }
         StudentProfile::updateOrCreate(['user_id' => $authUser->id], [
             'bio' => $updateProfileRequest->bio,
