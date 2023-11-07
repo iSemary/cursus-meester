@@ -94,7 +94,7 @@ const Header = () => {
                             <>
                                 <li>
                                     <Link
-                                        href="my-courses"
+                                        href="/my-courses"
                                         className="nav-link"
                                     >
                                         My Courses

@@ -23,15 +23,15 @@ class UpdateProfileRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            // 'full_name' => 'required|max:164',
-            // 'email' => 'required|max:255|unique:users,email,' . $this->user->id,
-            // 'phone' => 'required|numeric|unique:users,phone,' . $this->user->id,
-            // 'username' => 'required|max:64|unique:users,username,' . $this->user->id,
-            // 'country_id' => 'required|numeric',
-            // 'language_id' => 'required|numeric',
-            // 'position' => 'sometimes|max:255',
-            // 'bio' => 'sometimes|max:5000',
-            // 'new_avatar' => 'sometimes|mimes:png,jpg,jpeg,gif'
+            'full_name' => 'required|max:164',
+            'email' => 'required|max:255|unique:users,email,' . $this->user->id,
+            'phone' => 'required|numeric|unique:users,phone,' . $this->user->id,
+            'username' => 'required|max:64|unique:users,username,' . $this->user->id,
+            'country_id' => 'required|numeric',
+            'language_id' => 'required|numeric',
+            'position' => 'sometimes|max:255',
+            'bio' => 'sometimes|max:5000',
+            'new_avatar' => 'sometimes|mimes:png,jpg,jpeg,gif'
         ];
     }
 }

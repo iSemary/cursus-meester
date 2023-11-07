@@ -6,7 +6,7 @@ import StudentTemplate from "../Templates/StudentTemplate";
 export default function MyCourses() {
     return (
         <StudentTemplate>
-            <div className="container my-courses-page"></div>
+            <div className="container my-courses-page"></div>   
         </StudentTemplate>
     );
 }
