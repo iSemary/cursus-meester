@@ -21,7 +21,7 @@ class User extends Authenticatable {
      *
      * @var array<int, string>
      */
-    protected $fillable = ['full_name', 'email', 'username', 'phone', 'country_id', 'password'];
+    protected $fillable = ['full_name', 'email', 'username', 'phone', 'country_id', 'language_id', 'password'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -115,11 +115,24 @@ class User extends Authenticatable {
             ->first();
     }
 
+    /**
+     * The function sets the email attribute and updates the email_verified_at attribute based on whether
+     * the email value has changed.
+     * 
+     * @param value The value parameter represents the new value that is being assigned to the email
+     * attribute.
+     */
     public function setEmailAttribute($value) {
         $this->attributes['email'] = $value;
         $this->attributes['email_verified_at'] = $this->email == $value ? $this->email_verified_at : null;
     }
 
+    /**
+     * The function sets the phone attribute and updates the phone_verified_at attribute if the phone value
+     * has changed.
+     * 
+     * @param value The value parameter represents the new value that is being set for the phone attribute.
+     */
     public function setPhoneAttribute($value) {
         $this->attributes['phone'] = $value;
         $this->attributes['phone_verified_at'] = $this->phone == $value ? $this->phone_verified_at : null;

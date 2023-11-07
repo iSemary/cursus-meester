@@ -37,6 +37,7 @@ class ProfileController extends ApiController {
             'email' => $updateProfileRequest->email,
             'phone' => $updateProfileRequest->phone,
             'country_id' => $updateProfileRequest->country_id,
+            'language_id' => $updateProfileRequest->language_id,
         ]);
         // update student profile
         $this->updateStudentProfile($authUser, $updateProfileRequest);
@@ -58,10 +59,14 @@ class ProfileController extends ApiController {
      * and 'avatar', which represent the student's biography, position, and avatar image respectively.
      */
     public function updateStudentProfile($authUser, $updateProfileRequest) {
+        $avatar = null;
+        if ($updateProfileRequest->new_avatar) {
+            $avatar = "NEW";
+        }
         StudentProfile::updateOrCreate(['user_id' => $authUser->id], [
             'bio' => $updateProfileRequest->bio,
             'position' => $updateProfileRequest->position,
-            'avatar' => $updateProfileRequest->avatar
+            'avatar' => $avatar
         ]);
     }
 

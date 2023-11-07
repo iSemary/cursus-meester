@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->bigInteger('phone')->unique()->nullable();
             $table->integer('country_id')->nullable();
             $table->string('username', 64)->nullable();
+            $table->unsignedInteger('language_id')->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');

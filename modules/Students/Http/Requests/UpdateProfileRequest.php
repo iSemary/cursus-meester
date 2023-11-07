@@ -28,10 +28,9 @@ class UpdateProfileRequest extends FormRequest {
             'phone' => 'required|numeric|unique:users,phone,' . $this->user->id,
             'country_id' => 'required|numeric',
             'language_id' => 'required|numeric',
-            'country_dial_code' => 'required|max:15',
             'position' => 'sometimes|max:255',
             'bio' => 'sometimes|max:5000',
-            'avatar' => 'sometimes|mimes:png,jpg,jpeg,gif'
+            'new_avatar' => 'sometimes|mimes:png,jpg,jpeg,gif'
         ];
     }
 }

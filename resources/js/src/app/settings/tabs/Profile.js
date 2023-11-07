@@ -11,6 +11,8 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import toastAlert from "../../components/utilities/Alert";
 import { Token } from "../../components/utilities/Authentication/Token";
+import LanguageSelector from "../../components/forms/LanguageSelector";
+import { numbers } from "../../components/utilities/global/numbers";
 
 export default function Profile() {
     const router = useRouter();
@@ -69,7 +71,9 @@ export default function Profile() {
 
     /** Get Social Link By ID */
     const getSocialLink = (id) => {
-        const link = socialLinks.find((link) => link.link_type === id);
+        const link = socialLinks.find(
+            (link) => link?.link_type && link.link_type === id
+        );
         if (link) {
             return link.link_url;
         }
@@ -82,6 +86,14 @@ export default function Profile() {
             ...userDetails,
             [name]: value,
         });
+        if (name === "phone") {
+            const selectedCountryData = iti.getSelectedCountryData();
+            setUserDetails({
+                ...userDetails,
+                phone: numbers.extractNumbers(value),
+                country_dial_code: selectedCountryData.dialCode,
+            });
+        }
     };
 
     /** Change Profile State */
@@ -94,17 +106,39 @@ export default function Profile() {
     };
 
     /** Change Social Links State */
-    const handleChangeSocialLinks = (e) => {
-        const { name, value } = e.target;
-        const match = name.match(/\[(\d+)\]/);
-        const linkType = match[1];
-        setSocialLinks((socialLinks) => {
-            return socialLinks.map((link) =>
-                link.link_type === linkType
-                    ? { ...link, link_url: value }
-                    : link
-            );
-        });
+    const handleChangeSocialLinks = (event, index) => {
+        const updatedLinks = [...socialLinks];
+        const existingLinkIndex = updatedLinks.findIndex(
+            (link) => link.link_type === index
+        );
+
+        if (existingLinkIndex !== -1) {
+            updatedLinks[existingLinkIndex].link_url = event.target.value;
+        } else {
+            updatedLinks.push({
+                link_type: index,
+                link_url: event.target.value,
+            });
+        }
+
+        console.log(updatedLinks);
+        setSocialLinks(updatedLinks);
+    };
+
+    const handleSaveSettings = (e) => {
+        e.preventDefault();
+        axiosConfig
+            .post("/student/profile", {
+                ...userDetails,
+                ...profile,
+                social_links: socialLinks,
+            })
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+            })
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error");
+            });
     };
 
     return (
@@ -113,7 +147,11 @@ export default function Profile() {
                 <Card.Title className="font-weight-bold">Profile</Card.Title>
             </Card.Header>
             <Card.Body>
-                <form method="POST" encType="multipart/form-data">
+                <form
+                    method="POST"
+                    encType="multipart/form-data"
+                    onSubmit={handleSaveSettings}
+                >
                     {/* Main Data */}
                     <Row>
                         <Col className="mb-2" md={12}>
@@ -229,9 +267,13 @@ export default function Profile() {
                         <Col md={6}>
                             <FormGroup className="mt-2">
                                 <label htmlFor="">Language</label>
-                                <select className="form-control">
-                                    <option value="">Select Language</option>
-                                </select>
+                                <LanguageSelector
+                                    defaultValue={userDetails?.language_id}
+                                    name="language_id"
+                                    onChange={handleChangeUserDetails}
+                                    id="languageId"
+                                    required
+                                />
                             </FormGroup>
                         </Col>
                     </Row>
@@ -277,7 +319,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[1]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 1)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(1)}
                                 />
@@ -290,7 +334,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[2]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 2)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(2)}
                                 />
@@ -303,7 +349,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[3]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 3)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(3)}
                                 />
@@ -316,7 +364,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[4]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 4)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(4)}
                                 />
@@ -329,7 +379,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[5]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 5)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(5)}
                                 />
@@ -342,7 +394,9 @@ export default function Profile() {
                                     type="url"
                                     placeholder=""
                                     name="social_link[6]"
-                                    onChange={handleChangeSocialLinks}
+                                    onChange={(e) =>
+                                        handleChangeSocialLinks(e, 6)
+                                    }
                                     className="form-control"
                                     value={socialLinks && getSocialLink(6)}
                                 />

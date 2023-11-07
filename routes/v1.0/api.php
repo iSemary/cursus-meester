@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Utilities\CountryController;
 use App\Http\Controllers\Api\Utilities\CurrencyController;
+use App\Http\Controllers\Api\Utilities\LanguageController;
 use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\UserController;
@@ -48,7 +49,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('industries', IndustryController::class);
     Route::apiResource('countries', CountryController::class);
     Route::apiResource('currencies', CurrencyController::class);
-
+    Route::apiResource('languages', LanguageController::class);
 
     // Profile Routes
     Route::get("user/profile", [UserController::class, "getUserDetails"]);
@@ -58,6 +59,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::apiResource('industries', IndustryController::class)->only(['index', 'show']);
 Route::apiResource('countries', CountryController::class)->only(['index', 'show']);
 Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
+Route::apiResource('languages', LanguageController::class)->only(['index', 'show']);
 
 
 /* Landing Page APIs */

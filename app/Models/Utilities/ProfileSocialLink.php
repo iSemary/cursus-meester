@@ -21,16 +21,16 @@ class ProfileSocialLink extends Model {
         //  Soft delete any existing social links
         self::where('user_id', $userId)->delete();
         // insert the new social links
-        foreach ($socialLinks as $linkType => $linkUrl) {
+        foreach ($socialLinks as $socialLink) {
             self::withTrashed()->updateOrCreate(
                 [
                     'user_id' => $userId,
-                    'link_type' => $linkType,
+                    'link_type' => $socialLink['link_type'],
                 ],
                 [
                     'user_id' => $userId,
-                    'link_type' => $linkType,
-                    'link_url' => $linkUrl,
+                    'link_type' => $socialLink['link_type'],
+                    'link_url' => $socialLink['link_url'],
                 ]
             )->restore();
         }

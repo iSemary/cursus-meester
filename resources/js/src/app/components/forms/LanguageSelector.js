@@ -1,21 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-export default function CountrySelector({
+export default function LanguageSelector({
     defaultValue = "",
     className = "",
-    name = "country_id",
-    id = "countryId",
-    onChange = null,
+    name = "language_id",
+    id="language",
     required = false,
 }) {
-    const [countries, setCountries] = useState([]);
+    const [languages, setLanguages] = useState([]);
     useEffect(() => {
         axios
-            .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")
+            .get(process.env.NEXT_PUBLIC_API_URL + "/languages?all=true")
             .then((response) => {
                 if (response.data.status === 200) {
-                    setCountries(response.data.data.countries);
+                    setLanguages(response.data.data.languages);
                 }
             });
     }, []);
@@ -24,20 +23,19 @@ export default function CountrySelector({
             className={"form-control " + className}
             name={name}
             id={id}
-            onChange={onChange}
             required={required ? "required" : ""}
         >
-            <option value="">Select your country</option>
-            {countries &&
-                countries.map((country, index) => {
+            <option value="">Select your language</option>
+            {languages &&
+                languages.map((language, index) => {
                     return (
                         <option
-                            value={country.id}
+                            value={language.id}
                             selected={
-                                defaultValue === country.id ? "selected" : ""
+                                defaultValue === language.id ? "selected" : ""
                             }
                         >
-                            {country.name}
+                            {language.name}
                         </option>
                     );
                 })}
