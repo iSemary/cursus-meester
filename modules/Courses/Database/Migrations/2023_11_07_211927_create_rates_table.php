@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->integer('course_id');
             $table->integer('user_id');
-            $table->tinyInteger('rate', 1);
+            $table->tinyInteger('rate');
             $table->string('comment', 1024)->nullable();
             $table->softDeletes();
             $table->timestamps();

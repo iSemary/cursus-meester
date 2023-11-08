@@ -35,6 +35,11 @@ class Course extends Model {
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
+    protected $hidden = [
+        "deleted_at",
+        "created_at",
+    ];
+
     public function category() {
         return $this->belongsTo(Category::class, 'category_id');
     }

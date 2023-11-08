@@ -14,11 +14,11 @@ return new class extends Migration {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->string('slug', 255);
+            $table->string('slug', 255)->unique();
             $table->string('description', 5000);
             $table->longText('content');
             $table->string('thumbnail', 255)->default('default.png');
-            $table->integer('skill_level');
+            $table->tinyInteger('skill_level');
             $table->integer('category_id');
             $table->integer('user_id');
             $table->integer('organization_id')->nullable();
