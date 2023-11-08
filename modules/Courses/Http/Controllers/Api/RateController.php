@@ -2,70 +2,35 @@
 
 namespace modules\Courses\Http\Controllers\Api;
 
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Api\ApiController;
+use Illuminate\Http\JsonResponse;
+use modules\Courses\Entities\Course;
+use modules\Courses\Entities\Rate;
+use modules\Courses\Http\Requests\Rate\CreateRateRequest;
 
-class RateController extends Controller {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index() {
-        return view('courses::index');
+class RateController extends ApiController {
+
+    public function getRates(string $courseSlug): JsonResponse {
+        $course = Course::where("slug", $courseSlug)->firstOrFail();
+        $rates = $course->rate;
+
+        return $this->return(200, "Rate fetched successfully", ['rates' => $rates]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create() {
-        return view('courses::create');
-    }
+    public function submitRate(CreateRateRequest $createRateRequest, string $courseSlug): JsonResponse {
+        $course = Course::where("slug", $courseSlug)->firstOrFail();
+        // Update or create the rate based on the user id and the course id
+        Rate::updateOrCreate(
+            [
+                'user_id' => auth()->guard('api')->id(),
+                'course_id' => $course->id
+            ],
+            [
+                'rate' => $createRateRequest->rate,
+                'comment' => $createRateRequest->comment,
+            ]
+        );
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request) {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id) {
-        return view('courses::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id) {
-        return view('courses::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id) {
-        //
+        return $this->return(200, "Rate submitted successfully");
     }
 }

@@ -137,4 +137,9 @@ class User extends Authenticatable {
         $this->attributes['phone'] = $value;
         $this->attributes['phone_verified_at'] = $this->phone == $value ? $this->phone_verified_at : null;
     }
+
+
+    public function rate() {
+        $this->hasMany(User::class, 'user_id');
+    }
 }
