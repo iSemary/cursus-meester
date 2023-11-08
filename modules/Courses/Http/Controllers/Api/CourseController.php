@@ -23,7 +23,7 @@ class CourseController extends ApiController {
      * fetched successfully', and an array of courses.
      */
     public function index(Request $request): JsonResponse {
-        $courses = Course::orderBy('title', "DESC")->paginate(20);
+        $courses = Course::orderBy('title', "DESC")->owned()->paginate(20);
         return $this->return(200, 'Courses fetched successfully', ['courses' => $courses]);
     }
 

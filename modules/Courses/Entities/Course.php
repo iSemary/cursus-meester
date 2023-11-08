@@ -72,4 +72,8 @@ class Course extends Model {
     public function scopePublished($query) {
         return $query->whereNotNull('published_at');
     }
+
+    public function  scopeOwned($query) {
+        return $query->where("user_id", auth()->guard('api')->id());
+    }
 }
