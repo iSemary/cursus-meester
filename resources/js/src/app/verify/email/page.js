@@ -48,29 +48,24 @@ export default function VerifyEmail({ searchParams }) {
                     emailToken
             )
             .then((response) => {
-                // Check the response status
-                if (response.data.status === 200) {
-                    setVerifyingStatus(
-                        <div className="w-50 m-auto">
-                            <BootstrapAlert
-                                text={response.data.message}
-                                type="success"
-                            />
-                        </div>
-                    );
-                } else {
-                    setVerifyingStatus(
-                        <div className="w-50 m-auto">
-                            <BootstrapAlert
-                                text={response.data.message}
-                                type="danger"
-                            />
-                        </div>
-                    );
-                }
+                setVerifyingStatus(
+                    <div className="w-50 m-auto">
+                        <BootstrapAlert
+                            text={response.data.message}
+                            type="success"
+                        />
+                    </div>
+                );
             })
-            .catch((error) => {
-                toastAlert(error, "error");
+            .catch(({ response }) => {
+                setVerifyingStatus(
+                    <div className="w-50 m-auto">
+                        <BootstrapAlert
+                            text={response.data.message}
+                            type="danger"
+                        />
+                    </div>
+                );
             });
     }
 

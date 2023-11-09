@@ -16,7 +16,8 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3); }
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1; }
 
 .container {
   margin-top: 80px; }
@@ -351,8 +352,10 @@
 
 .upload-avatar {
   position: absolute;
-  right: 0;
+  right: 1px;
   bottom: 1px; }
+  .upload-avatar button {
+    border-radius: 10px; }
 
 .w-fit-content {
   width: fit-content; }
@@ -372,5 +375,8 @@
     background-color: #ededed; }
   .tabs-container .nav-pills .nav-link:hover {
     background-color: #ededed54; }
+
+#avatarUpload {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

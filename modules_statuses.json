@@ -2,5 +2,6 @@
     "Categories": true,
     "Organizations": true,
     "Students": true,
-    "Instructors": true
+    "Instructors": true,
+    "Courses": true
 }

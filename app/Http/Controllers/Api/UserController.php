@@ -46,14 +46,36 @@ class UserController extends ApiController {
         return $this->return(200, "Factor Authenticate updated successfully");
     }
 
+    /**
+     * The getUserDetails function retrieves the user details, including the user object, student
+     * profile, instructor profile, and social links, and returns them in a JSON response.
+     * 
+     * @return JsonResponse a JsonResponse with the following data:
+     * - Status code: 200
+     * - Message: "User details fetched successfully"
+     * - Data: An object containing the user details, student profile, instructor profile, and social
+     * links.
+     */
     public function getUserDetails(): JsonResponse {
         $user = auth()->guard('api')->user();
         $response = new stdClass();
+
         $response->user = $user;
-        $response->student_profile = (object) StudentProfile::where("user_id", $user->id)->first();
-        $response->instructor_profile = (object) InstructorProfile::where("user_id", $user->id)->first();
-        $response->social_links = (object) ProfileSocialLink::where("user_id", $user->id)->get();
+        $response->student_profile = (object) StudentProfile::select(['bio', 'position', 'avatar'])->where("user_id", $user->id)->first();
+        $response->instructor_profile = (object) InstructorProfile::select(['bio', 'position'])->where("user_id", $user->id)->first();
+        $response->social_links = (object) ProfileSocialLink::select(['link_type', 'link_url'])->where("user_id", $user->id)->get();
 
         return $this->return(200, "User details fetched successfully", ['data' => $response]);
+    }
+
+    public function deactivate(): JsonResponse {
+        $user = auth()->guard('api')->user();
+        // Revoke all tokens
+        $user->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        // set user as soft deleted 
+        $user->delete();
+        return $this->return(200, "Account deactivated successfully");
     }
 }

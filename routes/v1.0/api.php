@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Utilities\CountryController;
 use App\Http\Controllers\Api\Utilities\CurrencyController;
+use App\Http\Controllers\Api\Utilities\LanguageController;
 use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\UserController;
@@ -31,12 +32,16 @@ Route::group(['prefix' => 'auth'], function () {
         // Verification Routes
         Route::post("send/otp", [AuthController::class, "sendOTP"]);
         Route::post("verify/otp", [AuthController::class, "verifyOTP"]);
+        // Send Email Verification
+        Route::post("send/verify/email", [AuthController::class, "sendVerifyEmail"]);
         // Get Login Attempt
         Route::get('attempts', [AuthController::class, "attempts"]);
         // Change password [From settings]
         Route::post('update-password', [UserController::class, "updatePassword"]);
         // toggle 2 factor authenticate [From settings]
         Route::post('toggle-factor-authenticate', [UserController::class, "toggleFactorAuthenticate"]);
+        // deactivate account [From settings]
+        Route::post('deactivate', [UserController::class, "deactivate"]);
     });
 });
 
@@ -46,7 +51,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('industries', IndustryController::class);
     Route::apiResource('countries', CountryController::class);
     Route::apiResource('currencies', CurrencyController::class);
-
+    Route::apiResource('languages', LanguageController::class);
 
     // Profile Routes
     Route::get("user/profile", [UserController::class, "getUserDetails"]);
@@ -56,6 +61,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::apiResource('industries', IndustryController::class)->only(['index', 'show']);
 Route::apiResource('countries', CountryController::class)->only(['index', 'show']);
 Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
+Route::apiResource('languages', LanguageController::class)->only(['index', 'show']);
 
 
 /* Landing Page APIs */

@@ -5,7 +5,8 @@ export default function CountrySelector({
     defaultValue = "",
     className = "",
     name = "country_id",
-    id="countryId",
+    id = "countryId",
+    onChange = null,
     required = false,
 }) {
     const [countries, setCountries] = useState([]);
@@ -23,6 +24,7 @@ export default function CountrySelector({
             className={"form-control " + className}
             name={name}
             id={id}
+            onChange={onChange}
             required={required ? "required" : ""}
         >
             <option value="">Select your country</option>

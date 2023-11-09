@@ -38,17 +38,12 @@ const ResetPassword = ({ searchParams }) => {
                 {}
             )
             .then((response) => {
-                // Check the response status
-                if (response.data.status === 200) {
-                    toastAlert(response.data.message, "success", 3000);
-                    // Clear form formValues
-                    setFormValues(initialValues);
-                } else {
-                    toastAlert(response.data.message, "error", 5000);
-                }
+                toastAlert(response.data.message, "success", 3000);
+                // Clear form formValues
+                setFormValues(initialValues);
             })
-            .catch((error) => {
-                toastAlert(error, "error");
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error", 5000);
             });
     };
 
@@ -74,7 +69,9 @@ const ResetPassword = ({ searchParams }) => {
                                 <input
                                     type="password"
                                     name="password"
-                                    disabled={formValues.token ? "" : "disabled"}
+                                    disabled={
+                                        formValues.token ? "" : "disabled"
+                                    }
                                     value={formValues.password}
                                     onChange={handleChangeValues}
                                     className="form-control"
@@ -87,7 +84,9 @@ const ResetPassword = ({ searchParams }) => {
                                 </label>
                                 <input
                                     type="password"
-                                    disabled={formValues.token ? "" : "disabled"}
+                                    disabled={
+                                        formValues.token ? "" : "disabled"
+                                    }
                                     value={formValues.password_confirmation}
                                     onChange={handleChangeValues}
                                     name="password_confirmation"

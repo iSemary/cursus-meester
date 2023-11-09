@@ -1,40 +1,50 @@
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+"use client";
 import ActionColumn from "../helpers/ActionColumn";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
+import { Grid, html } from "gridjs-react";
+import { Token } from "../../components/utilities/Authentication/Token";
 
-export default function viewCourses({ params }) {
-    const courses = [
-        {
-            name: "Course 1",
-            slug: "course-1",
-            final_price: "$500",
-            original_price: "$500",
-            action: <ActionColumn id="1" type="course" />,
-        },
-        {
-            name: "Course 1",
-            slug: "course-1",
-            final_price: "$500",
-            original_price: "$500",
-            action: <ActionColumn id="2" type="course" />,
-        },
-    ];
-
+export default function viewCourses() {
     return (
         <DashboardTemplate>
             <DashboardTitle
                 title="Courses"
                 path={[{ label: "Courses", url: "/dashboard/courses" }]}
             />
-            <DataTable value={courses} tableStyle={{ minWidth: "50rem" }}>
-                <Column field="name" header="Name"></Column>
-                <Column field="slug" header="Slug"></Column>
-                <Column field="final_price" header="Final Price"></Column>
-                <Column field="original_price" header="Original Price"></Column>
-                <Column field="action" header="Actions"></Column>
-            </DataTable>
+            <Grid
+                server={{
+                    url: `${process.env.NEXT_PUBLIC_API_URL}/courses`,
+                    headers: {
+                        Authorization: "Bearer " + Token.get(),
+                    },
+                    then: (data) =>
+                        data.data.courses.data.map((course) => [
+                            course.title,
+                            course.slug,
+                            course.price,
+                            course.price,
+                            course.price,
+                            null,
+                        ]),
+                    total: (data) => data.data.courses.total,
+                }}
+                pagination={{
+                    limit: 5,
+                    server: {
+                        url: (prev, page, limit) => `${prev}?page=${page}`,
+                    },
+                }}
+                columns={[
+                    "Name",
+                    "Slug",
+                    "Total Lectures",
+                    "Final Price",
+                    "Original Price",
+                    "Status",
+                    "Action",
+                ]}
+            />
         </DashboardTemplate>
     );
 }

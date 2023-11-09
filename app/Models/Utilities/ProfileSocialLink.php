@@ -16,4 +16,23 @@ class ProfileSocialLink extends Model {
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults();
     }
+
+    public static function syncLinks(int $userId, array $socialLinks) {
+        //  Soft delete any existing social links
+        self::where('user_id', $userId)->delete();
+        // insert the new social links
+        foreach ($socialLinks as $socialLink) {
+            self::withTrashed()->updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'link_type' => $socialLink['link_type'],
+                ],
+                [
+                    'user_id' => $userId,
+                    'link_type' => $socialLink['link_type'],
+                    'link_url' => $socialLink['link_url'],
+                ]
+            )->restore();
+        }
+    }
 }
