@@ -23,21 +23,22 @@ class CourseController extends ApiController {
      * fetched successfully', and an array of courses.
      */
     public function index(Request $request): JsonResponse {
-        $courses = Course::orderBy('title', "DESC")->owned()->paginate(20);
+        $courses = Course::orderBy('title', "DESC")->owned()->withTrashed()->paginate(20);
         return $this->return(200, 'Courses fetched successfully', ['courses' => $courses]);
     }
 
+
     /**
-     * The function "show" retrieves a course by its ID and returns a JSON response with the course's
-     * title, parent ID, and icon if it exists, or an error message if it doesn't.
+     * The function retrieves a course with a given slug and returns a JSON response with the course data
+     * if it exists, or an error message if it doesn't.
      * 
-     * @param String $slug The parameter "slug" is an string of the Course model. It is used
-     * to retrieve the course with the specified slug from the database.
+     * @param string slug The "slug" parameter is a string that represents a unique identifier for a
+     * course. It is used to retrieve the course from the database.
      * 
      * @return JsonResponse A JsonResponse is being returned.
      */
-    public function show($slug): JsonResponse {
-        $course = Course::where('slug', $slug)->first();
+    public function show(string $slug): JsonResponse {
+        $course = Course::where('slug', $slug)->withTrashed()->first();
         if (!$course) {
             return $this->return(400, 'Course not exists');
         }
@@ -63,18 +64,21 @@ class CourseController extends ApiController {
         return $this->return(200, 'Course Added Successfully');
     }
 
+
     /**
-     * This PHP function updates a course with validated data and returns a JSON response indicating the
+     * The function updates a course with the validated data and returns a JSON response indicating the
      * success or failure of the update.
      * 
-     * @param UpdateCourseRequest updateCourseRequest An instance of the UpdateCourseRequest class,
-     * which is a request object that contains the data to update the course.
-     * @param Course course The "course" parameter is an instance of the Course model. It
-     * represents the course that needs to be updated.
+     * @param UpdateCourseRequest updateCourseRequest This is an instance of the UpdateCourseRequest class,
+     * which is a custom request class that handles the validation and data retrieval for updating a
+     * course.
+     * @param string slug The "slug" parameter is a unique identifier for the course. It is typically a
+     * URL-friendly version of the course name or title.
      * 
      * @return JsonResponse A JsonResponse is being returned.
      */
-    public function update(UpdateCourseRequest $updateCourseRequest, Course $course): JsonResponse {
+    public function update(UpdateCourseRequest $updateCourseRequest, string $slug): JsonResponse {
+        $course = Course::where("slug", $slug)->owned()->withTrashed()->first();
         // Checking if the course not exists
         if (!$course) {
             return $this->return(400, 'Course not exists');
@@ -84,17 +88,18 @@ class CourseController extends ApiController {
         return $this->return(200, 'Course updated Successfully');
     }
 
+
     /**
-     * The function destroys a course object and returns a JSON response indicating whether the deletion
-     * was successful or not.
+     * The function destroys a course by its slug and returns a JSON response indicating whether the course
+     * was successfully deleted or not.
      * 
-     * @param Course course The parameter "course" is an instance of the Course model. It is used
-     * to identify the course that needs to be deleted.
+     * @param string slug The "slug" parameter is a unique identifier for the course. It is used to find the
+     * course in the database and delete it.
      * 
      * @return JsonResponse A JsonResponse is being returned.
      */
-
-    public function destroy(Course $course): JsonResponse {
+    public function destroy(string $slug): JsonResponse {
+        $course = Course::where("slug", $slug)->owned()->first();
         // Checking if the course not exists
         if (!$course) {
             return $this->return(400, 'Course not exists');

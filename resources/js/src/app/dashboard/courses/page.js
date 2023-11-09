@@ -41,6 +41,8 @@ export default function viewCourses() {
                     "Total Lectures",
                     "Final Price",
                     "Original Price",
+                    "Status",
+                    "Action",
                 ]}
             />
         </DashboardTemplate>
