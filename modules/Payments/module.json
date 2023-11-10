@@ -1,0 +1,9 @@
+{
+    "name": "Payments",
+    "alias": "payments",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [],
+    "files": []
+}

@@ -3,5 +3,6 @@
     "Organizations": true,
     "Students": true,
     "Instructors": true,
-    "Courses": true
+    "Courses": true,
+    "Payments": true
 }
