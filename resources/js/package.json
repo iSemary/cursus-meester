@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^40.0.0",
+    "@ckeditor/ckeditor5-react": "^6.1.0",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.7",
     "autoprefixer": "10.4.14",
@@ -26,6 +28,7 @@
     "primereact": "^10.0.5",
     "react": "18.2.0",
     "react-bootstrap": "^2.9.1",
+    "react-datepicker": "^4.21.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "react-redux": "^8.1.3",

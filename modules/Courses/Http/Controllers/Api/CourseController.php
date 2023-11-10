@@ -3,14 +3,22 @@
 namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Models\Utilities\Language;
 use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
 use modules\Courses\Http\Requests\Course\UpdateCourseRequest;
 
 class CourseController extends ApiController {
+    protected array $courseLevels;
+
+    public function __construct() {
+        $this->courseLevels = [['id' => 1, 'title' => 'Beginner'], ['id' => 2, 'title' => 'Intermediate'], ['id' => 3, 'title' => 'Expert']];
+    }
+
     /**
      * The index function retrieves courses from the database and returns them as a JSON response.
      * 
@@ -43,6 +51,13 @@ class CourseController extends ApiController {
             return $this->return(400, 'Course not exists');
         }
         return $this->return(200, 'Course fetched Successfully', ['course' => $course]);
+    }
+
+    public function create(): JsonResponse {
+        $data['categories'] = Category::select(['id', 'title'])->where("status", 1)->orderBy("order_number")->get();
+        $data['languages'] = Language::select(['id', 'name'])->get();
+        $data['levels'] = $this->courseLevels;
+        return $this->return(200, 'Essentials data fetched', ['data' => $data]);
     }
 
     /**

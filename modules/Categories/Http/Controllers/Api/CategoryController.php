@@ -3,6 +3,7 @@
 namespace modules\Categories\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
@@ -36,7 +37,7 @@ class CategoryController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Category $category): JsonResponse {
-        $category = Category::select('title', 'parent_id', 'icon')->find($category->id);
+        $category = Category::select('title', 'slug', 'parent_id', 'icon')->find($category->id);
         if (!$category) {
             return $this->return(400, 'Category not exists');
         }
@@ -55,7 +56,9 @@ class CategoryController extends ApiController {
      */
     public function store(CreateCategoryRequest $createCategoryRequest): JsonResponse {
         // create a new category from the validated data
-        Category::create($createCategoryRequest->validated());
+        $data = $createCategoryRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        Category::create($data);
         return $this->return(200, 'Category Added Successfully');
     }
 
@@ -76,7 +79,9 @@ class CategoryController extends ApiController {
             return $this->return(400, 'Category not exists');
         }
         // Update the category with the validated data
-        $category->update($updateCategoryRequest->validated());
+        $data = $updateCategoryRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        $category->update($data);
         return $this->return(200, 'Category updated Successfully');
     }
 

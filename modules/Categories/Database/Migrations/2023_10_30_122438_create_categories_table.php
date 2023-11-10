@@ -14,6 +14,7 @@ return new class extends Migration {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
+            $table->string('slug', 255)->unique();
             $table->integer('parent_id')->nullable();
             $table->string('icon', 255)->default('default.png');
             $table->integer('order_number')->default(0);

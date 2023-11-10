@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Industry extends Model {
     use HasFactory, SoftDeletes, LogsActivity;
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'slug', 'description'];
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults();

@@ -10,7 +10,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Organization extends Model {
     use SoftDeletes, LogsActivity, HasFactory;
-    protected $fillable = ['name', 'description', 'industry_id', 'logo', 'status'];
+    protected $fillable = ['name', 'slug', 'description', 'industry_id', 'logo', 'status'];
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults();

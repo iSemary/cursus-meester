@@ -3,6 +3,7 @@
 namespace modules\Organizations\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Organizations\Entities\Organization;
@@ -22,7 +23,7 @@ class OrganizationController extends ApiController {
      * fetched successfully', and an array of organizations.
      */
     public function index(Request $request): JsonResponse {
-        $organizations = Organization::orderBy('title', "DESC")->paginate(20);
+        $organizations = Organization::orderBy('name', "DESC")->paginate(20);
         return $this->return(200, 'Organizations fetched successfully', ['organizations' => $organizations]);
     }
 
@@ -36,7 +37,7 @@ class OrganizationController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Organization $organization): JsonResponse {
-        $organization = Organization::select('title', 'parent_id', 'icon')->find($organization->id);
+        $organization = Organization::select('name', 'slug', 'description', 'logo', 'status')->find($organization->id);
         if (!$organization) {
             return $this->return(400, 'Organization not exists');
         }
@@ -55,7 +56,9 @@ class OrganizationController extends ApiController {
      */
     public function store(CreateOrganizationRequest $createOrganizationRequest): JsonResponse {
         // create a new organization from the validated data
-        Organization::create($createOrganizationRequest->validated());
+        $data = $createOrganizationRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        Organization::create($data);
         return $this->return(200, 'Organization Added Successfully');
     }
 
@@ -76,7 +79,9 @@ class OrganizationController extends ApiController {
             return $this->return(400, 'Organization not exists');
         }
         // Update the organization with the validated data
-        $organization->update($updateOrganizationRequest->validated());
+        $data = $updateOrganizationRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        $organization->update($data);
         return $this->return(200, 'Organization updated Successfully');
     }
 
