@@ -13,10 +13,11 @@ return new class extends Migration {
     public function up() {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
-            $table->integer('parent_id')->nullable();
-            $table->string('icon', 255)->default('default.png');
-            $table->integer('order_number')->default(0);
+            $table->string('name', 255);
+            $table->string('slug', 255)->unique();
+            $table->string('description', 1024);
+            $table->string('logo', 255)->nullable();
+            $table->integer('industry_id', 255)->nullable();
             $table->tinyInteger('status')->default(0);
             $table->softDeletes();
             $table->timestamps();

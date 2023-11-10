@@ -1,3 +1,6 @@
+$thumbnailWidth : 600px;
+$thumbnailHeight : 400px;
+
 .no-shadows {
     box-shadow: none;
     &:hover,
@@ -241,7 +244,6 @@
     }
 }
 
-
 .message-input-container {
     background-color: #f3f3fe;
     width: 100%;
@@ -275,4 +277,24 @@ hr {
 }
 .text-right {
     text-align: right;
+}
+
+.upload-thumbnail {
+}
+
+#thumbnailUpload {
+    display: none;
+}
+
+.border-left-0 {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.thumbnail-image.course {
+    width: $thumbnailWidth;
+    max-width: $thumbnailWidth;
+    max-height: $thumbnailHeight;
+    height: $thumbnailHeight;
+    border: 2px dashed #6366f1;
 }

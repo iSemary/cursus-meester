@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Industry\CreateIndustryRequest;
 use App\Http\Requests\Industry\UpdateIndustryRequest;
 use App\Models\Utilities\Industry;
+use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class IndustryController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Industry $industry): JsonResponse {
-        $industry = Industry::select('title', 'description')->find($industry->id);
+        $industry = Industry::select('title', 'slug', 'description')->find($industry->id);
         if (!$industry) {
             return $this->return(400, 'Industry not exists');
         }
@@ -55,7 +56,9 @@ class IndustryController extends ApiController {
      */
     public function store(CreateIndustryRequest $createIndustryRequest): JsonResponse {
         // create a new industry from the validated data
-        Industry::create($createIndustryRequest->validated());
+        $data = $createIndustryRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        Industry::create($data);
         return $this->return(200, 'Industry Added Successfully');
     }
 
@@ -76,7 +79,9 @@ class IndustryController extends ApiController {
             return $this->return(400, 'Industry not exists');
         }
         // Update the industry with the validated data
-        $industry->update($updateIndustryRequest->validated());
+        $data = $updateIndustryRequest->validated();
+        $data['slug'] = Slug::returnFormatted($data['slug']);
+        $industry->update($data);
         return $this->return(200, 'Industry updated Successfully');
     }
 

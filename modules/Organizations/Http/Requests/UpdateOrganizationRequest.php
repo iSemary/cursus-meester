@@ -13,11 +13,12 @@ class UpdateOrganizationRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'title' => 'required|max:255|unique:organizations,title,' . $this->organization->id . ',id',
-            'parent_id' => 'sometimes|numeric',
-            'order_number' => 'sometimes|numeric',
+            'name' => 'required|max:255|unique:organizations,name,' . $this->industry->id . ',id',
+            'slug' => 'required|max:255|unique:organizations,slug,' . $this->industry->id . ',id',
+            'description' => 'required|string|max:5000',
+            'logo' => 'sometimes|image|mimes:jpeg,png|max:2048',
+            'industry_id' => 'sometimes|numeric|exists:industries,id',
             'status' => 'required|numeric',
-            'icon' => 'mimes:png,jpg,jpeg,gif'
         ];
     }
 

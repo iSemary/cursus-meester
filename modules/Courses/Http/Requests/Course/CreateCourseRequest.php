@@ -21,7 +21,7 @@ class CreateCourseRequest extends FormRequest {
             'category_id' => 'required|exists:categories,id',
             'organization_id' => 'sometimes|exists:organizations,id',
             'language_id' => 'required|exists:languages,id',
-            'currency_id' => 'required|exists:currencies,id',
+            'currency_id' => 'sometimes|exists:currencies,id',
             'price' => 'required|numeric|min:0',
             'offer_price' => 'sometimes|numeric|min:0',
             'offer_percentage' => 'sometimes|numeric|between:0,100',

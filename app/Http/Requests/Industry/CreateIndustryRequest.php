@@ -20,6 +20,7 @@ class CreateIndustryRequest extends FormRequest {
     public function rules(): array {
         return [
             'title' => 'required|max:255|unique:industries,title',
+            'slug' => 'required|max:255|unique:industries,slug',
             'description' => 'required|max:1024'
         ];
     }

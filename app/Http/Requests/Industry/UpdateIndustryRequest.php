@@ -20,6 +20,7 @@ class UpdateIndustryRequest extends FormRequest {
     public function rules(): array {
         return [
             'title' => 'required|max:255|unique:industries,title,' . $this->industry->id . ',id',
+            'slug' => 'required|max:255|unique:industries,slug,' . $this->industry->id . ',id',
             'description' => 'required|max:1024'
         ];
     }

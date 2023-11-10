@@ -210,4 +210,18 @@ hr {
 .text-right {
   text-align: right; }
 
+#thumbnailUpload {
+  display: none; }
+
+.border-left-0 {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.thumbnail-image.course {
+  width: 600px;
+  max-width: 600px;
+  max-height: 400px;
+  height: 400px;
+  border: 2px dashed #6366f1; }
+
 /*# sourceMappingURL=panel.css.map */

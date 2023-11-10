@@ -12,6 +12,7 @@ return new class extends Migration {
         Schema::create('industries', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
+            $table->string('slug', 255)->unique();
             $table->string('description', 1024);
             $table->softDeletes();
             $table->timestamps();
