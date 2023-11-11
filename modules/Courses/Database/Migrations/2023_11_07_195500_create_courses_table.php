@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->integer('language_id');
             $table->integer('currency_id');
             $table->float('price')->unsigned();
-            $table->float('offer_price')->unsigned();
+            $table->tinyInteger('offer_price')->default(0);
             $table->float('offer_percentage')->unsigned();
             $table->timestamp('offer_expired_at')->nullable();
             $table->timestamp('published_at')->nullable();

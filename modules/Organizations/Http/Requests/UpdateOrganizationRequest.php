@@ -3,8 +3,10 @@
 namespace modules\Organizations\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use modules\Organizations\Entities\Organization;
 
 class UpdateOrganizationRequest extends FormRequest {
+    protected $organization;
 
     /**
      * Get the validation rules that apply to the request.
@@ -28,6 +30,9 @@ class UpdateOrganizationRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
+        $slug = $this->route('organization');
+        $this->organization = Organization::where("slug", $slug)->owned()->first();
+
         return true;
     }
 }

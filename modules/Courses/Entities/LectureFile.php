@@ -11,7 +11,7 @@ class LectureFile extends Model {
 
     protected $fillable = ['lecture_id', 'original_name', 'name'];
 
-    public function course() {
+    public function lecture() {
         return $this->belongsTo(Lecture::class, 'lecture_id');
     }
 }

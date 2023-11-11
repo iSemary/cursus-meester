@@ -1,35 +1,29 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import DashboardTemplate from "../../../Templates/DashboardTemplate";
-import DashboardTitle from "../../../layouts/dashboard/DashboardTitle";
-import axiosConfig from "../../../components/axiosConfig/axiosConfig";
-import toastAlert from "../../../components/utilities/Alert";
-import { useRouter } from "next/navigation";
-import FormEditor from "../components/FormEditor";
-export default function createCourse() {
-    const router = useRouter();
-    const initialCourse = {
-        title: "",
-        slug: "",
-        description: "",
-        content: "",
-        thumbnail: "",
-        skill_level: "",
-        category_id: "",
-        organization_id: "",
-        language_id: "",
-        price: 0,
-        offer_price: 0,
-        offer_percentage: 0,
-        offer_expired_at: new Date(),
-        published_at: new Date(),
-    };
-
-    const [course, setCourse] = useState(initialCourse);
+import DashboardTemplate from "../../../../Templates/DashboardTemplate";
+import DashboardTitle from "../../../../layouts/dashboard/DashboardTitle";
+import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
+import toastAlert from "../../../../components/utilities/Alert";
+import FormEditor from "../../components/FormEditor";
+export default function editCourse({ params }) {
+    const [course, setCourse] = useState({});
     const [thumbnailImage, setThumbnailImage] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
 
-    /** Calls store api with the inserted data */
+    /** Listen on param slug changes */
+    useEffect(() => {
+        // Get Course Details
+        axiosConfig
+            .get(`courses/${params.slug}`)
+            .then((response) => {
+                setCourse(response.data.data.course);
+            })
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error");
+            });
+    }, [params.slug]);
+
+    /** Calls update api with the updated data */
     const handleSubmitCourse = (e) => {
         e.preventDefault();
         setFormLoading(true);
@@ -47,8 +41,9 @@ export default function createCourse() {
             formData.append(key, formattedValue);
         }
 
+        formData.append("_method", "PUT");
         axiosConfig
-            .post("courses", formData, {
+            .post(`courses/${params.slug}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -56,11 +51,6 @@ export default function createCourse() {
             .then((response) => {
                 setFormLoading(false);
                 toastAlert(response.data.message, "success");
-                setCourse(initialCourse);
-                // Navigate to create lectures page with the course slug
-                router.push(
-                    `/dashboard/courses/${response.data.data.slug}/lectures/create`
-                );
             })
             .catch(({ response }) => {
                 setFormLoading(false);
@@ -71,10 +61,11 @@ export default function createCourse() {
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Create a new course"
+                title={`Update "${params.slug}" course`}
                 path={[
                     { label: "Courses", url: "/dashboard/courses" },
-                    { label: "Create", url: "/dashboard/courses/create" },
+                    { label: params.slug },
+                    { label: "Edit" },
                 ]}
             />
             <div>
@@ -86,6 +77,7 @@ export default function createCourse() {
                     formLoading={formLoading}
                     setFormLoading={setFormLoading}
                 />
+
                 <hr />
                 <div className="col-md-3">
                     <h5>Course Thumbnail Image</h5>

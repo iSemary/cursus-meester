@@ -35,10 +35,55 @@ class Course extends Model {
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
+    protected $casts = [
+        'offer_price' => 'boolean',
+    ];
+
     protected $hidden = [
         "deleted_at",
         "created_at",
     ];
+
+    protected $appends = [
+        'total_lectures',
+        'status',
+        'final_price',
+    ];
+
+    public function lectures() {
+        return $this->hasMany(Lecture::class);
+    }
+
+    public function getTotalLecturesAttribute() {
+        return $this->lectures()->count();
+    }
+
+    public function getFinalPriceAttribute() {
+        if ($this->attributes['offer_price'] == 1) {
+            // If offer_price is set to 1, apply the offer percentage
+            $offerPercentage = $this->attributes['offer_percentage'];
+            $price = $this->attributes['price'];
+
+            $finalPrice = $price - ($price * ($offerPercentage / 100));
+        } else {
+            // If offer_price is 0, use the regular price
+            $finalPrice = $this->attributes['price'];
+        }
+
+        return $finalPrice;
+    }
+
+    
+    public function getStatusAttribute() {
+        $status = "Active";
+        if ($this->published_at > now()) {
+            $status = "In Active";
+        }
+        if ($this->deleted_at) {
+            $status = "Deleted";
+        }
+        return $status;
+    }
 
     public function rate() {
         return $this->hasMany(Rate::class);
