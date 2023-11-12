@@ -14,6 +14,7 @@ return new class extends Migration {
         Schema::create('lecture_files', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('lecture_id');
+            $table->tinyInteger('main_file')->default(0);
             $table->string('original_name', 255);
             $table->string('hash_name', 255);
             $table->char('extension', 10);

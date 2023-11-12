@@ -1,13 +1,56 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardTemplate from "../../../../../../Templates/DashboardTemplate";
 import DashboardTitle from "../../../../../../layouts/dashboard/DashboardTitle";
 import FormEditor from "../../components/FormEditor";
+import axiosConfig from "../../../../../../components/axiosConfig/axiosConfig";
+import toastAlert from "../../../../../../components/utilities/Alert";
 export default function createLecture({ params }) {
-    const initialLecture = {};
+    const [lecture, setLecture] = useState({});
 
-    const [Course, setCourse] = useState({});
-    const [Lecture, setLecture] = useState(initialLecture);
+    const [lectureVideo, setLectureVideo] = useState(null);
+    const [lectureFiles, setLectureFiles] = useState([]);
+
+    const [formLoading, setFormLoading] = useState(false);
+
+    useEffect(() => {
+        // Get Lecture Details
+        axiosConfig
+            .get(`courses/${params.slug}/lectures/${params.lectureSlug}`)
+            .then((response) => {
+                setLecture(response.data.data.lecture);
+            })
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error");
+            });
+    }, [params.slug]);
+
+    const handleSubmitLecture = (e) => {
+        e.preventDefault();
+        setFormLoading(true);
+        axiosConfig
+            .post(
+                `lectures/${params.lectureSlug}`,
+                {
+                    ...lecture,
+                    media_file: lectureVideo,
+                    files: lectureFiles,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            )
+            .then((response) => {
+                setFormLoading(false);
+                toastAlert(response.data.message, "success");
+            })
+            .catch(({ response }) => {
+                setFormLoading(false);
+                toastAlert(response.data.message, "error");
+            });
+    };
 
     return (
         <DashboardTemplate>
@@ -21,8 +64,18 @@ export default function createLecture({ params }) {
                     { label: "Edit" },
                 ]}
             />
-
-            <FormEditor />
+            <FormEditor
+                lecture={lecture}
+                lectureVideo={lectureVideo}
+                setLectureVideo={setLectureVideo}
+                lectureFiles={lectureFiles}
+                setLectureFiles={setLectureFiles}
+                setLecture={setLecture}
+                formLoading={formLoading}
+                setFormLoading={setFormLoading}
+                handleSubmitLecture={handleSubmitLecture}
+                btnLabel="Update"
+            />
         </DashboardTemplate>
     );
 }

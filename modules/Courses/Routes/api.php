@@ -9,7 +9,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Courses Routes
     Route::resource('courses', CourseController::class)->except(['edit']);
     // Course Lectures
-    Route::get("courses/{slug}/lectures", [LectureController::class, "getCourseLectures"]);
+    Route::get("courses/{courseSlug}/lectures", [LectureController::class, "getCourseLectures"]);
+    // Lecture By Slug
+    Route::get("courses/{courseSlug}/lectures/{lectureSlug}", [LectureController::class, "getCourseLecture"]);
     // Lectures Routes
     Route::apiResource('lectures', LectureController::class)->except(['edit', 'create']);
     // Submit Rate Route

@@ -2,11 +2,9 @@
 
 namespace modules\Courses\Entities;
 
-use App\Services\Uploader\FileHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 
 class Lecture extends Model {
     use HasFactory, SoftDeletes;
@@ -20,9 +18,37 @@ class Lecture extends Model {
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    protected $appends = ['media_file'];
+    public function scopeOwned($query) {
+        return $query->leftJoin('courses', 'courses.id', 'lectures.course_id')->where("courses.user_id", auth()->guard('api')->id());
+    }
+
+    public function getStatusAttribute() {
+        $status = "Active";
+        if ($this->deleted_at) {
+            $status = "Deleted";
+        }
+        return $status;
+    }
+
+
+    protected $appends = ['has_exam', 'total_files', 'status', 'media_file', 'additional_files'];
     // protected $attributes = ['media_file'];
 
+    public function getHasExamAttribute() {
+        return Exam::where("lecture_id", $this->id)->count();
+    }
+
+    public function getTotalFilesAttribute() {
+        return LectureFile::where("lecture_id", $this->id)->count();
+    }
+
+    public function getMediaFileAttribute() {
+        return LectureFile::getMediaFile($this->lecture_media_id);
+    }
+
+    public function getAdditionalFilesAttribute() {
+        return LectureFile::getAdditionalFiles($this->id);
+    }
 
     // public function getMediaFileAttribute($value): string {
     //     if ($value) {

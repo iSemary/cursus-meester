@@ -23,15 +23,26 @@ class LectureController extends ApiController {
      * fetched successfully', and an array of lectures.
      */
     public function index(Request $request): JsonResponse {
-        $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(20);
+        $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
 
-    public function getCourseLectures(string $slug): JsonResponse {
-        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')->where('courses.slug', $slug)
-            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(20);
+    public function getCourseLectures(string $courseSlug): JsonResponse {
+        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
+        ->select(['lectures.*'])
+        ->where('courses.slug', $courseSlug)
+            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
+    }
+
+    public function getCourseLecture(string $courseSlug, string $lectureSlug): JsonResponse {
+        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
+        ->select(['lectures.*'])
+        ->where('courses.slug', $courseSlug)
+        ->where('lectures.slug', $lectureSlug)
+            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->first();
+        return $this->return(200, 'Lecture fetched successfully', ['lecture' => $lectures]);
     }
 
 
@@ -108,7 +119,7 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function destroy(string $slug): JsonResponse {
-        $lecture = Lecture::where("slug", $slug)->owned()->first();
+        $lecture = Lecture::where("lectures.slug", $slug)->owned()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');

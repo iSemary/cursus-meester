@@ -19,9 +19,8 @@ export default function viewLectures({ params }) {
             icon: "pi pi-file",
             command: () => {
                 // Add or edit exam
-                // `/dashboard/courses/${params.slug}/lectures/${slug}/exam/edit`
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}/exam/create`
+                    `/dashboard/courses/${params.slug}/lectures/${slug}/exam/editor`
                 );
             },
         },
@@ -30,7 +29,7 @@ export default function viewLectures({ params }) {
             icon: "pi pi-file-edit",
             command: () => {
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}`
+                    `/dashboard/courses/${params.slug}/lectures/${slug}/edit`
                 );
             },
         },
@@ -45,13 +44,13 @@ export default function viewLectures({ params }) {
     /** Delete course by slug */
     const handleDeleteCourse = (slug) => {
         Swal.fire({
-            title: "Are you sure you want to delete this course?",
+            title: "Are you sure you want to delete this lecture?",
             showCancelButton: true,
             confirmButtonText: "Delete",
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axiosConfig
-                    .delete("/courses/" + slug)
+                    .delete("/lectures/" + slug)
                     .then((response) => {
                         return true;
                     })
@@ -62,7 +61,7 @@ export default function viewLectures({ params }) {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert("Course deleted successfully", "success");
+                toastAlert("Lecture deleted successfully", "success");
             }
         });
     };
@@ -85,12 +84,12 @@ export default function viewLectures({ params }) {
                     },
                     then: (data) =>
                         data.data.lectures.data.map((lecture) => [
-                            course.title,
-                            course.slug,
-                            course.order_number,
-                            course.lecture_files,
-                            course.contains_exam,
-                            course.status,
+                            lecture.title,
+                            lecture.slug,
+                            lecture.order_number,
+                            lecture.total_files,
+                            lecture.has_exam,
+                            lecture.status,
                         ]),
                     total: (data) => data.data.lectures.total,
                 }}
@@ -105,7 +104,12 @@ export default function viewLectures({ params }) {
                     "Slug",
                     "Order Number",
                     "Lecture Files",
-                    "Contains Exam",
+                    {
+                        name: "Contains Exam",
+                        formatter: (cell, row) => {
+                            return row.cells[4].data === 0 ? "No" : "Yes";
+                        },
+                    },
                     "Status",
                     {
                         name: "Actions",
