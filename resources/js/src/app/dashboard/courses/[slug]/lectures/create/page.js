@@ -73,7 +73,10 @@ export default function createLecture({ params }) {
                 path={[
                     { label: "Courses", url: "/dashboard/courses" },
                     { label: params.slug },
-                    { label: "Lectures" },
+                    {
+                        label: "Lectures",
+                        url: "/dashboard/courses/" + params.slug + "/lectures",
+                    },
                     { label: "Create" },
                 ]}
             />

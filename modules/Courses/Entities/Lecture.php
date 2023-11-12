@@ -5,6 +5,7 @@ namespace modules\Courses\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use modules\Courses\Entities\Exam\Exam;
 
 class Lecture extends Model {
     use HasFactory, SoftDeletes;

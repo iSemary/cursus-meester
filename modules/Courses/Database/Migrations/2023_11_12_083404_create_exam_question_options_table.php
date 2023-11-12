@@ -11,12 +11,12 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('exams', function (Blueprint $table) {
+        Schema::create('exam_question_options', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
-            $table->string('description', 5000);
-            $table->integer('lecture_id');
-            $table->tinyInteger('status')->default(1);
+            $table->string('title', 1024);
+            $table->smallInteger('order_number')->default(1);
+            $table->tinyInteger('valid_answer')->default(0);
+            $table->integer('exam_question_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('exams');
+        Schema::dropIfExists('exam_question_options');
     }
 };

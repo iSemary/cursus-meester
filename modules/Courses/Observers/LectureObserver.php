@@ -44,7 +44,7 @@ class LectureObserver {
                 $mediaFileData->mime_type = request()->media_file['type'];
                 $newLectureFile = LectureFile::createFile($lecture->id, $mediaFileData, 1);
                 // update existing lecture with it's new media video
-                DB::table('lectures')->where('id', $lecture->id)->update([
+                DB::table('lectures')->where('id', '=', $lecture->id)->update([
                     'lecture_media_id' => $newLectureFile->id
                 ]);
             }

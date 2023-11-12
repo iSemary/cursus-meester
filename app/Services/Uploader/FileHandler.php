@@ -124,6 +124,6 @@ class FileHandler {
     private static function calculateVideoDuration($filePath): string {
         $getID3 = new \getID3;
         $file = $getID3->analyze($filePath);
-        return $file['playtime_seconds'];
+        return isset($file['playtime_seconds']) ? $file['playtime_seconds'] : 0;
     }
 }

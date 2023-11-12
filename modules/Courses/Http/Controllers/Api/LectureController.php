@@ -99,13 +99,16 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function update(UpdateLectureRequest $updateLectureRequest, string $slug): JsonResponse {
-        $lecture = Lecture::where("lectures.slug", $slug)->owned()->withTrashed()->first();
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->withTrashed()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');
         }
         // Update the lecture with the validated data
-        $lecture->update($updateLectureRequest->validated());
+        $courseData = $updateLectureRequest->all();
+        $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
+        $courseData['media_file'] = $updateLectureRequest->file('media_file');
+        $lecture->update($courseData);
         return $this->return(200, 'Lecture updated Successfully');
     }
 
