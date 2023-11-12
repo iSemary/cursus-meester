@@ -7,6 +7,7 @@ use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\LectureFile;
 use modules\Courses\Http\Requests\Lecture\CreateLectureRequest;
 use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
 
@@ -30,17 +31,17 @@ class LectureController extends ApiController {
 
     public function getCourseLectures(string $courseSlug): JsonResponse {
         $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
-        ->select(['lectures.*'])
-        ->where('courses.slug', $courseSlug)
+            ->select(['lectures.*'])
+            ->where('courses.slug', $courseSlug)
             ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
     public function getCourseLecture(string $courseSlug, string $lectureSlug): JsonResponse {
         $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
-        ->select(['lectures.*'])
-        ->where('courses.slug', $courseSlug)
-        ->where('lectures.slug', $lectureSlug)
+            ->select(['lectures.*'])
+            ->where('courses.slug', $courseSlug)
+            ->where('lectures.slug', $lectureSlug)
             ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->first();
         return $this->return(200, 'Lecture fetched successfully', ['lecture' => $lectures]);
     }
@@ -98,7 +99,7 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function update(UpdateLectureRequest $updateLectureRequest, string $slug): JsonResponse {
-        $lecture = Lecture::where("slug", $slug)->owned()->withTrashed()->first();
+        $lecture = Lecture::where("lectures.slug", $slug)->owned()->withTrashed()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');
@@ -108,6 +109,19 @@ class LectureController extends ApiController {
         return $this->return(200, 'Lecture updated Successfully');
     }
 
+    public function deleteFile($lectureSlug, $lectureFileId): JsonResponse {
+        $lectureFile = LectureFile::leftJoin('lectures', 'lectures.id', 'lecture_files.lecture_id')
+            ->leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->select(['lecture_files.id'])
+            ->where('courses.user_id', auth()->guard()->id())
+            ->where('lectures.slug', $lectureSlug)
+            ->where("lecture_files.hash_name", $lectureFileId)->first();
+        if ($lectureFile) {
+            $lectureFile->delete();
+        }
+
+        return $this->return(200, 'Lecture file deleted Successfully', [''=>$lectureFileId, '2'=>$lectureFile]);
+    }
 
     /**
      * The function destroys a lecture by its slug and returns a JSON response indicating whether the lecture

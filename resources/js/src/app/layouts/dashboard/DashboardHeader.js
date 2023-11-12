@@ -34,7 +34,6 @@ export default function DashboardHeader() {
             },
         },
     ];
-    console.log(user);
     return (
         <Suspense fallback={<h2>"Loading header..."</h2>}>
             <header className="px-3 mb-3 border-bottom">

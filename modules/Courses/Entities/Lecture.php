@@ -39,7 +39,7 @@ class Lecture extends Model {
     }
 
     public function getTotalFilesAttribute() {
-        return LectureFile::where("lecture_id", $this->id)->count();
+        return LectureFile::where("lecture_id", $this->id)->where("main_file", 0)->count();
     }
 
     public function getMediaFileAttribute() {

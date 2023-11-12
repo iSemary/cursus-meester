@@ -13,6 +13,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Lecture By Slug
     Route::get("courses/{courseSlug}/lectures/{lectureSlug}", [LectureController::class, "getCourseLecture"]);
     // Lectures Routes
+    Route::delete("lecture-file/{lectureSlug}/{lectureFileId}", [LectureController::class, "deleteFile"]);
     Route::apiResource('lectures', LectureController::class)->except(['edit', 'create']);
     // Submit Rate Route
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);

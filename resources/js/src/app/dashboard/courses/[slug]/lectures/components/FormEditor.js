@@ -8,6 +8,7 @@ import { ImFileText2 } from "react-icons/im";
 import { MdOutlineTitle } from "react-icons/md";
 import { Dropzone, FileMosaic } from "@files-ui/react";
 import { LuFileStack } from "react-icons/lu";
+import axiosConfig from "../../../../../components/axiosConfig/axiosConfig";
 
 export default function FormEditor({
     course,
@@ -42,8 +43,21 @@ export default function FormEditor({
         setLectureVideo(null);
     };
 
+    const handleRemoveLectureFile = (id) => {
+        // Remove Lecture File
+        axiosConfig
+            .delete(`lecture-file/${lecture.slug}/${id}`)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch(({ response }) => {
+                console.log(response);
+            });
+    };
+
     const removeLectureFiles = (id) => {
         setLectureFiles(lectureFiles.filter((x) => x.id !== id));
+        handleRemoveLectureFile(id);
     };
 
     return (
@@ -102,9 +116,7 @@ export default function FormEditor({
                         name="order_number"
                         type="number"
                         onChange={handleChangeLecture}
-                        value={
-                            lecture.order_number
-                        }
+                        value={lecture.order_number}
                         required
                     />
                 </div>
@@ -143,7 +155,7 @@ export default function FormEditor({
                             onChange={handleChangeLectureFiles}
                             value={lectureFiles}
                             accept="application/pdf, text/plain, text/markdown, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            maxFiles={5}
+                            maxFiles={10}
                             label="Drag'n drop lecture additional files here"
                         >
                             {lectureFiles.map((lectureFile) => (

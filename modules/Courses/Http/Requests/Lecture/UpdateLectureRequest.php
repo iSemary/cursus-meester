@@ -22,7 +22,7 @@ class UpdateLectureRequest extends FormRequest {
             'slug' => 'required|string|max:255|unique:lectures,slug,' . $this->lecture->id,
             'description' => 'required|string|max:5000',
             'order_number' => 'required|numeric',
-            'file' => 'required|file|mimes:mp4,mov,avi,wmv|max:' . $maxFileSize,
+            'media_file.file' => 'sometimes|file|mimes:mp4,mov,avi,wmv|max:' . $maxFileSize,
         ];
     }
 
@@ -33,7 +33,7 @@ class UpdateLectureRequest extends FormRequest {
      */
     public function authorize() {
         $slug = $this->route('lecture');
-        $this->lecture = Lecture::where("slug", $slug)->owned()->first();
+        $this->lecture = Lecture::select(['lectures.id'])->owned()->where("lectures.slug", $slug)->withTrashed()->first();
         return true;
     }
 }
