@@ -16,7 +16,7 @@ export default function createCourse() {
         thumbnail: "",
         skill_level: "",
         category_id: "",
-        organization_id: "",
+        organization_id: false,
         language_id: "",
         price: 0,
         offer_price: 0,

@@ -164,17 +164,11 @@ export default function ExamEditor({
                         <div className="mt-3 d-flex flex-wrap justify-content-center gap-3">
                             {examQuestion.options.map((option, i) => (
                                 <div className="d-flex align-items-center">
-                                    <Checkbox
+                                    <InputText
                                         inputId={"choice" + i}
                                         name="option"
                                         value={option.title}
                                     />
-                                    <label
-                                        inputId={"choice" + i}
-                                        className="mx-1"
-                                    >
-                                        {option.title}
-                                    </label>
                                 </div>
                             ))}
                         </div>

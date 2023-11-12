@@ -33,10 +33,26 @@ export default function FormEditor({
 
     const handleChangeCourse = (e) => {
         const { name, value } = e.target;
-        setCourse({
-            ...course,
-            [name]: value,
-        });
+        switch (name) {
+            case "offer_price":
+                setCourse({
+                    ...course,
+                    offer_price: !course.offer_price,
+                });
+                break;
+            case "organization_id":
+                setCourse({
+                    ...course,
+                    organization_id: !course.organization_id,
+                });
+                break;
+            default:
+                setCourse({
+                    ...course,
+                    [name]: value,
+                });
+                break;
+        }
     };
 
     const handleCourseContentChange = (event, editor) => {
@@ -51,6 +67,20 @@ export default function FormEditor({
             thumbnail: file,
         });
         setThumbnailImage(URL.createObjectURL(file));
+    };
+
+    const handleOfferExpiredDateChange = (date) => {
+        setCourse({
+            ...course,
+            offer_expired_at: date,
+        });
+    };
+
+    const handlePublishedDateChange = (date) => {
+        setCourse({
+            ...course,
+            published_at: date,
+        });
     };
 
     useEffect(() => {
@@ -182,12 +212,15 @@ export default function FormEditor({
                 </div>
                 <div className="col-md-3">
                     <div className="d-flex mt-2 align-items-center">
-                        <Checkbox
-                            id="organizationId"
-                            name="organization_id"
-                            value=""
-                        />
-                        <label htmlFor="organizationId" className="ms-2">
+                        <label htmlFor="organizationId" className="d-flex ms-2">
+                            <input
+                                type="checkbox"
+                                className="p-checkbox-box"
+                                id="organizationId"
+                                name="organization_id"
+                                onChange={handleChangeCourse}
+                                checked={course.organization_id ? true : false}
+                            />
                             Part of your organization
                         </label>
                     </div>
@@ -226,12 +259,8 @@ export default function FormEditor({
                         checked={course.offer_price}
                         onLabel={"Enable Offer"}
                         className="w-100"
-                        onChange={() =>
-                            setCourse({
-                                ...course,
-                                offer_price: !course.offer_price,
-                            })
-                        }
+                        name="offer_price"
+                        onChange={handleChangeCourse}
                         onIcon="pi pi-check"
                         offIcon="pi pi-times"
                         offLabel={"Disable Offer"}
@@ -246,12 +275,7 @@ export default function FormEditor({
                         placeholderText="Offer Expiration Date"
                         name="offer_expired_at"
                         dateFormat="yyyy-MM-dd"
-                        onChange={(date) =>
-                            setCourse({
-                                ...course,
-                                offer_expired_at: date,
-                            })
-                        }
+                        onChange={handleOfferExpiredDateChange}
                         selected={
                             course.offer_expired_at
                                 ? new Date(course.offer_expired_at)
@@ -272,9 +296,7 @@ export default function FormEditor({
                         placeholderText="Publish Date"
                         name="published_at"
                         dateFormat="yyyy-MM-dd"
-                        onChange={(date) =>
-                            setCourse({ ...course, published_at: date })
-                        }
+                        onChange={handlePublishedDateChange}
                         selected={
                             course.published_at
                                 ? new Date(course.published_at)

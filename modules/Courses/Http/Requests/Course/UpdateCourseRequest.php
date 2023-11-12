@@ -24,7 +24,7 @@ class UpdateCourseRequest extends FormRequest {
             // 'thumbnail' => 'sometimes|image|mimes:jpeg,png|max:2048',
             'skill_level' => 'required|in:1,2,3',
             'category_id' => 'required|exists:categories,id',
-            // 'organization_id' => 'nullable',
+            'organization_id' => 'nullable',
             'language_id' => 'sometimes|exists:languages,id',
             'currency_id' => 'sometimes|exists:currencies,id',
             'price' => 'sometimes|numeric|min:0',

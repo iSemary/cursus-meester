@@ -9,7 +9,6 @@ export default function editCourse({ params }) {
     const [course, setCourse] = useState({});
     const [thumbnailImage, setThumbnailImage] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
-
     /** Listen on param slug changes */
     useEffect(() => {
         // Get Course Details
@@ -83,11 +82,7 @@ export default function editCourse({ params }) {
                 <div className="col-md-3">
                     <h5>Course Thumbnail Image</h5>
                     <img
-                        src={
-                            thumbnailImage
-                                ? thumbnailImage
-                                : course.thumbnail
-                        }
+                        src={thumbnailImage ? thumbnailImage : course.thumbnail}
                         className="thumbnail-image course"
                         alt="thumbnail"
                     />
