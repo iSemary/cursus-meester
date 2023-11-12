@@ -43,7 +43,7 @@ class Lecture extends Model {
     }
 
     public function getMediaFileAttribute() {
-        return LectureFile::getMediaFile($this->lecture_media_id);
+        return $this->lecture_media_id ? LectureFile::getMediaFile($this->lecture_media_id) : null;
     }
 
     public function getAdditionalFilesAttribute() {
