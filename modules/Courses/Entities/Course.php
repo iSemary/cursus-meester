@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Utilities\Currency;
 use App\Models\Utilities\Language;
+use App\Services\Uploader\FileHandler;
 use modules\Categories\Entities\Category;
 use modules\Organizations\Entities\Organization;
 
 class Course extends Model {
     use HasFactory, SoftDeletes;
+
+    protected $filePath = "courses/thumbnails";
 
     protected $fillable = [
         'title',
@@ -73,7 +76,7 @@ class Course extends Model {
         return $finalPrice;
     }
 
-    
+
     public function getStatusAttribute() {
         $status = "Active";
         if ($this->published_at > now()) {
@@ -120,5 +123,26 @@ class Course extends Model {
 
     public function  scopeOwned($query) {
         return $query->where("user_id", auth()->guard('api')->id());
+    }
+
+    public function setThumbnailAttribute($value) {
+        $thumbnail = $this->thumbnail;
+        if ($value) {
+            // Remove old image if exists
+            if ($this->thumbnail) {
+                FileHandler::delete([$this->filePath . $this->thumbnail, $this->filePath . 'thumbnails/' . $this->thumbnail]);
+            }
+            // store uploaded image
+            $thumbnail = FileHandler::image($value, $this->filePath, false);
+            $this->attributes['thumbnail'] = basename($thumbnail);
+        }
+    }
+
+    public function getThumbnailAttribute($value): string {
+        if ($value) {
+            return asset('storage/' . $this->filePath . '/' . $value);
+        } else {
+            return asset('storage/' . $this->filePath . '/' . 'default.png');
+        }
     }
 }

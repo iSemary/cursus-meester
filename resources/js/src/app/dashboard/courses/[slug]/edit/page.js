@@ -76,6 +76,7 @@ export default function editCourse({ params }) {
                     handleSubmitCourse={handleSubmitCourse}
                     formLoading={formLoading}
                     setFormLoading={setFormLoading}
+                    btnLabel="Update"
                 />
 
                 <hr />
@@ -85,7 +86,7 @@ export default function editCourse({ params }) {
                         src={
                             thumbnailImage
                                 ? thumbnailImage
-                                : "https://placehold.co/600x400/EEE/31343C"
+                                : course.thumbnail
                         }
                         className="thumbnail-image course"
                         alt="thumbnail"

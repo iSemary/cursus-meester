@@ -224,4 +224,35 @@ hr {
   height: 400px;
   border: 2px dashed #6366f1; }
 
+.dropdown-icon {
+  font-size: 19px;
+  margin-right: 0.3rem;
+  color: grey; }
+  .dropdown-icon path {
+    stroke: grey; }
+
+.dashboard-sidebar .p-sidebar-content {
+  padding: 0; }
+  .dashboard-sidebar .p-sidebar-content .p-menu {
+    width: 100%; }
+
+.dashboard-logo-link {
+  text-decoration: none;
+  color: #6366f1; }
+
+#avatarUpload {
+  display: none; }
+
+.avatar-image.settings {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px; }
+
+.upload-avatar {
+  position: absolute;
+  right: 1px;
+  bottom: 1px; }
+  .upload-avatar button {
+    border-radius: 10px; }
+
 /*# sourceMappingURL=panel.css.map */

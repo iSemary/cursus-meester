@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('slug', 255)->unique();
             $table->string('description', 1024);
             $table->string('logo', 255)->nullable();
-            $table->integer('industry_id', 255)->nullable();
+            $table->integer('industry_id')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->softDeletes();
             $table->timestamps();

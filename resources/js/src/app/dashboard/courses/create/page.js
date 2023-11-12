@@ -85,6 +85,7 @@ export default function createCourse() {
                     handleSubmitCourse={handleSubmitCourse}
                     formLoading={formLoading}
                     setFormLoading={setFormLoading}
+                    btnLabel="Save and Create lectures"
                 />
                 <hr />
                 <div className="col-md-3">

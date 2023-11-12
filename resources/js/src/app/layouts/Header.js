@@ -8,13 +8,15 @@ import { useAuth } from "../components/hooks/AuthProvider";
 import { Button, Dropdown } from "react-bootstrap";
 import axiosConfig from "../components/axiosConfig/axiosConfig";
 import { Token } from "../components/utilities/Authentication/Token";
-
+import { useRouter } from "next/navigation";
 const Header = () => {
+    const router = useRouter();
     const { user } = useAuth(); // Get auth data
 
     const handleLogout = (e) => {
         axiosConfig.post("/auth/logout").then(() => {
             Token.explode();
+            router.push("/");
         });
     };
 
@@ -107,7 +109,7 @@ const Header = () => {
                                             href="/profile"
                                             className="btn btn-primary split-main-button"
                                         >
-                                            {user.data.user.full_name}
+                                            {user.data.data.user.full_name}
                                         </Link>
                                         <Dropdown.Toggle
                                             split

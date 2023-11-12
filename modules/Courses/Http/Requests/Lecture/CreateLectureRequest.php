@@ -17,10 +17,10 @@ class CreateLectureRequest extends FormRequest {
         return [
             'course_id' => 'required|numeric',
             'title' => 'required|max:255',
-            'slug' => 'required|string|max:255|unique:courses,slug',
+            // 'slug' => 'required|string|max:255|unique:lectures,slug',
             'description' => 'required|string|max:5000',
             'order_number' => 'required|numeric',
-            'file' => 'required|file|mimes:mp4,mov,avi,wmv|max:' . $maxFileSize,
+            'media_file' => 'required|file|mimes:mp4,mov,avi,wmv|max:' . $maxFileSize,
         ];
     }
 

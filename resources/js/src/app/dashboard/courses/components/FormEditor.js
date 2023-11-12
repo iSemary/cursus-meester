@@ -25,6 +25,7 @@ export default function FormEditor({
     formLoading,
     setFormLoading,
     handleSubmitCourse,
+    btnLabel,
 }) {
     const [categories, setCategories] = useState([]);
     const [languages, setLanguages] = useState([]);
@@ -139,7 +140,6 @@ export default function FormEditor({
                         options={levels}
                         optionLabel="title"
                         optionValue="id"
-                        editable
                         placeholder="Level"
                         className="w-full md:w-14rem"
                         name="skill_level"
@@ -156,7 +156,6 @@ export default function FormEditor({
                         options={categories}
                         optionLabel="title"
                         optionValue="id"
-                        editable
                         placeholder="Category"
                         className="w-full md:w-14rem"
                         name="category_id"
@@ -173,7 +172,6 @@ export default function FormEditor({
                         options={languages}
                         optionLabel="name"
                         optionValue="id"
-                        editable
                         placeholder="Course language"
                         className="w-full md:w-14rem"
                         name="language_id"
@@ -308,7 +306,7 @@ export default function FormEditor({
             </div>
             <div className="text-right">
                 <Button
-                    label="Update"
+                    label={btnLabel}
                     icon="pi pi-save"
                     type="submit"
                     loading={formLoading}

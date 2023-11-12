@@ -23,7 +23,12 @@ class OrganizationController extends ApiController {
      * fetched successfully', and an array of organizations.
      */
     public function index(Request $request): JsonResponse {
-        $organizations = Organization::orderBy('name', "DESC")->paginate(20);
+        $organizations = Organization::orderBy('name', "DESC")->when($request->all, function ($query) {
+            return $query->get();
+        }, function ($query) {
+            return $query->paginate(20);
+        });
+        
         return $this->return(200, 'Organizations fetched successfully', ['organizations' => $organizations]);
     }
 

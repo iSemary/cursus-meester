@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\Lectures\Http\Controllers\Api;
+namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Services\Formatter\Slug;
@@ -24,6 +24,13 @@ class LectureController extends ApiController {
      */
     public function index(Request $request): JsonResponse {
         $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(20);
+        return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
+    }
+
+
+    public function getCourseLectures(string $slug): JsonResponse {
+        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')->where('courses.slug', $slug)
+            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(20);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
@@ -57,9 +64,11 @@ class LectureController extends ApiController {
      */
     public function store(CreateLectureRequest $createLectureRequest): JsonResponse {
         // create a new lecture from the validated data
-        $courseData = $createLectureRequest->validated();
+        $courseData = $createLectureRequest->all();
         $courseData['user_id'] = auth()->guard('api')->id();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
+        $courseData['media_file'] = $createLectureRequest->file('media_file');
+        // Create lecture row, with it's files: media video file, and additional files
         Lecture::create($courseData);
         return $this->return(200, 'Lecture Added Successfully');
     }
