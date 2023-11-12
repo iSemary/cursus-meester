@@ -15,8 +15,9 @@ return new class extends Migration {
             $table->id();
             $table->integer('course_id');
             $table->string('title', 255);
+            $table->string('slug', 255)->unique();
             $table->text('description', 1024);
-            $table->string('file_name', 255)->nullable();
+            $table->integer('lecture_media_id')->nullable();
             $table->integer('order_number')->default(1);
             $table->softDeletes();
             $table->timestamps();

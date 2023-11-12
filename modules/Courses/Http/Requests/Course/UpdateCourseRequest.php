@@ -3,8 +3,11 @@
 namespace modules\Courses\Http\Requests\Course;
 
 use Illuminate\Foundation\Http\FormRequest;
+use modules\Courses\Entities\Course;
+use Illuminate\Http\Request;
 
 class UpdateCourseRequest extends FormRequest {
+    protected $course;
 
     /**
      * Get the validation rules that apply to the request.
@@ -12,19 +15,20 @@ class UpdateCourseRequest extends FormRequest {
      * @return array
      */
     public function rules() {
+
         return [
-            'title' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255|unique:courses,slug,' . $this->course->slug,
-            'description' => 'sometimes|string|max:5000',
-            'content' => 'sometimes|string',
-            'thumbnail' => 'sometimes|image|mimes:jpeg,png|max:2048',
-            'skill_level' => 'sometimes|in:1,2,3',
-            'category_id' => 'sometimes|exists:categories,id',
-            'organization_id' => 'sometimes|exists:organizations,id',
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:courses,slug,' . $this->course->id,
+            'description' => 'required|string|max:5000',
+            'content' => 'required|string',
+            // 'thumbnail' => 'sometimes|image|mimes:jpeg,png|max:2048',
+            'skill_level' => 'required|in:1,2,3',
+            'category_id' => 'required|exists:categories,id',
+            // 'organization_id' => 'nullable',
             'language_id' => 'sometimes|exists:languages,id',
             'currency_id' => 'sometimes|exists:currencies,id',
             'price' => 'sometimes|numeric|min:0',
-            'offer_price' => 'sometimes|numeric|min:0',
+            'offer_price' => 'nullable|in:true,false',
             'offer_percentage' => 'sometimes|numeric|between:0,100',
             'offer_expired_at' => 'sometimes|date',
             'published_at' => 'sometimes|date',
@@ -37,6 +41,8 @@ class UpdateCourseRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
+        $slug = $this->route('course');
+        $this->course = Course::where("slug", $slug)->owned()->first();
         return true;
     }
 }

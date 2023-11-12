@@ -5,39 +5,47 @@ import React, { Suspense, useRef } from "react";
 import { useVisibility } from "../../components/utilities/dashboard/SidebarVisibility";
 import { SplitButton } from "primereact/splitbutton";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import axiosConfig from "../../components/axiosConfig/axiosConfig";
+import { useAuth } from "../../components/hooks/AuthProvider";
 
 export default function DashboardHeader() {
     const messagesPanel = useRef(null);
     const notificationsPanel = useRef(null);
     const { isVisible, setIsVisible } = useVisibility();
     const router = useRouter();
+    const { user } = useAuth(); // Get auth data
     const dropDownItems = [
         {
             label: "Settings",
             icon: "pi pi-cog",
             command: () => {
-                router.push('/dashboard/settings');
+                router.push("/dashboard/settings");
             },
         },
         {
             label: "Logout",
             icon: "pi pi-times",
             command: () => {
-                // TODO Call logout API
-                // TODO Then redirect to login page
+                axiosConfig.post("/auth/logout").then(() => {
+                    Token.explode();
+                    router.push("/");
+                });
             },
         },
     ];
-
+    console.log(user);
     return (
         <Suspense fallback={<h2>"Loading header..."</h2>}>
             <header className="px-3 mb-3 border-bottom">
                 <div className="container mt-0 ">
                     <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                         {/* Left Side */}
-                        <Link href="/dashboard/">
-                            <i className="pi pi-user"></i>
+                        <Link
+                            href="/dashboard/"
+                            className="dashboard-logo-link"
+                        >
+                            {process.env.NEXT_PUBLIC_APP_NAME}
                         </Link>
                         <div className="col-12 col-lg-auto me-lg-auto mb-2 ">
                             <Button
@@ -99,12 +107,18 @@ export default function DashboardHeader() {
                             <SplitButton
                                 label={
                                     <Link
-                                        href="/instructors/ahmedali"
+                                        href={
+                                            "/instructors/" +
+                                            user?.data?.data?.user.username
+                                        }
                                         target="_blank"
                                     >
                                         <img
-                                            src="https://github.com/mdo.png"
-                                            alt="mdo"
+                                            src={
+                                                user?.data?.data
+                                                    ?.instructor_profile.avatar
+                                            }
+                                            alt="profile"
                                             width="32"
                                             height="32"
                                             className="rounded-circle"

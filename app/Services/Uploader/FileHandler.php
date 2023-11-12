@@ -2,6 +2,8 @@
 
 namespace App\Services\Uploader;
 
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
@@ -22,9 +24,9 @@ class FileHandler {
      * 
      * @return string the path of the saved image file.
      */
-    public static function image($file, string $path, int $width = 512, int $height = 512): string {
+    public static function image($file, string $path, bool $createThumbnail = false, int $width = 512, int $height = 512): string {
         // `Unique filename
-        $filename = Str::uuid();
+        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $image = Image::make($file);
 
         // Resize the image
@@ -35,7 +37,7 @@ class FileHandler {
         // Save the image to the specified path
         Storage::disk('public')->put($path . '/' . $filename, $image->encode());
         // create a thumbnail
-        self::thumbnail($file, $filename, $path . '/thumbnails');
+        if ($createThumbnail) self::thumbnail($file, $filename, $path . '/thumbnails');
         // Return the path
         return $path . '/' . $filename;
     }
@@ -65,6 +67,47 @@ class FileHandler {
         Storage::disk('public')->put($thumbnailPath . '/' . $filename, $image->encode());
     }
 
+
+    public static function file($file, string $path, int $type = null): JsonResponse {
+        try {
+            $extra = [];
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $fileSize = $file->getSize();
+            // Unique filename
+            $hashName = Str::uuid();
+
+            $fullPath = $path . '/' . $hashName . '.' . $extension;
+
+
+            Storage::disk('public')->putFileAs($path, $file, $hashName . '.' . $extension);
+
+            if (Storage::disk('public')->exists($fullPath)) {
+                // Switch between file types to append extra data into the response
+                switch ($type) {
+                    case 2: // Video
+                        $extra['duration'] = self::calculateVideoDuration(public_path() . '/storage/' . $fullPath);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return response()->json([
+                'original_file_name' => $originalName,
+                'hash_name' => $hashName,
+                'extension' => $extension,
+                'size' => $fileSize,
+                'extra' => $extra
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+            ], 400);
+        }
+    }
+
     /**
      * The function deletes multiple files from the public disk in a Laravel application.
      * 
@@ -76,5 +119,11 @@ class FileHandler {
                 Storage::disk('public')->delete($file);
             }
         }
+    }
+
+    private static function calculateVideoDuration($filePath): string {
+        $getID3 = new \getID3;
+        $file = $getID3->analyze($filePath);
+        return $file['playtime_seconds'];
     }
 }

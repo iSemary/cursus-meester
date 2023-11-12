@@ -15,7 +15,10 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('lecture_id');
             $table->string('original_name', 255);
-            $table->string('name', 255);
+            $table->string('hash_name', 255);
+            $table->char('extension', 10);
+            $table->integer('size')->nullable();
+            $table->integer('duration')->nullable()->comment('in seconds');
             $table->softDeletes();
             $table->timestamps();
         });

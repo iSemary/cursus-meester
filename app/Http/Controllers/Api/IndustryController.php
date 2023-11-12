@@ -23,7 +23,12 @@ class IndustryController extends ApiController {
      * fetched successfully', and an array of industries.
      */
     public function index(Request $request): JsonResponse {
-        $industries = Industry::orderBy('title', "DESC")->paginate(20);
+        $industries = Industry::orderBy('title', "DESC")->when($request->all, function ($query) {
+            return $query->get();
+        }, function ($query) {
+            return $query->paginate(20);
+        });
+        
         return $this->return(200, 'Industry fetched successfully', ['industries' => $industries]);
     }
 

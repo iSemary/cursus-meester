@@ -33,10 +33,9 @@ export const Token = {
         });
     },
     getUser() {
-        // Check storage token is expired or not [Returns True/False]
         return new Promise((resolve, reject) => {
             axios
-                .get(process.env.NEXT_PUBLIC_API_URL + "/auth/user", {
+                .get(process.env.NEXT_PUBLIC_API_URL + "/user/profile", {
                     headers: {
                         Authorization: "Bearer " + this.get(),
                     },

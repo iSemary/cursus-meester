@@ -23,7 +23,11 @@ class CategoryController extends ApiController {
      * fetched successfully', and an array of categories.
      */
     public function index(Request $request): JsonResponse {
-        $categories = Category::orderBy('title', "DESC")->paginate(20);
+        $categories = Category::orderBy('title', "DESC")->when($request->all, function ($query) {
+            return $query->get();
+        }, function ($query) {
+            return $query->paginate(20);
+        });
         return $this->return(200, 'Categories fetched successfully', ['categories' => $categories]);
     }
 

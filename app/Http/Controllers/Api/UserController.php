@@ -62,7 +62,7 @@ class UserController extends ApiController {
 
         $response->user = $user;
         $response->student_profile = (object) StudentProfile::select(['bio', 'position', 'avatar'])->where("user_id", $user->id)->first();
-        $response->instructor_profile = (object) InstructorProfile::select(['bio', 'position'])->where("user_id", $user->id)->first();
+        $response->instructor_profile = (object) InstructorProfile::select(['bio', 'position', 'industry_id', 'organization_id', 'avatar'])->where("user_id", $user->id)->first();
         $response->social_links = (object) ProfileSocialLink::select(['link_type', 'link_url'])->where("user_id", $user->id)->get();
 
         return $this->return(200, "User details fetched successfully", ['data' => $response]);

@@ -134,13 +134,11 @@ export default function Profile() {
     const handleSaveSettings = (e) => {
         e.preventDefault();
         // Preparing form data
-        const formData = new FormData();
-        formData.append("new_avatar", newAvatar);
         axiosConfig
             .post(
                 "/student/profile",
                 {
-                    new_avatar: formData,
+                    new_avatar: newAvatar,
                     ...userDetails,
                     ...profile,
                     social_links: socialLinks,
@@ -250,7 +248,7 @@ export default function Profile() {
                                     src={
                                         newAvatarImage
                                             ? newAvatarImage
-                                            : "https://github.com/mdo.png"
+                                            : profile.avatar
                                     }
                                     className="avatar-image settings"
                                     alt="avatar"

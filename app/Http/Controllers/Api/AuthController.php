@@ -104,12 +104,14 @@ class AuthController extends ApiController {
      * 
      * @return User the updated User object with the added access_token property.
      */
-    public function collectUserDetails(User $user): User {
+    public function collectUserDetails(User $user, bool $generateToken = true): User {
         // Invoke authentication token
-        $accessToken = $user->createToken('web-app')->accessToken;
         // Fetch only specific data of user model
         $user = $user->select('full_name', 'email', 'created_at')->first();
-        $user['access_token'] = $accessToken;
+        if ($generateToken) {
+            $accessToken = $user->createToken('web-app')->accessToken;
+            $user['access_token'] = $accessToken;
+        }
         return $user;
     }
 
@@ -287,7 +289,7 @@ class AuthController extends ApiController {
      */
     public function getUser(): JsonResponse {
         $auth = auth()->guard('api')->user();
-        $user = $this->collectUserDetails($auth);
+        $user = $this->collectUserDetails($auth, false);
         return $this->return(200, "User fetched successfully", ['user' => $user]);
     }
 

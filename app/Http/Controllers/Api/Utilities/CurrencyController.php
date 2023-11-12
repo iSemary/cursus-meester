@@ -22,7 +22,12 @@ class CurrencyController extends ApiController {
      * fetched successfully', and an array of currencies.
      */
     public function index(Request $request): JsonResponse {
-        $currencies = Currency::orderBy('name', 'ASC')->paginate(20);
+        $currencies = Currency::orderBy('name', 'ASC')->when($request->all, function ($query) {
+            return $query->get();
+        }, function ($query) {
+            return $query->paginate(20);
+        });
+        
         return $this->return(200, 'Currency fetched successfully', ['currencies' => $currencies]);
     }
 

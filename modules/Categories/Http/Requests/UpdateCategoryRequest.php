@@ -3,9 +3,10 @@
 namespace modules\Categories\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use modules\Categories\Entities\Category;
 
 class UpdateCategoryRequest extends FormRequest {
-
+    protected $category;
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,6 +29,8 @@ class UpdateCategoryRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
+        $slug = $this->route('category');
+        $this->category = Category::where("slug", $slug)->owned()->first();
         return true;
     }
 }

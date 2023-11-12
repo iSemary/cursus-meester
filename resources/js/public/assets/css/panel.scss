@@ -1,5 +1,5 @@
-$thumbnailWidth : 600px;
-$thumbnailHeight : 400px;
+$thumbnailWidth: 600px;
+$thumbnailHeight: 400px;
 
 .no-shadows {
     box-shadow: none;
@@ -279,9 +279,6 @@ hr {
     text-align: right;
 }
 
-.upload-thumbnail {
-}
-
 #thumbnailUpload {
     display: none;
 }
@@ -297,4 +294,44 @@ hr {
     max-height: $thumbnailHeight;
     height: $thumbnailHeight;
     border: 2px dashed #6366f1;
+}
+
+.dropdown-icon {
+    font-size: 19px;
+    margin-right: 0.3rem;
+    color: grey;
+    path {
+        stroke: grey;
+    }
+}
+
+.dashboard-sidebar {
+    .p-sidebar-content {
+        padding: 0;
+        .p-menu {
+            width: 100%;
+        }
+    }
+}
+.dashboard-logo-link {
+    text-decoration: none;
+    color: #6366f1;
+}
+
+#avatarUpload {
+    display: none;
+}
+.avatar-image.settings {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+}
+
+.upload-avatar {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    button {
+        border-radius: 10px;
+    }
 }

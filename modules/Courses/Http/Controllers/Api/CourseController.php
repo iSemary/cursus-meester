@@ -75,8 +75,10 @@ class CourseController extends ApiController {
         $courseData = $createCourseRequest->validated();
         $courseData['user_id'] = auth()->guard('api')->id();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
+        $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
+        $courseData['currency_id'] = 1;
         Course::create($courseData);
-        return $this->return(200, 'Course Added Successfully');
+        return $this->return(200, 'Course Added Successfully', ['slug' => $courseData['slug']]);
     }
 
 
@@ -99,7 +101,11 @@ class CourseController extends ApiController {
             return $this->return(400, 'Course not exists');
         }
         // Update the course with the validated data
-        $course->update($updateCourseRequest->validated());
+        $courseData = $updateCourseRequest->validated();
+        $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
+        $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
+        $courseData['currency_id'] = 1;
+        $course->update($courseData);
         return $this->return(200, 'Course updated Successfully');
     }
 

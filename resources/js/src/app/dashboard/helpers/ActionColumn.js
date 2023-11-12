@@ -1,7 +1,7 @@
 import React from "react";
 import { SplitButton } from "primereact/splitbutton";
 
-export default function ActionColumn() {
+export default function ActionColumn({id}) {
     const items = [
         {
             label: "Edit",
