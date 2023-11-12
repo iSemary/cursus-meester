@@ -124,15 +124,21 @@ const Register = () => {
                 windowTop
         );
 
-        // Listen for the message from the popup window
-        window.addEventListener("message", (event) => {
-            // Ensure the message is from a trusted source (your backend)
-            // if (event.origin === process.env.NEXT_PUBLIC_URL) {
-            // Access the user data from the message
-            const userData = event.data.user;
-            // Do something with the user data (e.g., set it in your React state)
-            console.log(userData);
-            // }
+        // window.addEventListener(
+        //     "message",
+        //     function () {
+        //         console.log("message received");
+        //     },
+        //     false
+        // );
+        window.addEventListener("message", function (event) {
+            if (
+                event.origin === "http://127.0.0.1:3000"
+            ) {
+                console.log(event);
+                console.log(event.data);
+                console.log(event.data.data);
+            }
         });
     };
 

@@ -1,12 +1,10 @@
 @if (isset($formattedUser))
-    <?php
-    setcookie('user', 'John', time() + 7 * 24 * 60 * 60, '/');
-    
-    ?>
     <script>
+        const formattedUserData = <?php echo json_encode($formattedUser); ?>;
         window.opener.postMessage({
-            user: {!! json_encode($formattedUser) !!}
-        }, "{{ env('APP_URL') }}/");
+            type: 'userData',
+            data: formattedUserData
+        }, 'http://127.0.0.1:3000');
         window.close();
     </script>
 @else
