@@ -123,7 +123,7 @@ class LectureController extends ApiController {
             $lectureFile->delete();
         }
 
-        return $this->return(200, 'Lecture file deleted Successfully', [''=>$lectureFileId, '2'=>$lectureFile]);
+        return $this->return(200, 'Lecture file deleted Successfully', ['' => $lectureFileId, '2' => $lectureFile]);
     }
 
     /**
@@ -136,12 +136,24 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function destroy(string $slug): JsonResponse {
-        $lecture = Lecture::where("lectures.slug", $slug)->owned()->first();
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');
         }
         $lecture->delete();
+        return $this->return(200, 'Lecture deleted Successfully');
+    }
+
+
+
+    public function restore(string $slug): JsonResponse {
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->withTrashed()->first();
+        // Checking if the lecture not exists
+        if (!$lecture) {
+            return $this->return(400, 'Lecture not exists');
+        }
+        $lecture->restore();
         return $this->return(200, 'Lecture deleted Successfully');
     }
 }

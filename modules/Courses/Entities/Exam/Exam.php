@@ -10,4 +10,8 @@ class Exam extends Model {
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['lecture_id', 'title', 'description', 'lecture_id', 'status'];
+
+    public function scopeOwned($query) {
+        return $query->leftJoin('courses', 'courses.id', 'lectures.course_id')->where("courses.user_id", auth()->guard('api')->id());
+    }
 }

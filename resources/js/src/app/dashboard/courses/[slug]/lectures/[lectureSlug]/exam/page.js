@@ -5,7 +5,7 @@ import DashboardTitle from "../../../../../../layouts/dashboard/DashboardTitle";
 export default function Exams({ params }) {
     return (
         <DashboardTemplate>
-            <DashboardTitle
+            {/* <DashboardTitle
                 title={`Edit "${params.lectureSlug}" lecture`}
                 path={[
                     { label: "Courses", url: "/dashboard/courses" },
@@ -29,7 +29,7 @@ export default function Exams({ params }) {
                 setFormLoading={setFormLoading}
                 handleSubmitLecture={handleSubmitLecture}
                 btnLabel="Save"
-            />
+            /> */}
         </DashboardTemplate>
     );
 }

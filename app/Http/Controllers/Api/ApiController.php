@@ -25,7 +25,7 @@ class ApiController extends Controller {
      * 
      * @return JsonResponse a JsonResponse object.
      */
-    public function return(int $status, string $message = '', array $data = [], array $errors = []): JsonResponse {
+    public function return(int $status, string $message = '', array $data = [], array $errors = [], mixed $debug = []): JsonResponse {
         $response = new stdClass();
         $response->status = $status;
         $response->success = $status == 200 ? true : false;
@@ -33,6 +33,7 @@ class ApiController extends Controller {
         $response->data = $data;
         $response->errors = $errors;
         $response->timestamp = time();
+        if (env("APP_DEBUG")) $response->debug = $debug;
         return response()->json($response, $status);
     }
 }

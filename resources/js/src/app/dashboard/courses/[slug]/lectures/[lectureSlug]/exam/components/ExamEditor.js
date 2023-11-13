@@ -8,6 +8,8 @@ import { ImFileText2 } from "react-icons/im";
 import { MdOutlineTitle } from "react-icons/md";
 import { Checkbox } from "primereact/checkbox";
 import { ToggleButton } from "primereact/togglebutton";
+import axiosConfig from "../../../../../../../components/axiosConfig/axiosConfig";
+import toastAlert from "../../../../../../../components/utilities/Alert";
 
 export default function ExamEditor({
     exam,
@@ -21,22 +23,22 @@ export default function ExamEditor({
     // Default Options used for creating a new single/choice question
     const initialOptions = [
         {
-            valid_option: 1,
+            valid_answer: 1,
             title: "Yes",
             order_number: 1,
         },
         {
-            valid_option: 0,
+            valid_answer: 0,
             title: "No",
             order_number: 2,
         },
         {
-            valid_option: 0,
+            valid_answer: 0,
             title: "Other",
             order_number: 3,
         },
         {
-            valid_option: 0,
+            valid_answer: 0,
             title: "All the above",
             order_number: 4,
         },
@@ -85,12 +87,12 @@ export default function ExamEditor({
             updatedQuestions
                 .find((question) => question.id === questionId)
                 .options.forEach((option) => {
-                    option.valid_option = 0;
+                    option.valid_answer = 0;
                 });
 
             updatedQuestions.find(
                 (question) => question.id === questionId
-            ).options[optionId].valid_option = 1;
+            ).options[optionId].valid_answer = 1;
         } else {
             // update the current option with opposite of the current option [if the current option is 1 then make it 0]
             // Note: +true => 1 | +false => 0 [Bool to int conversion]
@@ -99,8 +101,8 @@ export default function ExamEditor({
             );
             updatedQuestions.find(
                 (question) => question.id === questionId
-            ).options[optionId].valid_option =
-                +!currentQuestion.options[optionId].valid_option;
+            ).options[optionId].valid_answer =
+                +!currentQuestion.options[optionId].valid_answer;
         }
 
         setExamQuestions(updatedQuestions);
@@ -131,7 +133,15 @@ export default function ExamEditor({
     };
 
     /** Remove the selected question */
-    const removeQuestion = (index) => {
+    const removeQuestion = (index, questionId) => {
+        if (questionId > 0) {
+            axiosConfig
+                .delete(`exams/${exam.id}/questions/${questionId}`)
+                .then((response) => {})
+                .catch((error) => {
+                    toastAlert(error, "error");
+                });
+        }
         const updatedQuestions = [...examQuestions];
         updatedQuestions.splice(index, 1);
         setExamQuestions(updatedQuestions);
@@ -253,7 +263,9 @@ export default function ExamEditor({
                         <div className="col-md-2">
                             <Button
                                 icon="pi pi-trash"
-                                onClick={() => removeQuestion(i)}
+                                onClick={() =>
+                                    removeQuestion(i, examQuestion.id)
+                                }
                                 className="p-button-danger"
                                 type="button"
                             />
@@ -288,7 +300,7 @@ export default function ExamEditor({
                                                 : "checkbox"
                                         }
                                         checked={
-                                            option.valid_option ? "checked" : ""
+                                            option.valid_answer ? "checked" : ""
                                         }
                                         onChange={(e) =>
                                             handleChangeQuestionOptionValid(
@@ -297,7 +309,7 @@ export default function ExamEditor({
                                                 optionId
                                             )
                                         }
-                                        name={`valid_option[${examQuestion.id}][${optionId}]`}
+                                        name={`valid_answer[${examQuestion.id}][${optionId}]`}
                                         className="me-3 position-absolute question-option-input"
                                     />
                                 </div>

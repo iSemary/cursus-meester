@@ -10,39 +10,42 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
+import { MdRestore } from "react-icons/md";
 export default function viewLectures({ params }) {
     const router = useRouter();
     /** Split button items */
-    const dropDownItems = (slug) => [
+    const dropDownItems = (row) => [
         {
             label: "Add Exam",
             icon: "pi pi-file",
             command: () => {
                 // Add or edit exam
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}/exam/editor`
+                    `/dashboard/courses/${params.slug}/lectures/${row.cells[1].data}/exam/editor`
                 );
             },
         },
         {
+            // Edit lecture
             label: "Edit",
             icon: "pi pi-file-edit",
             command: () => {
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}/edit`
+                    `/dashboard/courses/${params.slug}/lectures/${row.cells[1].data}/edit`
                 );
             },
         },
         {
-            label: "Delete",
-            icon: "pi pi-trash",
+            // Restore or delete lecture
+            label: row.cells[6].data ? "Restore"  : "Delete",
+            icon: row.cells[6].data ? <MdRestore className="dropdown-icon" /> : "pi pi-trash",
             command: () => {
-                handleDeleteCourse(slug);
+                row.cells[6].data ? handleRestoreLecture(row.cells[1].data) : handleDeleteLecture(row.cells[1].data);
             },
         },
     ];
-    /** Delete course by slug */
-    const handleDeleteCourse = (slug) => {
+    /** Delete lecture by slug */
+    const handleDeleteLecture = (slug) => {
         Swal.fire({
             title: "Are you sure you want to delete this lecture?",
             showCancelButton: true,
@@ -62,6 +65,31 @@ export default function viewLectures({ params }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 toastAlert("Lecture deleted successfully", "success");
+            }
+        });
+    };
+    
+    /** Restore lecture by slug */
+    const handleRestoreLecture = (slug) => {
+        Swal.fire({
+            title: "Are you sure you want to restore this lecture?",
+            showCancelButton: true,
+            confirmButtonText: "Restore",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return axiosConfig
+                    .post("/lectures/restore/" + slug)
+                    .then((response) => {
+                        return true;
+                    })
+                    .catch((error) => {
+                        Swal.showValidationMessage(`Something went wrong`);
+                    });
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastAlert("Lecture restored successfully", "success");
             }
         });
     };
@@ -90,6 +118,7 @@ export default function viewLectures({ params }) {
                             lecture.total_files,
                             lecture.has_exam,
                             lecture.status,
+                            lecture.deleted_at,
                         ]),
                     total: (data) => data.data.lectures.total,
                 }}
@@ -130,7 +159,7 @@ export default function viewLectures({ params }) {
                                     }
                                     raised
                                     rounded
-                                    model={dropDownItems(row.cells[1].data)}
+                                    model={dropDownItems(row)}
                                 />
                             );
                         },
