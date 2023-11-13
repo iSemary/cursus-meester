@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import DashboardTemplate from "../../../../../../../Templates/DashboardTemplate";
 import DashboardTitle from "../../../../../../../layouts/dashboard/DashboardTitle";
 import ExamEditor from "../components/ExamEditor";
+import { PiExamDuotone } from "react-icons/pi";
 
 export default function examEditor({ params }) {
     const initialExam = {
@@ -13,42 +14,61 @@ export default function examEditor({ params }) {
     const [exam, setExam] = useState(initialExam);
     const initialQuestion = [
         {
+            id: 1,
             title: "Open Question Example",
             type: 1,
         },
         {
+            id: 2,
             title: "Single Choice Question Example",
             type: 2,
             options: [
                 {
+                    valid_option: 1,
                     title: "Yes",
                     order_number: 1,
                 },
                 {
+                    valid_option: 0,
                     title: "No",
                     order_number: 2,
                 },
                 {
-                    title: "Others",
+                    valid_option: 0,
+                    title: "Other",
                     order_number: 3,
+                },
+                {
+                    valid_option: 0,
+                    title: "All the above",
+                    order_number: 4,
                 },
             ],
         },
         {
+            id: 3,
             title: "Multiple Choices Question Example",
             type: 3,
             options: [
                 {
+                    valid_option: 0,
                     title: "Yes",
                     order_number: 1,
                 },
                 {
+                    valid_option: 0,
                     title: "No",
                     order_number: 2,
                 },
                 {
-                    title: "Others",
+                    valid_option: 1,
+                    title: "Other",
                     order_number: 3,
+                },
+                {
+                    valid_option: 0,
+                    title: "All the above",
+                    order_number: 4,
                 },
             ],
         },
@@ -64,7 +84,8 @@ export default function examEditor({ params }) {
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title={`"${params.lectureSlug}" lecture exam`}
+                icon={<PiExamDuotone />}
+                title={`"${params.lectureSlug}" exam`}
                 path={[
                     { label: "Courses", url: "/dashboard/courses" },
                     { label: params.slug },

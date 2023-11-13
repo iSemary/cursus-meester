@@ -2,7 +2,7 @@ import React from "react";
 import { BreadCrumb } from "primereact/breadcrumb";
 import Link from "next/link";
 
-export default function DashboardTitle({ title, path }) {
+export default function DashboardTitle({ icon, title, path }) {
     const items = path.map((element, i) => {
         return { label: element.label, url: element.url };
     });
@@ -13,7 +13,11 @@ export default function DashboardTitle({ title, path }) {
     return (
         <div>
             <BreadCrumb className="border-0" model={items} home={home} />
-            <h1>{title}</h1>
+            <h1 className="d-flex align-items-center">
+                {icon}
+                &nbsp;
+                {title}
+            </h1>
         </div>
     );
 }

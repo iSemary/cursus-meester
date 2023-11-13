@@ -67,8 +67,8 @@ const Register = () => {
                     toastAlert(response.data.message, "error", 5000);
                 }
             })
-            .catch((error) => {
-                toastAlert(error, "error");
+            .catch(({response}) => {
+                toastAlert(response.data.message, "error");
             });
     };
 

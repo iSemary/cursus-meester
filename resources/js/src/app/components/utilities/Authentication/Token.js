@@ -1,4 +1,5 @@
 import axios from "axios";
+import toastAlert from "../Alert";
 
 export const Token = {
     store(token) {
@@ -27,8 +28,8 @@ export const Token = {
                 .then((response) => {
                     resolve(response.data.success);
                 })
-                .catch((error) => {
-                    reject(error);
+                .catch(({ response }) => {
+                    console.log(response.data.message, "error");
                 });
         });
     },
@@ -43,8 +44,8 @@ export const Token = {
                 .then((response) => {
                     resolve(response.data);
                 })
-                .catch((error) => {
-                    reject(error);
+                .catch(({ response }) => {
+                    console.log(response.data.message, "error");
                 });
         });
     },
