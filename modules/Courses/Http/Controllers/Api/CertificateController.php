@@ -2,70 +2,61 @@
 
 namespace modules\Courses\Http\Controllers\Api;
 
-use Illuminate\Contracts\Support\Renderable;
+use App\Http\Controllers\Api\ApiController;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
-class CertificateController extends Controller {
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function index() {
-        return view('courses::index');
+class CertificateController extends ApiController {
+
+    public function claimCertificate(int $courseId): JsonResponse {
+        // Check if user finished all videos
+        $certificateUrl = '';
+
+
+        $data = [
+            'course_name' => 'Master backend development using Laravel 10',
+            'instructor_name' => 'Abdelrahman Mostafa',
+            'student_name' => 'Kevin Khaled Ahmed Mohammed',
+            'reference_number' => '478-WEZ-58A-CSL',
+            'total_hours' => '57',
+            'finished_at' => '04/11/2023',
+        ];
+        $fileName = $this->generateNewCertificateFile($data);
+        return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $certificateUrl]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create() {
-        return view('courses::create');
+    public function getCertificate(string $referenceNumber): JsonResponse {
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request) {
-        //
+    private function sendCertificateViaMail(string $referenceNumber, User $user): void {
     }
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id) {
-        return view('courses::show');
+    private function checkStudentFinishedCourse(int $courseId, int $studentId): bool {
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id) {
-        return view('courses::edit');
+    private function pushCertificateClaimedNotification(int $courseId, int $studentId): void {
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id) {
-        //
-    }
+    private function generateNewCertificateFile(array $data): string {
+        // clone original certificate and create a new file 
+        $fileName =  Str::uuid() . '.pdf';
 
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id) {
-        //
+        // customize the data
+        $pdf = new Fpdi();
+        $pdf->setSourceFile('path/to/existing.pdf');
+        $tpl = $pdf->importPage(1);
+        $pdf->AddPage();
+        $pdf->useTemplate($tpl);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Text(10, 10, 'Modified content');
+
+        $pdf->Output('path/to/new_modified.pdf', 'F');
+
+
+        return $fileName;
     }
 }

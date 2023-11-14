@@ -3,3 +3,5 @@
 /**
 !/**/
 !default.png
+# Remove this when you're in production
+!certificate.pdf 

@@ -29,6 +29,7 @@ class UpdateCourseRequest extends FormRequest {
             'currency_id' => 'sometimes|exists:currencies,id',
             'price' => 'sometimes|numeric|min:0',
             'offer_price' => 'nullable|in:true,false',
+            'has_certificate' => 'nullable|in:true,false,0,1',
             'offer_percentage' => 'sometimes|numeric|between:0,100',
             'offer_expired_at' => 'sometimes|date',
             'published_at' => 'sometimes|date',

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use modules\Courses\Http\Controllers\Api\CertificateController;
 use modules\Courses\Http\Controllers\Api\CourseController;
 use modules\Courses\Http\Controllers\Api\LectureController;
 use modules\Courses\Http\Controllers\Api\RateController;
@@ -18,14 +19,25 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete("lecture-file/{lectureSlug}/{lectureFileId}", [LectureController::class, "deleteFile"]);
     Route::post("lectures/restore/{lectureSlug}", [LectureController::class, "restore"]);
     Route::apiResource('lectures', LectureController::class)->except(['edit', 'create']);
+
     // Exam Routes
-    Route::get("exams/{lectureSlug}", [ExamController::class, "getExamByLecture"]);
-    Route::post("exams/{lectureSlug}", [ExamController::class, "createOrUpdateExamByLecture"]);
-    Route::delete("exams/{examId}/questions/{questionId}", [ExamController::class, "deleteQuestion"]);
+    Route::group(['prefix' => 'exams'], function () {
+        Route::get("{lectureSlug}", [ExamController::class, "getExamByLecture"]);
+        Route::post("{lectureSlug}", [ExamController::class, "createOrUpdateExamByLecture"]);
+        Route::delete("{examId}/questions/{questionId}", [ExamController::class, "deleteQuestion"]);
+    });
 });
 
-
+/** Student Routes */
 Route::group(['middleware' => 'auth:api'], function () {
+    /** Certificate routes */
+    Route::group(['prefix' => 'certificates'], function () {
+        // Claim certificate [Generates new one if finished course]
+        Route::post("{courseId}/claim", [CertificateController::class, "claimCertificate"]);
+        // Get claimed certificate [Fetch exists one]
+        Route::get("{courseId}/get", [CertificateController::class, "getCertificate"]);
+    });
+
     // Submit Rate Route
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
 });

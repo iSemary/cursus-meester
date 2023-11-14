@@ -22,6 +22,7 @@ export default function createCourse() {
         offer_price: 0,
         offer_percentage: 0,
         offer_expired_at: new Date(),
+        has_certificate: 0,
         published_at: new Date(),
     };
 

@@ -40,6 +40,12 @@ export default function FormEditor({
                     offer_price: !course.offer_price,
                 });
                 break;
+            case "has_certificate":
+                setCourse({
+                    ...course,
+                    has_certificate: !course.has_certificate,
+                });
+                break;
             case "organization_id":
                 setCourse({
                     ...course,
@@ -266,6 +272,7 @@ export default function FormEditor({
                         offLabel={"Disable Offer"}
                     />
                 </div>
+
                 <div className="col-md-3 p-inputgroup flex-1">
                     <span className="p-inputgroup-addon">
                         <LuCalendarClock />
@@ -287,6 +294,18 @@ export default function FormEditor({
             </div>
             <hr className="w-50 m-auto my-5" />
             <div className="my-2 row">
+                <div className="col-md-3">
+                    <ToggleButton
+                        checked={course.has_certificate}
+                        onLabel={"Enable Certificate"}
+                        className="w-100"
+                        name="has_certificate"
+                        onChange={handleChangeCourse}
+                        onIcon="pi pi-check"
+                        offIcon="pi pi-times"
+                        offLabel={"Disable Certificate"}
+                    />
+                </div>{" "}
                 <div className="col-md-3 p-inputgroup flex-1">
                     <span className="p-inputgroup-addon">
                         <LuCalendarCheck />

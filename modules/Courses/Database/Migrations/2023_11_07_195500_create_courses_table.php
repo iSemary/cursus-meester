@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->tinyInteger('offer_price')->default(0);
             $table->float('offer_percentage')->unsigned();
             $table->timestamp('offer_expired_at')->nullable();
+            $table->tinyInteger('has_certificate')->default(1);
             $table->timestamp('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

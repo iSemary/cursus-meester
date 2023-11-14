@@ -115,18 +115,20 @@ export default function createLecture({ params }) {
                     { label: "Edit" },
                 ]}
             />
-            <FormEditor
-                lecture={lecture}
-                lectureVideo={lectureVideo}
-                setLectureVideo={setLectureVideo}
-                lectureFiles={lectureFiles}
-                setLectureFiles={setLectureFiles}
-                setLecture={setLecture}
-                formLoading={formLoading}
-                setFormLoading={setFormLoading}
-                handleSubmitLecture={handleSubmitLecture}
-                btnLabel="Update"
-            />
+            {lecture.id && (
+                <FormEditor
+                    lecture={lecture}
+                    lectureVideo={lectureVideo}
+                    setLectureVideo={setLectureVideo}
+                    lectureFiles={lectureFiles}
+                    setLectureFiles={setLectureFiles}
+                    setLecture={setLecture}
+                    formLoading={formLoading}
+                    setFormLoading={setFormLoading}
+                    handleSubmitLecture={handleSubmitLecture}
+                    btnLabel="Update"
+                />
+            )}
         </DashboardTemplate>
     );
 }

@@ -68,15 +68,17 @@ export default function editCourse({ params }) {
                 ]}
             />
             <div>
-                <FormEditor
-                    course={course}
-                    setCourse={setCourse}
-                    setThumbnailImage={setThumbnailImage}
-                    handleSubmitCourse={handleSubmitCourse}
-                    formLoading={formLoading}
-                    setFormLoading={setFormLoading}
-                    btnLabel="Update"
-                />
+                {course.id && (
+                    <FormEditor
+                        course={course}
+                        setCourse={setCourse}
+                        setThumbnailImage={setThumbnailImage}
+                        handleSubmitCourse={handleSubmitCourse}
+                        formLoading={formLoading}
+                        setFormLoading={setFormLoading}
+                        btnLabel="Update"
+                    />
+                )}
 
                 <hr />
                 <div className="col-md-3">

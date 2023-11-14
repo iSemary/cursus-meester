@@ -21,8 +21,10 @@
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
         "rap2hpoutre/laravel-log-viewer": "^2.3",
+        "setasign/fpdi": "^2.5",
         "spatie/laravel-activitylog": "^4.7",
-        "stripe/stripe-php": "^13.2"
+        "stripe/stripe-php": "^13.2",
+        "tecnickcom/tcpdf": "^6.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

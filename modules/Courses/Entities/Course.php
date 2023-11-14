@@ -33,6 +33,7 @@ class Course extends Model {
         'offer_price',
         'offer_percentage',
         'offer_expired_at',
+        'has_certificate',
         'published_at',
     ];
 
