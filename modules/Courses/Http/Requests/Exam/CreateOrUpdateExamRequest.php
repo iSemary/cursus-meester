@@ -17,7 +17,7 @@ class CreateOrUpdateExamRequest extends FormRequest {
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:5000',
-            'status' => 'required|numeric|in:1,0',
+            'status' => 'required',
         ];
     }
 

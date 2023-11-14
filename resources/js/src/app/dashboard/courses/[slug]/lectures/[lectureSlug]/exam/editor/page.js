@@ -5,6 +5,7 @@ import DashboardTitle from "../../../../../../../layouts/dashboard/DashboardTitl
 import ExamEditor from "../components/ExamEditor";
 import { PiExamDuotone } from "react-icons/pi";
 import axiosConfig from "../../../../../../../components/axiosConfig/axiosConfig";
+import toastAlert from "../../../../../../../components/utilities/Alert";
 
 export default function examEditor({ params }) {
     const initialExam = {
@@ -15,12 +16,12 @@ export default function examEditor({ params }) {
     const [exam, setExam] = useState({});
     const initialQuestion = [
         {
-            id: 1,
+            id: -1,
             title: "Open Question Example",
             type: 1,
         },
         {
-            id: 2,
+            id: -2,
             title: "Single Choice Question Example",
             type: 2,
             options: [
@@ -47,7 +48,7 @@ export default function examEditor({ params }) {
             ],
         },
         {
-            id: 3,
+            id: -3,
             title: "Multiple Choices Question Example",
             type: 3,
             options: [
@@ -80,6 +81,29 @@ export default function examEditor({ params }) {
     const handleSubmitForm = (e) => {
         e.preventDefault();
         setFormLoading(true);
+
+        axiosConfig
+            .post(`/exams/${params.lectureSlug}`, {
+                ...exam,
+                questions: examQuestions,
+            })
+            .then((response) => {
+                if (
+                    response.data.data.exam &&
+                    typeof response.data.data.exam == "object" &&
+                    response.data.data.questions &&
+                    typeof response.data.data.questions == "object"
+                ) {
+                    setExam(response.data.data.exam);
+                    setExamQuestions(response.data.data.questions);
+                    toastAlert(response.data.message, "success");
+                    setFormLoading(false);
+                }
+            })
+            .catch(({ response }) => {
+                setFormLoading(false);
+                toastAlert(response.data.message, "error");
+            });
     };
 
     useEffect(() => {

@@ -74,7 +74,7 @@ export default function ExamEditor({
         const updatedQuestions = [...examQuestions];
         updatedQuestions.find((question) => question.id === questionId).options[
             optionId
-        ] = value;
+        ].title = value;
         setExamQuestions(updatedQuestions);
     };
 
@@ -83,6 +83,9 @@ export default function ExamEditor({
         const updatedQuestions = [...examQuestions];
         // check if it's a single choice option
         // then set the other choices as invalid
+        const currentQuestion = updatedQuestions.find(
+            (question) => question.id === questionId
+        );
         if (currentQuestion.type == 2) {
             updatedQuestions
                 .find((question) => question.id === questionId)
@@ -96,9 +99,6 @@ export default function ExamEditor({
         } else {
             // update the current option with opposite of the current option [if the current option is 1 then make it 0]
             // Note: +true => 1 | +false => 0 [Bool to int conversion]
-            const currentQuestion = updatedQuestions.find(
-                (question) => question.id === questionId
-            );
             updatedQuestions.find(
                 (question) => question.id === questionId
             ).options[optionId].valid_answer =
