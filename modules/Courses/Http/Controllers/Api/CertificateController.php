@@ -3,12 +3,15 @@
 namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Jobs\CertificateMailJob;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use modules\Courses\Entities\Certificate;
 use modules\Courses\Entities\Course;
+use modules\Courses\Entities\UserCertificate;
+use modules\Payments\Entities\EnrolledCourse;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 class CertificateController extends ApiController {
@@ -19,38 +22,121 @@ class CertificateController extends ApiController {
     }
 
     public function claimCertificate(int $courseId): JsonResponse {
-        // Check if user finished all videos
-        $certificateUrl = '';
-        $user = User::first();
-        $course = Course::first();
-        $data = $this->prepareDataForCertificate($course, $user);
-        $fileName = $this->generateNewCertificateFile($data);
-        return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $certificateUrl]);
+        $user = auth()->guard('api')->user();
+        $course = Course::where('id', $courseId)->first();
+        if (!$course) {
+            return $this->return(409, 'Course not exists');
+        }
+        // Check if user has enrolled to the course
+        $enrolledCourse = EnrolledCourse::where("user_id", $user->id)->where("course_id", $course->id)->first();
+        if (!$enrolledCourse) {
+            return $this->return(409, 'Course not enrolled');
+        }
+        // Check if user finished all course lectures
+        $checkFinishedCourse = $this->checkStudentFinishedCourse($user->id, $course->id);
+        if (!$checkFinishedCourse) {
+            return $this->return(409, 'You have to finish the course before claiming the certificate');
+        }
+        // Check if user already claimed the certificate
+        $checkClaimedCertificate = $this->getCertificateByCourseId($user->id, $course->id);
+        if ($checkClaimedCertificate) {
+            return $this->return(409, 'You have already claimed this certificate before!');
+        }
+        // prepare required data for generating new certificate
+        $preparedData = $this->prepareDataForCertificate($course, $user);
+        // generate a new certificate file and store it into certificates folder
+        $fileName = $this->generateNewCertificateFile($preparedData);
+        // create a new user certificate record
+        $this->createNewUserCertificate($user->id, $course->id, $preparedData['reference_code'], $fileName);
+        // prepare and append certificate url to the data 
+        $data['certificate_link'] = $this->certificate->storeFilePath . $fileName;
+        // Fire Sending Mail Queue
+        $this->sendCertificateViaMail($preparedData);
+        return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $data['certificate_link']]);
     }
 
-    public function getCertificate(string $referenceNumber): JsonResponse {
-    }
-
-    private function prepareDataForCertificate(Course $course, User $user) {
-        return [
-            'course_name' => 'Master backend development using Laravel 10 Master backend development using Laravel 10',
-            'instructor_name' => 'Abdelrahman Mostafa',
-            'student_name' => 'Kevin Khaled Ahmed Mohammed',
-            'reference_number' => '478-WEZ-58A-CSL',
-            'course_duration' => '57',
-            'finished_at' => "04/11/2023",
-        ];
-    }
-
-    private function sendCertificateViaMail(string $referenceNumber, User $user): void {
+    public function getCertificate(string $referenceCode): JsonResponse {
+        $certificate = $this->getCertificateByReferenceCode($referenceCode);
+        if (!$certificate) {
+            return $this->return(409, 'There\'s no certificate found');
+        }
+        return $this->return(200, 'Certificate fetched successfully', ['certificate' => $certificate]);
     }
 
     private function checkStudentFinishedCourse(int $courseId, int $studentId): bool {
     }
 
-    private function pushCertificateClaimedNotification(int $courseId, int $studentId): void {
+    private function getCertificateByCourseId(int $courseId, int $studentId) {
+        return UserCertificate::where("course_id", $courseId)->where("user_id", $studentId)->first();
     }
 
+    private function prepareDataForCertificate(Course $course, User $user) {
+        $data =  [
+            'course_name' => 'Master backend development using Laravel 10 Master backend development using Laravel 10',
+            'instructor_name' => 'Abdelrahman Mostafa',
+            'student_name' => 'Kevin Khaled Ahmed Mohammed',
+            'student_email' => 'Kevin Khaled Ahmed Mohammed',
+            'course_duration' => '57',
+            'finished_at' => "04/11/2023",
+        ];
+        $data['reference_code'] = $this->generateUniqueReferenceCode();
+        return $data;
+    }
+
+    private function createNewUserCertificate($userId, $courseId, $referenceCode, $fileName) {
+        return UserCertificate::create([
+            'user_id' => $userId,
+            'course_id' => $courseId,
+            'reference_code' => $referenceCode,
+            'file_name' => $fileName,
+        ]);
+    }
+
+    private function generateUniqueReferenceCode() {
+        $firstAppNameLetters = $this->getFirstAppNameLetters();
+        $uniqueCode = Str::random(8);
+        $uniqueReferenceCode = strtoupper($firstAppNameLetters . '-' . $uniqueCode);
+
+        $checkAvailability = $this->isReferenceCodeExists($uniqueReferenceCode);
+        if ($checkAvailability) {
+            $this->generateUniqueReferenceCode();
+        } else {
+            return $uniqueReferenceCode;
+        }
+    }
+
+    private function isReferenceCodeExists($referenceCode) {
+        return UserCertificate::where("reference_code", $referenceCode)->withTrashed()->exists();
+    }
+
+    private function getCertificateByReferenceCode($referenceCode) {
+        return UserCertificate::where("reference_code", $referenceCode)->first();
+    }
+
+    private function getFirstAppNameLetters() {
+        $firstAppNameLetters = '';
+        // Split the app name into words
+        $appNameWords = explode(' ',  env("APP_NAME"));
+        foreach ($appNameWords as $appNameWord) {
+            $firstAppNameLetters .= substr($appNameWord, 0, 1);
+        }
+        return $firstAppNameLetters;
+    }
+
+    private function sendCertificateViaMail(array $data): void {
+        $mailData = [
+            'name' => $data['student_name'],
+            'email' => $data['student_email'],
+            'reference_code' => $data['reference_code'],
+            'course_name' => $data['course_name'],
+            'finished_at' => $data['finished_at'],
+            'certificate_link' => $data['certificate_link'],
+        ];
+        CertificateMailJob::dispatch($mailData);
+    }
+
+    private function pushCertificateClaimedNotification(int $courseId, int $studentId): void {
+    }
 
     private function generateNewCertificateFile(array $data): string {
         $certificateConfiguration = $this->certificate->getConfiguration();

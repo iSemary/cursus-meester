@@ -15,8 +15,9 @@ return new class extends Migration {
             $table->id();
             $table->integer('user_id');
             $table->integer('course_id');
-            $table->integer('certificate');
-            $table->string('file_name', 255);
+            $table->string('reference_code', 156)->nullable()->unique();
+            $table->string('file_name', 255)->nullable()->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

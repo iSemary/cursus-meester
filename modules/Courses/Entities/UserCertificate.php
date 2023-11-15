@@ -13,7 +13,7 @@ class UserCertificate extends Model {
     protected $fillable = [
         'user_id',
         'course_id',
-        'certificate_id',
+        'reference_code',
         'file_name',
     ];
 
@@ -23,9 +23,5 @@ class UserCertificate extends Model {
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function certificate() {
-        return $this->belongsTo(Certificate::class, 'certificate_id');
     }
 }
