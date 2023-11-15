@@ -13,7 +13,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->integer('type_id');
-            $table->string('subject')->nullable();
+            $table->string('subject', 255)->nullable();
+            $table->string('localized', 255)->nullable();
             $table->text('body');
             $table->json('data')->nullable();
             $table->timestamp('read_at')->nullable();
