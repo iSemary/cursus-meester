@@ -11,6 +11,7 @@ use App\Models\Utilities\Language;
 use App\Services\Uploader\FileHandler;
 use modules\Categories\Entities\Category;
 use modules\Organizations\Entities\Organization;
+use modules\Payments\Entities\EnrolledCourse;
 
 class Course extends Model {
     use HasFactory, SoftDeletes;
@@ -48,9 +49,11 @@ class Course extends Model {
 
     protected $appends = [
         'duration',
-        'total_lectures',
         'status',
+        'total_students',
+        'total_lectures',
         'final_price',
+        'rates',
     ];
 
     public function lectures() {
@@ -59,6 +62,19 @@ class Course extends Model {
 
     public function getTotalLecturesAttribute() {
         return $this->lectures()->count();
+    }
+
+    public function getTotalStudentsAttribute() {
+        $totalStudents = EnrolledCourse::whereCourseId($this->id)->count(); 
+        return $totalStudents;
+    }
+
+    public function getRatesAttribute() {
+        $rates = [
+            'count' => $this->rate()->count(),
+            'average' => (int) $this->rate()->average('rate'),
+        ];
+        return $rates;
     }
 
     public function getFinalPriceAttribute() {
@@ -96,7 +112,7 @@ class Course extends Model {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function user() {
+    public function instructor() {
         return $this->belongsTo(User::class, 'user_id');
     }
 

@@ -6,6 +6,8 @@ use modules\Courses\Http\Controllers\Api\CourseController;
 use modules\Courses\Http\Controllers\Api\LectureController;
 use modules\Courses\Http\Controllers\Api\RateController;
 use modules\Courses\Http\Controllers\Api\ExamController;
+use modules\Courses\Http\Controllers\Api\ListController;
+use modules\Payments\Http\Controllers\Api\CartController;
 
 // Builder Routes [For Instructors]
 Route::group(['middleware' => 'auth:api'], function () {
@@ -19,7 +21,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete("lecture-file/{lectureSlug}/{lectureFileId}", [LectureController::class, "deleteFile"]);
     Route::post("lectures/restore/{lectureSlug}", [LectureController::class, "restore"]);
     Route::apiResource('lectures', LectureController::class)->except(['edit', 'create']);
-
     // Exam Routes
     Route::group(['prefix' => 'exams'], function () {
         Route::get("{lectureSlug}", [ExamController::class, "getExamByLecture"]);
@@ -37,6 +38,21 @@ Route::group(['middleware' => 'auth:api'], function () {
         // Get claimed certificate [Fetch exists one]
         Route::get("{courseId}/get", [CertificateController::class, "getCertificate"]);
     });
+
+    /** Wishlist */
+    Route::group(['prefix' => 'wishlist'], function () {
+        // Get wishlist
+        Route::get("/", [ListController::class, "getWishlist"]);
+        // Add course into wishlist
+        Route::post("/{courseId}", [ListController::class, "setWishlist"]);
+        // Delete course from wishlist
+        Route::delete("/{courseId}", [ListController::class, "deleteWishList"]);
+    });
+
+    // Get enrolled courses
+    Route::get("my-courses", [ListController::class, "getEnrolledCourses"]);
+    // Cart Routes
+    Route::apiResource('cart', CartController::class)->except(['edit', 'create']);
 
     // Submit Rate Route
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
