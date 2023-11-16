@@ -31,6 +31,6 @@ class CertificateMail extends Mailable {
      * Get the message content definition.
      */
     public function content(): Content {
-        return new Content(view: 'mails.certificate', with: ['body' => $this->data]);
+        return new Content(view: 'mails.certificate', with: ['data' => $this->data]);
     }
 }

@@ -10,7 +10,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class EnrolledCourse extends Model {
     use HasFactory, LogsActivity;
 
-    protected $fillable = ['course_id', 'user_id'];
+    protected $fillable = ['course_id', 'user_id', 'finished_at'];
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults();

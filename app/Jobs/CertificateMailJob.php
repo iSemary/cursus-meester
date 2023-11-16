@@ -25,9 +25,6 @@ class CertificateMailJob implements ShouldQueue {
      * Execute the job.
      */
     public function handle(): void {
-        $data = [
-            'certificate_url' => $this->data->certificate_url,
-        ];
-        Mail::to($this->data['email'])->send(new CertificateMail($data));
+        Mail::to($this->data['email'])->send(new CertificateMail($this->data));
     }
 }

@@ -10,5 +10,5 @@ use Illuminate\Notifications\Notifiable;
 class Notification extends Model {
     use HasFactory, SoftDeletes, Notifiable;
 
-    protected $fillable = ['user_id', 'type_id', 'notifiable', 'localized', 'subject', 'body', 'data', 'read_at'];
+    protected $fillable = ['user_id', 'type_id', 'localized', 'subject', 'body', 'data', 'read_at'];
 }

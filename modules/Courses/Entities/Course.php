@@ -39,9 +39,7 @@ class Course extends Model {
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
-    protected $casts = [
-        'offer_price' => 'boolean',
-    ];
+    protected $casts = ['offer_price' => 'boolean',];
 
     protected $hidden = [
         "deleted_at",
@@ -49,6 +47,7 @@ class Course extends Model {
     ];
 
     protected $appends = [
+        'duration',
         'total_lectures',
         'status',
         'final_price',
@@ -97,7 +96,6 @@ class Course extends Model {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -145,5 +143,12 @@ class Course extends Model {
         } else {
             return asset('storage/' . $this->filePath . '/' . 'default.png');
         }
+    }
+
+    public function getDurationAttribute() {
+        return Lecture::join('lecture_files', 'lecture_files.lecture_id', 'lectures.id')
+            ->where("lecture_files.main_file", 1)
+            ->where("lectures.course_id", $this->id)
+            ->sum("lecture_files.duration");
     }
 }
