@@ -47,16 +47,22 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post("/{courseId}", [ListController::class, "setWishlist"]);
         // Delete course from wishlist
         Route::delete("/{courseId}", [ListController::class, "deleteWishList"]);
+        // Move course from wishlist to cart
+        Route::post("{courseId}/move-cart", [ListController::class, "moveToCart"]);
     });
 
     // Get enrolled courses
     Route::get("my-courses", [ListController::class, "getEnrolledCourses"]);
     // Cart Routes
     Route::apiResource('cart', CartController::class)->except(['edit', 'create']);
-
+    // Move course from cart to wishlist
+    Route::post("cart/{courseId}/move-wishlist", [CartController::class, "moveToWishlist"]);
     // Submit Rate Route
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
 });
 
 // Public Routes
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
+
+// Get certificate by reference code [Provide an existing certificate]
+Route::get("{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);

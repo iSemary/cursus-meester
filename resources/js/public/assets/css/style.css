@@ -379,4 +379,78 @@
 #avatarUpload {
   display: none; }
 
+.course-box {
+  position: relative;
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 250px;
+  box-shadow: 0 1px 3px #556cd6a8; }
+  .course-box.full-box {
+    width: 100%;
+    max-width: 100%; }
+
+.list-pagination ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0; }
+  .list-pagination ul li {
+    margin: 0 10px; }
+    .list-pagination ul li a {
+      color: #556cd6 !important;
+      font-weight: bold; }
+    .list-pagination ul li.selected a {
+      color: #212529 !important; }
+    .list-pagination ul li.previous {
+      margin-left: 0; }
+    .list-pagination ul li.next {
+      margin-right: 0; }
+    .list-pagination ul li.previous a, .list-pagination ul li.next a {
+      border-radius: 20px;
+      border: 2px solid #556cd6;
+      padding: 5px 11px;
+      text-decoration: none; }
+    .list-pagination ul li.previous.disabled a, .list-pagination ul li.next.disabled a {
+      color: grey !important;
+      border: 2px solid grey; }
+
+.course-list-loader {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 32px 0 #fff, -32px 0 #fff;
+  position: relative;
+  animation: courseListLoader 0.5s ease-out infinite alternate; }
+
+@keyframes courseListLoader {
+  0% {
+    background-color: #0d6efd14;
+    box-shadow: 32px 0 #0d6efd14, -32px 0 #556cd6; }
+  50% {
+    background-color: #556cd6;
+    box-shadow: 32px 0 #0d6efd14, -32px 0 #0d6efd14; }
+  100% {
+    background-color: #0d6efd14;
+    box-shadow: 32px 0 #556cd6, -32px 0 #0d6efd14; } }
+.checkout-btn {
+  border-radius: 0;
+  border: 0;
+  font-weight: bold; }
+
+.text-primary {
+  color: #556cd6 !important; }
+
+.course-actions button:first-child {
+  padding-left: 0; }
+.course-actions .remove-wishlist-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 0; }
+.course-actions .move-to-cart-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 30px; }
+
 /*# sourceMappingURL=style.css.map */

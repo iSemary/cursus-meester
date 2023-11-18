@@ -4,19 +4,24 @@ namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Wishlist;
+use modules\Payments\Entities\Cart;
 use modules\Payments\Entities\EnrolledCourse;
+use modules\Payments\Http\Controllers\Api\CartController;
 
 class ListController extends ApiController {
 
     public function getWishList(): JsonResponse {
-        $wishlist = Wishlist::whereUserId(auth()->user()->id)->orderByDesc("id")
-            ->with(["course" => function ($query) {
-                $query->select('id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price')
-                    ->with('instructor:id,full_name');
+        $wishlistCoursesIds = Wishlist::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
+
+        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+            ->whereIn("id", $wishlistCoursesIds)
+            ->with(["instructor" => function ($query) {
+                $query->select(['id', 'full_name', 'username']);
             }])
-            ->paginate(20);
-        return $this->return(200, "Wishlist fetched successfully", ['wishlist' => $wishlist]);
+            ->paginate(4);
+        return $this->return(200, "Wishlist fetched successfully", ['courses' => $courses]);
     }
 
     public function setWishList($courseId): JsonResponse {
@@ -25,6 +30,15 @@ class ListController extends ApiController {
             'course_id' => $courseId,
         ]);
         return $this->return(200, "Wishlist updated successfully");
+    }
+
+    public function moveToCart(int $courseId): JsonResponse {
+        Wishlist::whereUserId(auth()->guard()->id())->whereCourseId($courseId)->delete();
+        Cart::updateOrCreate([
+            'user_id' => auth()->guard('api')->id(),
+            'course_id' => $courseId
+        ]);
+        return $this->return(200, "Wishlist item moved to cart successfully");
     }
 
     public function deleteWishList($courseId): JsonResponse {
@@ -39,12 +53,14 @@ class ListController extends ApiController {
     }
 
     public function getEnrolledCourses(): JsonResponse {
-        $courses = EnrolledCourse::whereUserId(auth()->user()->id)->orderByDesc("id")
-            ->with(["course" => function ($query) {
-                $query->select('id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price')
-                    ->with('user:id,full_name');
+        $enrolledCoursesIds = EnrolledCourse::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
+
+        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+            ->whereIn("id", $enrolledCoursesIds)
+            ->with(["instructor" => function ($query) {
+                $query->select(['id', 'full_name', 'username']);
             }])
-            ->paginate(20);
+            ->paginate(4);
         return $this->return(200, "Your courses fetched successfully", ['courses' => $courses]);
     }
 }

@@ -4,6 +4,8 @@ namespace modules\Payments\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use modules\Courses\Entities\Course;
+use modules\Courses\Http\Controllers\Api\ListController;
 use modules\Payments\Http\Requests\CreateCartRequest;
 use modules\Payments\Entities\Cart;
 
@@ -16,20 +18,31 @@ class CartController extends ApiController {
      * "Cart fetched successfully", and an array containing the 'carts' and 'total_price' values.
      */
     public function index(): JsonResponse {
-        $carts = Cart::whereUserId(auth()->guard()->id())
-            ->with([
-                'course:id,user_id,thumbnail,title,slug,description,price,offer_price',
-                'course.instructor:id,full_name'
-            ])
+        $cartCourseIds = Cart::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
+
+        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+            ->whereIn("id", $cartCourseIds)
+            ->with(["instructor" => function ($query) {
+                $query->select(['id', 'full_name', 'username']);
+            }])
             ->get();
 
-        $totalPrice = $carts->sum(function ($cart) {
-            return $cart->course->final_price;
+        $totalPrice = $courses->sum(function ($course) {
+            return $course->final_price;
         });
 
+        $discountPrice = $courses->sum(function ($course) {
+            return $course->price;
+        });
+
+        $discountPercentage = $totalPrice > 0 ? (($totalPrice - $discountPrice) / $totalPrice) * 100 : 0;
+
         $response = [
-            'carts' => $carts,
-            'total_price' => $totalPrice,
+            'courses' => $courses,
+            'total_price' => number_format($totalPrice),
+            'discount_price' => number_format($discountPrice),
+            'discount_percentage' => abs(round($discountPercentage, 2)),
+            'currency' => "$" // TODO dynamic currency
         ];
 
         return $this->return(200, "Cart fetched successfully", $response);
@@ -52,6 +65,24 @@ class CartController extends ApiController {
         return $this->return(200, "Cart created successfully");
     }
 
+
+    /**
+     * The function moves a cart item to the wishlist and returns a success message.
+     * 
+     * @param int courseId The courseId parameter is an integer that represents the ID of the course that
+     * needs to be moved from the cart to the wishlist.
+     * @param ListController listController The `listController` parameter is an instance of the
+     * `ListController` class. It is used to access the methods and properties of the `ListController`
+     * class within the `moveToWishlist` method.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function moveToWishlist(int $courseId, ListController $listController): JsonResponse {
+        Cart::whereUserId(auth()->guard()->id())->whereCourseId($courseId)->delete();
+        $listController->setWishList($courseId);
+        return $this->return(200, "Cart item moved to wishlist successfully");
+    }
+
     /**
      * The `destroy` function deletes a cart item with a specific course ID for the authenticated user and
      * returns a success message.
@@ -64,6 +95,6 @@ class CartController extends ApiController {
      */
     public function destroy(int $courseId): JsonResponse {
         Cart::whereUserId(auth()->guard()->id())->where("course_id", $courseId)->delete();
-        return $this->return(200, "Cart deleted successfully");
+        return $this->return(200, "Cart updated successfully");
     }
 }

@@ -518,3 +518,105 @@ $headerHeight: 80px;
 #avatarUpload {
     display: none;
 }
+
+.course-box {
+    position: relative;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 250px;
+    box-shadow: 0 1px 3px #556cd6a8;
+
+    &.full-box {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+.list-pagination {
+    ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        li {
+            margin: 0 10px;
+
+            a {
+                color: #556cd6 !important;
+                font-weight: bold;
+            }
+            &.selected a {
+                color: #212529 !important;
+            }
+            &.previous {
+                margin-left: 0;
+            }
+            &.next {
+                margin-right: 0;
+            }
+            &.previous a,
+            &.next a {
+                border-radius: 20px;
+                border: 2px solid #556cd6;
+                padding: 5px 11px;
+                text-decoration: none;
+            }
+
+            &.previous.disabled a,
+            &.next.disabled a {
+                color: grey !important;
+                border: 2px solid grey;
+            }
+        }
+    }
+}
+
+.course-list-loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 32px 0 #fff, -32px 0 #fff;
+    position: relative;
+    animation: courseListLoader 0.5s ease-out infinite alternate;
+}
+
+@keyframes courseListLoader {
+    0% {
+        background-color: #0d6efd14;
+        box-shadow: 32px 0 #0d6efd14, -32px 0 #556cd6;
+    }
+    50% {
+        background-color: #556cd6;
+        box-shadow: 32px 0 #0d6efd14, -32px 0 #0d6efd14;
+    }
+    100% {
+        background-color: #0d6efd14;
+        box-shadow: 32px 0 #556cd6, -32px 0 #0d6efd14;
+    }
+}
+
+.checkout-btn {
+    border-radius: 0;
+    border: 0;
+    font-weight: bold;
+}
+.text-primary {
+    color: #556cd6 !important;
+}
+.course-actions {
+    button:first-child {
+        padding-left: 0;
+    }
+    .remove-wishlist-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 0;
+    }
+    .move-to-cart-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 30px;
+    }
+}

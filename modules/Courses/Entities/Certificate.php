@@ -25,28 +25,32 @@ class Certificate extends Model {
         $this->setCertifyText();
     }
 
-    public function setConfiguration() {
+    public function setConfiguration(): void {
         $configuration = (object)[
             'studentName' => (object)[
-                'position' => (object)['x' => 70, 'y' => 90],
+                'position' => (object)['x' => 0, 'y' => 90],
                 'font' => (object)['size' => 30, 'family' => '', 'color' => [164, 130, 213]]
             ],
             'instructorName' => (object)[
-                'position' => (object)['x' => 100, 'y' => 120],
-                'font' => (object)['size' => 15, 'family' => '', 'color' => [0, 0, 0]]
+                'position' => (object)['x' => 0, 'y' => 170],
+                'font' => (object)['size' => 12, 'family' => '', 'color' => [113, 61, 190]]
             ],
             'certifyText' => (object)[
-                'position' => (object)['x' => 50, 'y' => 110],
+                'position' => (object)['x' => 10, 'y' => 110],
                 'font' => (object)['size' => 20, 'family' => '', 'color' => [0, 0, 0]]
             ],
             'finishedDate' => (object)[
-                'position' => (object)['x' => '', 'y' => ''],
-                'font' => (object)['size' => '', 'family' => '', 'color' => '']
+                'position' => (object)['x' => 60, 'y' => 170],
+                'font' => (object)['size' => 20, 'family' => '', 'color' => [164, 130, 213]]
             ],
-            'signature' => (object)[
-                'position' => (object)['x' => '', 'y' => ''],
-                'font' => (object)['size' => '', 'family' => '', 'color' => '']
-            ]
+            'referenceCode' => (object)[
+                'position' => (object)['x' => 0, 'y' => 150],
+                'font' => (object)['size' => 11, 'family' => '', 'color' => [105, 105, 105]]
+            ],
+            'certificateUrl' => (object)[
+                'position' => (object)['x' => 0, 'y' => 155],
+                'font' => (object)['size' => 11, 'family' => '', 'color' => [105, 105, 105]]
+            ],
         ];
         // set the configuration
         $this->configuration = $configuration;
@@ -59,7 +63,7 @@ class Certificate extends Model {
 
     // Set Certify Text Template
     public function setCertifyText(): void {
-        $this->certifyText = "This is to certify that CERT_STUDENT_NAME successfully \ncompleted CERT_TOTAL_HOURS of CERT_COURSE_NAME online course on CERT_FINISHED_DATE.";
+        $this->certifyText = "This is to certify that CERT_STUDENT_NAME successfully completed CERT_TOTAL_HOURS of CERT_COURSE_NAME online course on CERT_FINISHED_DATE.";
     }
 
     // Get Certify Text
@@ -68,32 +72,11 @@ class Certificate extends Model {
         // replace student name
         $certifyText = str_replace('CERT_STUDENT_NAME', $studentName, $certifyText);
         // replace course name
-        $certifyText = str_replace('CERT_COURSE_NAME', $this->formatTextByWords($courseName), $certifyText);
+        $certifyText = str_replace('CERT_COURSE_NAME', $courseName, $certifyText);
         // replace course duration
         $certifyText = str_replace('CERT_TOTAL_HOURS', ($courseDuration . ($courseDuration >= 60 ? ' hours' : ' minutes')), $certifyText);
         // replace finished date
-        $certifyText = str_replace('CERT_FINISHED_DATE', $finishedDate, $certifyText);
+        $certifyText = str_replace('CERT_FINISHED_DATE', date("j F Y", strtotime($finishedDate)), $certifyText);
         return $certifyText;
-    }
-
-
-    /**
-     * The function takes string like course name, and implode \n after each 6 words to create a new line in the certificate style
-     * 
-     * @param string text The `text` parameter is a string that represents the text that needs to be
-     * formatted.
-     * 
-     * @return string a formatted string where the words from the input text are divided into lines of 6
-     * words each, separated by newlines.
-     */
-    private function formatTextByWords(string $text): string {
-        $words = explode(' ', $text);
-        $lines = [];
-        $chunks = array_chunk($words, 6);
-        foreach ($chunks as $chunk) {
-            $lines[] = implode(' ', $chunk);
-        }
-        $formattedText = implode("\n", $lines);
-        return $formattedText;
     }
 }

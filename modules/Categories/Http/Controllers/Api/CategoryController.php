@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Categories\Http\Requests\CreateCategoryRequest;
 use modules\Categories\Http\Requests\UpdateCategoryRequest;
+use stdClass;
 
 class CategoryController extends ApiController {
     /**
@@ -46,6 +47,18 @@ class CategoryController extends ApiController {
             return $this->return(400, 'Category not exists');
         }
         return $this->return(200, 'Category fetched Successfully', ['category' => $category]);
+    }
+
+
+    public function getCoursesBySlug(string $categorySlug): JsonResponse {
+        $category = Category::select(['title', 'slug', 'parent_id', 'icon'])->whereSlug($categorySlug)->first();
+        if (!$category) {
+            return $this->return(400, 'Category not exists');
+        }
+        $response = new stdClass();
+        $response->category = $category;
+        $response->courses = $category->with("courses")->paginate(10);
+        return $this->return(200, 'Courses fetched successfully', ['data' => $response]);
     }
 
     /**

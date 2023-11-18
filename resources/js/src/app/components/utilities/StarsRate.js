@@ -1,7 +1,7 @@
 import React from "react";
 import { AiFillStar } from "react-icons/ai";
 
-export default function StarsRate({ rate }) {
+export default function StarsRate({ rate, totalStudents }) {
     const totalStars = 5; // Total number of stars
     const filledStars = Math.round(rate.average);
 
@@ -17,7 +17,7 @@ export default function StarsRate({ rate }) {
                 />
             ))}
             <span className="text-muted mx-2">
-                {"(" + rate.total + ") Students"}
+                {"(" + totalStudents + ") Students"}
             </span>
         </div>
     );

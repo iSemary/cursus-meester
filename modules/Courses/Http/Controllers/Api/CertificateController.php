@@ -33,7 +33,7 @@ class CertificateController extends ApiController {
      */
     public function claimCertificate(int $courseId): JsonResponse {
         $user = auth()->guard('api')->user();
-        $course = Course::where('id', $courseId)->first();
+        $course = Course::where('id', $courseId)->where("has_certificate", 1)->first();
         if (!$course) {
             return $this->return(409, 'Course not exists');
         }
@@ -68,7 +68,7 @@ class CertificateController extends ApiController {
             $this->pushCertificateClaimedNotification($preparedData);
             return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $preparedData['certificate_link']]);
         } catch (\Exception $e) {
-            return $this->return(409, 'Something went wrong!', debug: $e->getMessage());
+            return $this->return(409, 'Something went wrong!', debug: $e->getFile());
         }
     }
 
@@ -90,6 +90,22 @@ class CertificateController extends ApiController {
     }
 
     /**
+     * The function retrieves a user certificate based on a given reference code.
+     * 
+     * @param string referenceCode The parameter "referenceCode" is a string that represents the reference
+     * code of a user certificate.
+     * 
+     * @return `an` instance of the UserCertificate model that matches the given reference code.
+     */
+    public function getCertificateByReferenceCode(string $referenceCode) {
+        $certificate =  UserCertificate::where("reference_code", $referenceCode)->first();
+        if (!$certificate) {
+            return $this->return(409, 'There\'s no certificate found');
+        }
+        return $this->return(200, 'Certificate fetched successfully', ['certificate' => $certificate]);
+    }
+
+    /**
      * The function checks if a student has finished a course by returning the finished_at property of the
      * EnrolledCourse object.
      * 
@@ -101,7 +117,7 @@ class CertificateController extends ApiController {
     private function checkStudentFinishedCourse(EnrolledCourse $enrolledCourse) {
         return $enrolledCourse->finished_at;
     }
-    
+
     /**
      * The function retrieves a user certificate based on the course ID and student ID.
      * 
@@ -132,7 +148,8 @@ class CertificateController extends ApiController {
     private function prepareDataForCertificate(Course $course, User $user): array {
         $data =  [
             'course_name' => $course->title,
-            'instructor_name' => $course->instructor_name,
+            'instructor_name' => $course->instructor->full_name,
+            'user_id' => $user->id,
             'student_name' => $user->full_name,
             'student_email' => $user->email,
             'course_duration' => $course->duration,
@@ -195,18 +212,6 @@ class CertificateController extends ApiController {
      */
     private function isReferenceCodeExists(string $referenceCode): bool {
         return UserCertificate::where("reference_code", $referenceCode)->withTrashed()->exists();
-    }
-
-    /**
-     * The function retrieves a user certificate based on a given reference code.
-     * 
-     * @param string referenceCode The parameter "referenceCode" is a string that represents the reference
-     * code of a user certificate.
-     * 
-     * @return `an` instance of the UserCertificate model that matches the given reference code.
-     */
-    private function getCertificateByReferenceCode(string $referenceCode) {
-        return UserCertificate::where("reference_code", $referenceCode)->first();
     }
 
     /**
@@ -284,24 +289,45 @@ class CertificateController extends ApiController {
         $pdf->SetFont($certificateConfiguration->studentName->font->family, '', $certificateConfiguration->studentName->font->size);
         $pdf->SetTextColor($certificateConfiguration->studentName->font->color[0], $certificateConfiguration->studentName->font->color[1], $certificateConfiguration->studentName->font->color[2]);
         $pdf->SetXY($certificateConfiguration->studentName->position->x, $certificateConfiguration->studentName->position->y);
-        $pdf->Cell(0, 10, $data['student_name'], 0, 1);
+        $pdf->Cell(0, 10, $data['student_name'], 0, 1, 'C');
         /* Certify Text */
         $certifyText = $this->certificate->getCertifyText($data['student_name'], $data['course_name'], $data['course_duration'], $data['finished_at']);
         $pdf->SetFont($certificateConfiguration->certifyText->font->family, '', $certificateConfiguration->certifyText->font->size);
         $pdf->SetTextColor($certificateConfiguration->certifyText->font->color[0], $certificateConfiguration->certifyText->font->color[1], $certificateConfiguration->certifyText->font->color[2]);
         $pdf->SetXY($certificateConfiguration->certifyText->position->x, $certificateConfiguration->certifyText->position->y);
-        $certifyTextLines = explode("\n", $certifyText);
+        $certifyTextLines = explode("\n", wordwrap($certifyText, 65));
         $lineHeight = 10;
         foreach ($certifyTextLines as $key => $line) {
             $pdf->SetXY($certificateConfiguration->certifyText->position->x, $certificateConfiguration->certifyText->position->y + ($lineHeight * $key));
-            $pdf->Cell(0, $lineHeight, $line, 0, 1);
+            $pdf->Cell(0, $lineHeight, $line, 0, 1, 'C');
         }
 
-        // /* Instructor Name*/
-        // $pdf->SetFont($certificateConfiguration->instructorName->font->family, '', $certificateConfiguration->instructorName->font->size);
-        // $pdf->SetTextColor($certificateConfiguration->instructorName->font->color[0], $certificateConfiguration->instructorName->font->color[1], $certificateConfiguration->instructorName->font->color[2]);
-        // $pdf->SetXY($certificateConfiguration->instructorName->position->x, $certificateConfiguration->instructorName->position->y);
-        // $pdf->Cell(0, 10, $data['instructor_name'], 0, 1);
+        /* Finished Date */
+        $pdf->SetFont($certificateConfiguration->finishedDate->font->family, '', $certificateConfiguration->finishedDate->font->size);
+        $pdf->SetTextColor($certificateConfiguration->finishedDate->font->color[0], $certificateConfiguration->finishedDate->font->color[1], $certificateConfiguration->finishedDate->font->color[2]);
+        $pdf->SetXY($certificateConfiguration->finishedDate->position->x, $certificateConfiguration->finishedDate->position->y);
+        $pdf->Cell(0, 10, date("m/d/Y", strtotime($data['finished_at'])), 0, 1);
+
+        /** Reference Code */
+        $referenceText = "Certificate Code: " . $data['reference_code'];
+        $pdf->SetFont($certificateConfiguration->referenceCode->font->family, '', $certificateConfiguration->referenceCode->font->size);
+        $pdf->SetTextColor($certificateConfiguration->referenceCode->font->color[0], $certificateConfiguration->referenceCode->font->color[1], $certificateConfiguration->referenceCode->font->color[2]);
+        $pdf->SetXY($certificateConfiguration->referenceCode->position->x, $certificateConfiguration->referenceCode->position->y);
+        $pdf->Cell(0, 1, $referenceText, 0, 0);
+
+        /** Reference Code */
+        $referenceUrl = "Certificate URL: " . env("APP_URL") . '/certificate/' . $data['reference_code'];
+        $pdf->SetFont($certificateConfiguration->certificateUrl->font->family, '', $certificateConfiguration->certificateUrl->font->size);
+        $pdf->SetTextColor($certificateConfiguration->certificateUrl->font->color[0], $certificateConfiguration->certificateUrl->font->color[1], $certificateConfiguration->certificateUrl->font->color[2]);
+        $pdf->SetXY($certificateConfiguration->certificateUrl->position->x, $certificateConfiguration->certificateUrl->position->y);
+        $pdf->Cell(0, 1, $referenceUrl, 0, 0);
+
+        /* Instructor Name*/
+        $instructorText = "{$data['instructor_name']}, Instructor";
+        $pdf->SetFont($certificateConfiguration->instructorName->font->family, '', $certificateConfiguration->instructorName->font->size);
+        $pdf->SetTextColor($certificateConfiguration->instructorName->font->color[0], $certificateConfiguration->instructorName->font->color[1], $certificateConfiguration->instructorName->font->color[2]);
+        $pdf->SetXY($certificateConfiguration->instructorName->position->x, $certificateConfiguration->instructorName->position->y);
+        $pdf->Cell(0, 10, $instructorText, 0, 1, 'C');
 
         // Save modified certificate file
         $pdf->Output($this->certificate->storeFilePath . $fileName, 'F');

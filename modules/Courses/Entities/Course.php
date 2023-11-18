@@ -50,6 +50,7 @@ class Course extends Model {
     protected $appends = [
         'duration',
         'status',
+        'currency',
         'total_students',
         'total_lectures',
         'final_price',
@@ -63,9 +64,12 @@ class Course extends Model {
     public function getTotalLecturesAttribute() {
         return $this->lectures()->count();
     }
+    public function getCurrencyAttribute() {
+        return "$"; // TODO dynamic currency
+    }
 
     public function getTotalStudentsAttribute() {
-        $totalStudents = EnrolledCourse::whereCourseId($this->id)->count(); 
+        $totalStudents = EnrolledCourse::whereCourseId($this->id)->count();
         return $totalStudents;
     }
 
