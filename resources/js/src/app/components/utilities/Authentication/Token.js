@@ -36,7 +36,7 @@ export const Token = {
     getUser() {
         return new Promise((resolve, reject) => {
             axios
-                .get(process.env.NEXT_PUBLIC_API_URL + "/user/profile", {
+                .get(process.env.NEXT_PUBLIC_API_URL + "/auth/user", {
                     headers: {
                         Authorization: "Bearer " + this.get(),
                     },

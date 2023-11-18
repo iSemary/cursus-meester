@@ -53,7 +53,8 @@
 .nav-links {
   list-style: none;
   display: flex;
-  align-items: center; }
+  align-items: center;
+  padding: 0; }
   .nav-links li {
     margin: 0 0 0 20px;
     color: #556cd6;
@@ -64,6 +65,8 @@
     .nav-links li a:hover {
       color: #00b4d8;
       font-weight: bold; }
+    .nav-links li:first-of-type {
+      margin-left: 0; }
     .nav-links li::after {
       content: "";
       background-color: #0d6efd75;
@@ -82,6 +85,20 @@
       font-weight: bold; }
     .nav-links li:last-of-type::after {
       content: unset; }
+    .nav-links li .counter {
+      background-color: #f44336;
+      color: #fff;
+      border-radius: 25px;
+      padding: 3px;
+      font-size: 11px;
+      font-weight: bold; }
+
+.notifications-icon {
+  position: relative; }
+  .notifications-icon .counter {
+    position: absolute;
+    bottom: -14px;
+    right: -8px; }
 
 .register-form,
 .login-form {
@@ -487,5 +504,8 @@
 
 .mt-7 {
   margin-top: 7rem !important; }
+
+.messages-icon path {
+  stroke-width: 47px; }
 
 /*# sourceMappingURL=style.css.map */

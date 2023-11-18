@@ -10,6 +10,8 @@ import axiosConfig from "../components/axiosConfig/axiosConfig";
 import { Token } from "../components/utilities/Authentication/Token";
 import { useRouter } from "next/navigation";
 import { FaRegHeart } from "react-icons/fa6";
+import { IoChatbubblesOutline } from "react-icons/io5";
+import { RiNotification2Line } from "react-icons/ri";
 const Header = () => {
     const router = useRouter();
     const { user } = useAuth(); // Get auth data
@@ -94,12 +96,40 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/wishlist" className="nav-link cart-link">
+                            <Link href="/wishlist" className="nav-link">
                                 <FaRegHeart size={23} />
                             </Link>
                         </li>
                         {user ? (
                             <>
+                                <li>
+                                    <Link
+                                        href="/notifications"
+                                        className="nav-link"
+                                    >
+                                        <IoChatbubblesOutline
+                                            className="messages-icon"
+                                            size={23}
+                                        />
+                                    </Link>
+                                </li>
+                                <li className="notifications-icon">
+                                    <Link
+                                        href="/notifications"
+                                        className="nav-link"
+                                    >
+                                        <RiNotification2Line size={23} />
+                                        {user.data.extra.notifications_count >
+                                            0 && (
+                                            <span className="counter">
+                                                {
+                                                    user.data.extra
+                                                        .notifications_count
+                                                }
+                                            </span>
+                                        )}
+                                    </Link>
+                                </li>
                                 <li>
                                     <Link
                                         href="/my-courses"
@@ -112,10 +142,14 @@ const Header = () => {
                                     <Dropdown className="split-button">
                                         <Link
                                             variant="primary"
-                                            href={`/students/${user.data.data.user.username}`}
+                                            href={`/students/${user.data.user.username}`}
                                             className="btn btn-primary split-main-button"
                                         >
-                                            {user.data.data.user.full_name}
+                                            {
+                                                user.data.user.full_name.split(
+                                                    " "
+                                                )[0]
+                                            }
                                         </Link>
                                         <Dropdown.Toggle
                                             split

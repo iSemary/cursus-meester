@@ -17,6 +17,7 @@ use App\Models\Auth\EmailToken;
 use App\Models\Auth\LoginAttempt;
 use App\Models\User;
 use App\Models\Auth\UserOTP;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -115,12 +116,18 @@ class AuthController extends ApiController {
         return $userData;
     }
 
+    public function collectExtraDetails(User $user): array {
+        $extra = [];
+        $extra['notifications_count'] = Notification::where("user_id", $user->id)->count();
+        return $extra;
+    }
+
     private function generateAccessToken(User $user): string {
         return $user->createToken('web-app')->accessToken;
     }
 
     private function selectUserData(User $user): User {
-        return $user->select('full_name', 'email', 'created_at')->first();
+        return $user->select('full_name', 'email', 'username', 'created_at')->first();
     }
     /**
      * The function logs out a user by deleting their access tokens either for a specific request or
@@ -297,7 +304,8 @@ class AuthController extends ApiController {
     public function getUser(): JsonResponse {
         $auth = auth()->guard('api')->user();
         $user = $this->collectUserDetails($auth, false);
-        return $this->return(200, "User fetched successfully", ['user' => $user]);
+        $extra = $this->collectExtraDetails($auth);
+        return $this->return(200, "User fetched successfully", ['user' => $user, 'extra' => $extra]);
     }
 
     /**

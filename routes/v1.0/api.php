@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Utilities\LanguageController;
 use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 use modules\Categories\Http\Controllers\Api\CategoryController;
 
@@ -45,7 +46,6 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-
 // Authenticated routes
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('industries', IndustryController::class);
@@ -53,8 +53,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('currencies', CurrencyController::class);
     Route::apiResource('languages', LanguageController::class);
 
-    // Profile Routes
+    // Profile Route
     Route::get("user/profile", [UserController::class, "getUserDetails"]);
+
+    // Notification
+    Route::get("notifications", [NotificationController::class, "index"]);
+    Route::post("notifications/{id}/seen", [NotificationController::class, "seen"]);
 });
 
 // Public routes

@@ -71,6 +71,7 @@ $headerHeight: 80px;
     list-style: none;
     display: flex;
     align-items: center;
+    padding: 0;
     li {
         margin: 0 0 0 20px;
         color: $primaryColor;
@@ -82,6 +83,10 @@ $headerHeight: 80px;
         a:hover {
             color: $secondaryColor;
             font-weight: bold;
+        }
+
+        &:first-of-type {
+            margin-left: 0;
         }
 
         &::after {
@@ -111,9 +116,25 @@ $headerHeight: 80px;
                 content: unset;
             }
         }
+
+        .counter {
+            background-color: #f44336;
+            color: #fff;
+            border-radius: 25px;
+            padding: 3px;
+            font-size: 11px;        
+            font-weight: bold;
+        }
     }
 }
-
+.notifications-icon {
+    position: relative;
+    .counter {
+        position: absolute;
+        bottom: -14px;
+        right: -8px;
+    }
+}
 .register-form,
 .login-form {
     width: 50%;
@@ -665,4 +686,10 @@ $headerHeight: 80px;
 
 .mt-7 {
     margin-top: 7rem !important;
+}
+
+.messages-icon {
+    path {
+        stroke-width: 47px;
+    }
 }

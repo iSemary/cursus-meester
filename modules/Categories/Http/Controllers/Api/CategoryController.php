@@ -50,6 +50,16 @@ class CategoryController extends ApiController {
     }
 
 
+    /**
+     * The getCoursesBySlug function retrieves courses based on a given category slug and returns a JSON
+     * response with the category, sub-categories, and paginated courses.
+     * 
+     * @param string categorySlug The categorySlug parameter is a string that represents the slug of a
+     * category. A slug is a URL-friendly version of a category's title, typically used in the URL to
+     * identify the category.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
     public function getCoursesBySlug(string $categorySlug): JsonResponse {
         $category = Category::select(['title', 'slug', 'parent_id', 'icon'])->whereSlug($categorySlug)->first();
         if (!$category) {
@@ -57,6 +67,7 @@ class CategoryController extends ApiController {
         }
         $response = new stdClass();
         $response->category = $category;
+        $response->sub_categories = Category::select(['title', 'slug', 'parent_id', 'icon'])->where("parent_id", $category->id)->get();
         $response->courses = $category->with("courses")->paginate(10);
         return $this->return(200, 'Courses fetched successfully', ['data' => $response]);
     }
