@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 // Public Routes
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
 // Get certificate by reference code [Provide an existing certificate]
-Route::get("{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
+Route::get("certificates/{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
 /** Search APIs */
 Route::get("search", [SearchController::class, "search"]);
 Route::get("search/tiny", [SearchController::class, "searchTiny"]);

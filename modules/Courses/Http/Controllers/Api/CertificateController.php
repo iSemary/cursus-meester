@@ -98,7 +98,7 @@ class CertificateController extends ApiController {
      * @return `an` instance of the UserCertificate model that matches the given reference code.
      */
     public function getCertificateByReferenceCode(string $referenceCode) {
-        $certificate =  UserCertificate::where("reference_code", $referenceCode)->first();
+        $certificate =  UserCertificate::select(['file_name'])->where("reference_code", $referenceCode)->first();
         if (!$certificate) {
             return $this->return(409, 'There\'s no certificate found');
         }
