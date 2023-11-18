@@ -20,7 +20,7 @@ class CartController extends ApiController {
     public function index(): JsonResponse {
         $cartCourseIds = Cart::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
 
-        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+        $courses = Course::selectPreview()
             ->whereIn("id", $cartCourseIds)
             ->with(["instructor" => function ($query) {
                 $query->select(['id', 'full_name', 'username']);

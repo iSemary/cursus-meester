@@ -20,4 +20,16 @@ enum SocialLinks {
             self::WEBSITE => 6,
         };
     }
+
+    public static function getTitle(int $id): string {
+        return match ($id) {
+            1 => "GitHub",
+            2 => "Stack Overflow",
+            3 => "Facebook",
+            4 => "Twitter",
+            5 => "LinkedIn",
+            6 => "Website",
+            default => "Unknown",
+        };
+    }
 }

@@ -15,7 +15,7 @@ class ListController extends ApiController {
     public function getWishList(): JsonResponse {
         $wishlistCoursesIds = Wishlist::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
 
-        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+        $courses = Course::selectPreview()
             ->whereIn("id", $wishlistCoursesIds)
             ->with(["instructor" => function ($query) {
                 $query->select(['id', 'full_name', 'username']);
@@ -55,7 +55,7 @@ class ListController extends ApiController {
     public function getEnrolledCourses(): JsonResponse {
         $enrolledCoursesIds = EnrolledCourse::whereUserId(auth()->user()->id)->orderByDesc("id")->pluck("course_id");
 
-        $courses = Course::select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage'])
+        $courses = Course::selectPreview()
             ->whereIn("id", $enrolledCoursesIds)
             ->with(["instructor" => function ($query) {
                 $query->select(['id', 'full_name', 'username']);

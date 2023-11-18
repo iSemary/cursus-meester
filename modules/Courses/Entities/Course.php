@@ -40,7 +40,7 @@ class Course extends Model {
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
-    protected $casts = ['offer_price' => 'boolean',];
+    protected $casts = ['offer_price' => 'boolean'];
 
     protected $hidden = [
         "deleted_at",
@@ -96,7 +96,6 @@ class Course extends Model {
         return $finalPrice;
     }
 
-
     public function getStatusAttribute() {
         $status = "Active";
         if ($this->published_at > now()) {
@@ -142,6 +141,10 @@ class Course extends Model {
 
     public function  scopeOwned($query) {
         return $query->where("user_id", auth()->guard('api')->id());
+    }
+
+    public function scopeSelectPreview($query) {
+        return $query->select(['id', 'user_id', 'thumbnail', 'title', 'slug', 'description', 'price', 'offer_price', 'offer_percentage']);
     }
 
     public function setThumbnailAttribute($value) {

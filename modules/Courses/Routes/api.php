@@ -7,6 +7,7 @@ use modules\Courses\Http\Controllers\Api\LectureController;
 use modules\Courses\Http\Controllers\Api\RateController;
 use modules\Courses\Http\Controllers\Api\ExamController;
 use modules\Courses\Http\Controllers\Api\ListController;
+use modules\Courses\Http\Controllers\Api\SearchController;
 use modules\Payments\Http\Controllers\Api\CartController;
 
 // Builder Routes [For Instructors]
@@ -63,6 +64,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 // Public Routes
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
-
 // Get certificate by reference code [Provide an existing certificate]
 Route::get("{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
+/** Search APIs */
+Route::get("search", [SearchController::class, "search"]);
+Route::get("search/tiny", [SearchController::class, "searchTiny"]);

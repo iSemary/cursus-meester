@@ -95,7 +95,7 @@ const Header = () => {
                         </li>
                         <li>
                             <Link href="/wishlist" className="nav-link cart-link">
-                                <FaRegHeart size={25} />
+                                <FaRegHeart size={23} />
                             </Link>
                         </li>
                         {user ? (
@@ -112,7 +112,7 @@ const Header = () => {
                                     <Dropdown className="split-button">
                                         <Link
                                             variant="primary"
-                                            href="/profile"
+                                            href={`/students/${user.data.data.user.username}`}
                                             className="btn btn-primary split-main-button"
                                         >
                                             {user.data.data.user.full_name}
