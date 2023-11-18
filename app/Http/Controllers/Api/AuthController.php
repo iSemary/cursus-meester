@@ -105,16 +105,23 @@ class AuthController extends ApiController {
      * @return User the updated User object with the added access_token property.
      */
     public function collectUserDetails(User $user, bool $generateToken = true): User {
-        // Invoke authentication token
-        // Fetch only specific data of user model
-        $user = $user->select('full_name', 'email', 'created_at')->first();
         if ($generateToken) {
-            $accessToken = $user->createToken('web-app')->accessToken;
-            $user['access_token'] = $accessToken;
+            $accessToken = $this->generateAccessToken($user);
         }
-        return $user;
+        $userData = $this->selectUserData($user);
+        if ($generateToken) {
+            $userData['access_token'] = $accessToken;
+        }
+        return $userData;
     }
 
+    private function generateAccessToken(User $user): string {
+        return $user->createToken('web-app')->accessToken;
+    }
+
+    private function selectUserData(User $user): User {
+        return $user->select('full_name', 'email', 'created_at')->first();
+    }
     /**
      * The function logs out a user by deleting their access tokens either for a specific request or
      * for all tokens associated with the user.

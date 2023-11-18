@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Notification;
+use App\Observers\NotificationObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Observers\LectureObserver;
@@ -19,6 +21,7 @@ class EventServiceProvider extends ServiceProvider {
      */
     public function boot(): void {
         Lecture::observe(LectureObserver::class);
+        Notification::observe(NotificationObserver::class);
     }
 
     /**

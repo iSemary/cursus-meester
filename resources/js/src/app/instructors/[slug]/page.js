@@ -6,115 +6,123 @@ import StudentTemplate from "../../Templates/StudentTemplate";
 export default function Instructor({ params }) {
     const courses = [
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$500",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
         {
-            name: "Course 1",
+            title: "Course 1",
+            currency: "$",
             slug: "course-1",
-            rate: {
+            rates: {
                 average: 4.2,
                 total: 4454852,
             },
             final_price: "$500",
             original_price: "$700",
-            image: "https://placehold.co/600x450.png",
+            thumbnail: "https://placehold.co/600x450.png",
             instructor: {
-                name: "Ahmed",
+                full_name: "Course 1",
             },
         },
     ];
@@ -123,8 +131,8 @@ export default function Instructor({ params }) {
         specialty: "Software Engineer",
         total_courses: 50,
         total_students: "500,568",
-        image: "https://placehold.co/600x450/png",
-        rate: {
+        thumbnail: "https://placehold.co/600x450/png",
+        rates: {
             total: 50,
             average: 1.2,
         },
@@ -192,9 +200,7 @@ export default function Instructor({ params }) {
                                 <div className="col-4">
                                     <h6 className="font-weight-bold text-center color-primary">
                                         Rate{" "}
-                                        <div className="text-muted">
-                                            {instructor.rate.average}
-                                        </div>
+                                        <div className="text-muted">{5}</div>
                                     </h6>
                                 </div>
                             </div>

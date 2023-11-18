@@ -11,6 +11,7 @@ use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
 use modules\Courses\Http\Requests\Course\UpdateCourseRequest;
+use modules\Instructors\Entities\InstructorProfile;
 
 class CourseController extends ApiController {
     protected array $courseLevels;
@@ -77,6 +78,12 @@ class CourseController extends ApiController {
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
         $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
         $courseData['currency_id'] = 1;
+        $isOrganization = isset($courseData['organization_id']) && $courseData['organization_id'] == "false" ? 0 : 1;
+        $courseData['organization_id'] = null;
+        if ($isOrganization) {
+            $instructorProfile = InstructorProfile::where("user_id", auth()->guard('api')->id())->first();
+            $courseData['organization_id'] = $instructorProfile->organization_id;
+        }
         Course::create($courseData);
         return $this->return(200, 'Course Added Successfully', ['slug' => $courseData['slug']]);
     }
@@ -103,8 +110,15 @@ class CourseController extends ApiController {
         // Update the course with the validated data
         $courseData = $updateCourseRequest->validated();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
-        $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
+        $courseData['offer_price'] = isset($courseData['offer_price']) && in_array($courseData['offer_price'], ["true", 1]) ? 1 : 0;
+        $courseData['has_certificate'] = isset($courseData['has_certificate']) && in_array($courseData['has_certificate'], ["true", 1]) ? 1 : 0;
         $courseData['currency_id'] = 1;
+        $isOrganization = isset($courseData['organization_id']) && $courseData['organization_id'] == "false" ? 0 : 1;
+        $courseData['organization_id'] = null;
+        if ($isOrganization) {
+            $instructorProfile = InstructorProfile::where("user_id", auth()->guard('api')->id())->first();
+            $courseData['organization_id'] = $instructorProfile->organization_id;
+        }
         $course->update($courseData);
         return $this->return(200, 'Course updated Successfully');
     }

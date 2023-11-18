@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\IndustryController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
-
+use modules\Categories\Http\Controllers\Api\CategoryController;
 
 /* User Authentication Routes */
 
@@ -63,6 +63,7 @@ Route::apiResource('countries', CountryController::class)->only(['index', 'show'
 Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
 Route::apiResource('languages', LanguageController::class)->only(['index', 'show']);
 
+Route::get("categories/{categorySlug}/courses", [CategoryController::class, "getCoursesBySlug"]);
 
 /* Landing Page APIs */
 // Newsletter

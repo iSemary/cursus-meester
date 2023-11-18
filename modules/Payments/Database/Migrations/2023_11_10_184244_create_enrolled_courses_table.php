@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->integer('course_id');
             $table->integer('user_id');
+            $table->timestamp('finished_at')->nullable();
             $table->timestamps();
         });
     }

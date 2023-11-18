@@ -11,13 +11,11 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('certificates', function (Blueprint $table) {
+        Schema::create('exam_questions', function (Blueprint $table) {
             $table->id();
-            $table->integer('course_id');
-            $table->string('title', 255);
-            $table->string('description', 5000);
-            $table->string('file_name', 255);
-            $table->json('config')->nullable();
+            $table->string('title', 1024);
+            $table->tinyInteger('type')->default(1);
+            $table->integer('exam_id');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('certificates');
+        Schema::dropIfExists('exam_questions');
     }
 };

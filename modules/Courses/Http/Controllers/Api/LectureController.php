@@ -7,6 +7,7 @@ use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\LectureFile;
 use modules\Courses\Http\Requests\Lecture\CreateLectureRequest;
 use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
 
@@ -23,15 +24,26 @@ class LectureController extends ApiController {
      * fetched successfully', and an array of lectures.
      */
     public function index(Request $request): JsonResponse {
-        $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(20);
+        $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
 
-    public function getCourseLectures(string $slug): JsonResponse {
-        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')->where('courses.slug', $slug)
-            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(20);
+    public function getCourseLectures(string $courseSlug): JsonResponse {
+        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->select(['lectures.*'])
+            ->where('courses.slug', $courseSlug)
+            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
+    }
+
+    public function getCourseLecture(string $courseSlug, string $lectureSlug): JsonResponse {
+        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->select(['lectures.*'])
+            ->where('courses.slug', $courseSlug)
+            ->where('lectures.slug', $lectureSlug)
+            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->first();
+        return $this->return(200, 'Lecture fetched successfully', ['lecture' => $lectures]);
     }
 
 
@@ -87,16 +99,32 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function update(UpdateLectureRequest $updateLectureRequest, string $slug): JsonResponse {
-        $lecture = Lecture::where("slug", $slug)->owned()->withTrashed()->first();
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->withTrashed()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');
         }
         // Update the lecture with the validated data
-        $lecture->update($updateLectureRequest->validated());
+        $courseData = $updateLectureRequest->all();
+        $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
+        $courseData['media_file'] = $updateLectureRequest->file('media_file');
+        $lecture->update($courseData);
         return $this->return(200, 'Lecture updated Successfully');
     }
 
+    public function deleteFile($lectureSlug, $lectureFileId): JsonResponse {
+        $lectureFile = LectureFile::leftJoin('lectures', 'lectures.id', 'lecture_files.lecture_id')
+            ->leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->select(['lecture_files.id'])
+            ->where('courses.user_id', auth()->guard()->id())
+            ->where('lectures.slug', $lectureSlug)
+            ->where("lecture_files.hash_name", $lectureFileId)->first();
+        if ($lectureFile) {
+            $lectureFile->delete();
+        }
+
+        return $this->return(200, 'Lecture file deleted Successfully', ['' => $lectureFileId, '2' => $lectureFile]);
+    }
 
     /**
      * The function destroys a lecture by its slug and returns a JSON response indicating whether the lecture
@@ -108,12 +136,24 @@ class LectureController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function destroy(string $slug): JsonResponse {
-        $lecture = Lecture::where("slug", $slug)->owned()->first();
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->first();
         // Checking if the lecture not exists
         if (!$lecture) {
             return $this->return(400, 'Lecture not exists');
         }
         $lecture->delete();
+        return $this->return(200, 'Lecture deleted Successfully');
+    }
+
+
+
+    public function restore(string $slug): JsonResponse {
+        $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->withTrashed()->first();
+        // Checking if the lecture not exists
+        if (!$lecture) {
+            return $this->return(400, 'Lecture not exists');
+        }
+        $lecture->restore();
         return $this->return(200, 'Lecture deleted Successfully');
     }
 }

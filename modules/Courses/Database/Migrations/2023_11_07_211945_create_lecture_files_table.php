@@ -14,10 +14,12 @@ return new class extends Migration {
         Schema::create('lecture_files', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('lecture_id');
+            $table->tinyInteger('main_file')->default(0);
             $table->string('original_name', 255);
             $table->string('hash_name', 255);
             $table->char('extension', 10);
             $table->integer('size')->nullable();
+            $table->string('mime_type', 255)->nullable();
             $table->integer('duration')->nullable()->comment('in seconds');
             $table->softDeletes();
             $table->timestamps();

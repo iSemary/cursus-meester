@@ -10,48 +10,50 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
+import { MdRestore } from "react-icons/md";
 export default function viewLectures({ params }) {
     const router = useRouter();
     /** Split button items */
-    const dropDownItems = (slug) => [
+    const dropDownItems = (row) => [
         {
             label: "Add Exam",
             icon: "pi pi-file",
             command: () => {
                 // Add or edit exam
-                // `/dashboard/courses/${params.slug}/lectures/${slug}/exam/edit`
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}/exam/create`
+                    `/dashboard/courses/${params.slug}/lectures/${row.cells[1].data}/exam/editor`
                 );
             },
         },
         {
+            // Edit lecture
             label: "Edit",
             icon: "pi pi-file-edit",
             command: () => {
                 router.push(
-                    `/dashboard/courses/${params.slug}/lectures/${slug}`
+                    `/dashboard/courses/${params.slug}/lectures/${row.cells[1].data}/edit`
                 );
             },
         },
         {
-            label: "Delete",
-            icon: "pi pi-trash",
+            // Restore or delete lecture
+            label: row.cells[6].data ? "Restore"  : "Delete",
+            icon: row.cells[6].data ? <MdRestore className="dropdown-icon" /> : "pi pi-trash",
             command: () => {
-                handleDeleteCourse(slug);
+                row.cells[6].data ? handleRestoreLecture(row.cells[1].data) : handleDeleteLecture(row.cells[1].data);
             },
         },
     ];
-    /** Delete course by slug */
-    const handleDeleteCourse = (slug) => {
+    /** Delete lecture by slug */
+    const handleDeleteLecture = (slug) => {
         Swal.fire({
-            title: "Are you sure you want to delete this course?",
+            title: "Are you sure you want to delete this lecture?",
             showCancelButton: true,
             confirmButtonText: "Delete",
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axiosConfig
-                    .delete("/courses/" + slug)
+                    .delete("/lectures/" + slug)
                     .then((response) => {
                         return true;
                     })
@@ -62,7 +64,32 @@ export default function viewLectures({ params }) {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert("Course deleted successfully", "success");
+                toastAlert("Lecture deleted successfully", "success");
+            }
+        });
+    };
+    
+    /** Restore lecture by slug */
+    const handleRestoreLecture = (slug) => {
+        Swal.fire({
+            title: "Are you sure you want to restore this lecture?",
+            showCancelButton: true,
+            confirmButtonText: "Restore",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return axiosConfig
+                    .post("/lectures/restore/" + slug)
+                    .then((response) => {
+                        return true;
+                    })
+                    .catch((error) => {
+                        Swal.showValidationMessage(`Something went wrong`);
+                    });
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                toastAlert("Lecture restored successfully", "success");
             }
         });
     };
@@ -85,12 +112,13 @@ export default function viewLectures({ params }) {
                     },
                     then: (data) =>
                         data.data.lectures.data.map((lecture) => [
-                            course.title,
-                            course.slug,
-                            course.order_number,
-                            course.lecture_files,
-                            course.contains_exam,
-                            course.status,
+                            lecture.title,
+                            lecture.slug,
+                            lecture.order_number,
+                            lecture.total_files,
+                            lecture.has_exam,
+                            lecture.status,
+                            lecture.deleted_at,
                         ]),
                     total: (data) => data.data.lectures.total,
                 }}
@@ -105,7 +133,12 @@ export default function viewLectures({ params }) {
                     "Slug",
                     "Order Number",
                     "Lecture Files",
-                    "Contains Exam",
+                    {
+                        name: "Contains Exam",
+                        formatter: (cell, row) => {
+                            return row.cells[4].data === 0 ? "No" : "Yes";
+                        },
+                    },
                     "Status",
                     {
                         name: "Actions",
@@ -126,7 +159,7 @@ export default function viewLectures({ params }) {
                                     }
                                     raised
                                     rounded
-                                    model={dropDownItems(row.cells[1].data)}
+                                    model={dropDownItems(row)}
                                 />
                             );
                         },

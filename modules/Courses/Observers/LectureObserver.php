@@ -32,16 +32,19 @@ class LectureObserver {
         if ($uploadedMediaFile) {
             if ($lecture->lecture_media_id) {
                 $lectureFile = LectureFile::find($lecture->lecture_media_id);
-                FileHandler::delete([Lecture::$mediaPath . $lectureFile->hash_name]);
+                if ($lectureFile) {
+                    FileHandler::delete([Lecture::$mediaPath . $lectureFile->hash_name]);
+                }
             }
             // store uploaded media video
-            $mediaFileResponse = FileHandler::file($uploadedMediaFile, Lecture::$mediaPath, 2);
+            $mediaFileResponse = FileHandler::file($uploadedMediaFile['file'], Lecture::$mediaPath, 2);
             // create lecture file row
             if ($mediaFileResponse->getStatusCode() == 200) {
                 $mediaFileData = $mediaFileResponse->getData();
-                $newLectureFile = LectureFile::createMedia($lecture->id, $mediaFileData);
+                $mediaFileData->mime_type = request()->media_file['type'];
+                $newLectureFile = LectureFile::createFile($lecture->id, $mediaFileData, 1);
                 // update existing lecture with it's new media video
-                Lecture::find($lecture->id)->update([
+                DB::table('lectures')->where('id', '=', $lecture->id)->update([
                     'lecture_media_id' => $newLectureFile->id
                 ]);
             }
@@ -54,29 +57,21 @@ class LectureObserver {
      * @param Lecture lecture The parameter "lecture" is of type Lecture.
      */
     private function syncLectureAdditionalFiles(Lecture $lecture) {
-        $uploadedAdditionalFiles = request()->files;
+        $uploadedAdditionalFiles = request()->file('files');
         if ($uploadedAdditionalFiles && is_array($uploadedAdditionalFiles) && count($uploadedAdditionalFiles)) {
             // Soft delete old additional files if exists
             LectureFile::where("lecture_id", $lecture->id)->where("id", "!=", $lecture->lecture_media_id)->delete();
             /** 
-             * Loop over each file and check if it's new or old 
              * If new file then store it and create new lecture_files row
-             * If old file then restore the file by it's hash name and lecture id
-             * Else: the soft deleted files will be destroyed
              */
             foreach ($uploadedAdditionalFiles as $key => $uploadedAdditionalFile) {
-                $fileName = $uploadedAdditionalFile->getClientOriginalName();
-                $checkFile = LectureFile::where("lecture_id", $lecture->id)->where("hash_name", $fileName)->withTrashed()->first();
-                if ($checkFile) {
-                    $checkFile->restore();
-                } else {
-                    // store new uploaded file video
-                    $mediaFileResponse = FileHandler::file($uploadedAdditionalFile, Lecture::$additionalFilePath);
-                    // create lecture file row
-                    if ($mediaFileResponse->getStatusCode() == 200) {
-                        $mediaFileData = $mediaFileResponse->getData();
-                        LectureFile::createAdditional($lecture->id, $mediaFileData);
-                    }
+                // store new uploaded file video
+                $mediaFileResponse = FileHandler::file($uploadedAdditionalFile['file'], Lecture::$additionalFilePath);
+                // create lecture file row
+                if ($mediaFileResponse->getStatusCode() == 200) {
+                    $mediaFileData = $mediaFileResponse->getData();
+                    $mediaFileData->mime_type = request()->input('files')[$key]['type'];
+                    LectureFile::createFile($lecture->id, $mediaFileData, 0);
                 }
             }
         }
@@ -86,7 +81,8 @@ class LectureObserver {
      * Handle the Lecture "updated" event.
      */
     public function updated(Lecture $lecture): void {
-        //
+        $this->createLectureMediaVideo($lecture);
+        $this->syncLectureAdditionalFiles($lecture);
     }
 
     /**

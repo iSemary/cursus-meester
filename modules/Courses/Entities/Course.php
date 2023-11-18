@@ -11,6 +11,7 @@ use App\Models\Utilities\Language;
 use App\Services\Uploader\FileHandler;
 use modules\Categories\Entities\Category;
 use modules\Organizations\Entities\Organization;
+use modules\Payments\Entities\EnrolledCourse;
 
 class Course extends Model {
     use HasFactory, SoftDeletes;
@@ -33,14 +34,13 @@ class Course extends Model {
         'offer_price',
         'offer_percentage',
         'offer_expired_at',
+        'has_certificate',
         'published_at',
     ];
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
-    protected $casts = [
-        'offer_price' => 'boolean',
-    ];
+    protected $casts = ['offer_price' => 'boolean',];
 
     protected $hidden = [
         "deleted_at",
@@ -48,9 +48,13 @@ class Course extends Model {
     ];
 
     protected $appends = [
-        'total_lectures',
+        'duration',
         'status',
+        'currency',
+        'total_students',
+        'total_lectures',
         'final_price',
+        'rates',
     ];
 
     public function lectures() {
@@ -59,6 +63,22 @@ class Course extends Model {
 
     public function getTotalLecturesAttribute() {
         return $this->lectures()->count();
+    }
+    public function getCurrencyAttribute() {
+        return "$"; // TODO dynamic currency
+    }
+
+    public function getTotalStudentsAttribute() {
+        $totalStudents = EnrolledCourse::whereCourseId($this->id)->count();
+        return $totalStudents;
+    }
+
+    public function getRatesAttribute() {
+        $rates = [
+            'count' => $this->rate()->count(),
+            'average' => (int) $this->rate()->average('rate'),
+        ];
+        return $rates;
     }
 
     public function getFinalPriceAttribute() {
@@ -96,8 +116,7 @@ class Course extends Model {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-
-    public function user() {
+    public function instructor() {
         return $this->belongsTo(User::class, 'user_id');
     }
 
@@ -144,5 +163,12 @@ class Course extends Model {
         } else {
             return asset('storage/' . $this->filePath . '/' . 'default.png');
         }
+    }
+
+    public function getDurationAttribute() {
+        return Lecture::join('lecture_files', 'lecture_files.lecture_id', 'lectures.id')
+            ->where("lecture_files.main_file", 1)
+            ->where("lectures.course_id", $this->id)
+            ->sum("lecture_files.duration");
     }
 }

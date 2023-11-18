@@ -16,12 +16,13 @@ export default function createCourse() {
         thumbnail: "",
         skill_level: "",
         category_id: "",
-        organization_id: "",
+        organization_id: false,
         language_id: "",
         price: 0,
         offer_price: 0,
         offer_percentage: 0,
         offer_expired_at: new Date(),
+        has_certificate: 0,
         published_at: new Date(),
     };
 

@@ -9,6 +9,7 @@ import { Button, Dropdown } from "react-bootstrap";
 import axiosConfig from "../components/axiosConfig/axiosConfig";
 import { Token } from "../components/utilities/Authentication/Token";
 import { useRouter } from "next/navigation";
+import { FaRegHeart } from "react-icons/fa6";
 const Header = () => {
     const router = useRouter();
     const { user } = useAuth(); // Get auth data
@@ -90,6 +91,11 @@ const Header = () => {
                         <li>
                             <Link href="/cart" className="nav-link cart-link">
                                 <AiOutlineShoppingCart size={25} />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/wishlist" className="nav-link cart-link">
+                                <FaRegHeart size={25} />
                             </Link>
                         </li>
                         {user ? (

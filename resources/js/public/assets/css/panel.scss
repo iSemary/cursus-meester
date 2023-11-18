@@ -335,3 +335,12 @@ hr {
         border-radius: 10px;
     }
 }
+
+.question-options-container {
+    .question-option {
+        .question-option-input {
+            right: 0;
+            top: 15px;
+        }
+    }
+}
