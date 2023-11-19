@@ -45,10 +45,6 @@
   .nav-search:hover, .nav-search:focus, .nav-search:focus-within, .nav-search:active, .nav-search:focus-visible {
     border: 2px solid #00b4d88f;
     outline: 0; }
-  .nav-search:focus {
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    border-bottom: 0; }
 
 .nav-links {
   list-style: none;
@@ -260,6 +256,16 @@
 
 .search-container {
   position: relative; }
+  .search-container form {
+    position: relative; }
+  .search-container button {
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    color: #556cd6; }
+    .search-container button:focus, .search-container button:active {
+      border: 0;
+      outline: 0; }
   .search-container .search-results {
     width: 100%;
     padding: 10px;
@@ -277,11 +283,12 @@
       padding-left: 10px;
       margin-bottom: 5px;
       list-style: none; }
-      .search-container .search-results ul li {
+      .search-container .search-results ul li a {
         display: flex;
         justify-content: space-between;
         margin-bottom: 7px;
-        color: #212529; }
+        color: #556cd6;
+        text-decoration: none; }
 
 .lecture-viewer .preview-image {
   position: relative; }

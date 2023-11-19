@@ -6,12 +6,37 @@ use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Laravel\Passport\Passport;
+use Laravel\Passport\Token;
 use modules\Courses\Entities\Course;
+use modules\Courses\Entities\UserSearch;
 
 class SearchController extends ApiController {
 
 
-    public function search() {
+    public function search(Request $request): JsonResponse {
+        $keyword = $request->q;
+        if (!$keyword) {
+            return $this->return(400, "Keyword is required");
+        }
+        // for authenticated users, save the results
+        if ($request->header("Authorization")) {
+            $accessToken = str_replace('Bearer ', '', $request->header("Authorization"));
+            $token = Token::where("id", $accessToken)->first();
+            if ($token && !$token->revoked) {
+                $user = $token->user;
+                if ($user) {
+                    UserSearch::updateOrCreate(['user_id' => $user->id, 'keyword' => $keyword]);
+                }
+            }
+        }
+
+        $courses = Course::selectPreview()
+            ->where("title", "like", "%" . $keyword . "%")
+            ->orWhere("description", "like", "%" . $keyword . "%")
+            ->orderByDesc("id")->paginate(20);
+
+        return $this->return(200, "Query results fetched", ['results' => $courses, "keyword" => $keyword]);
     }
 
     /**
@@ -33,6 +58,6 @@ class SearchController extends ApiController {
             ->where("title", "like", "%" . $keyword . "%")
             ->orWhere("description", "like", "%" . $keyword . "%")
             ->limit(10)->orderByDesc("id")->get();
-        return $this->return(200, "Query results fetched", ['courses' => $courses, "keyword" => $keyword]);
+        return $this->return(200, "Query results fetched", ['results' => $courses, "keyword" => $keyword]);
     }
 }
