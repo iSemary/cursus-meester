@@ -6,29 +6,28 @@ use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Laravel\Passport\Passport;
-use Laravel\Passport\Token;
 use modules\Courses\Entities\Course;
 use modules\Courses\Entities\UserSearch;
 
 class SearchController extends ApiController {
-
-
+    /**
+     * The function searches for courses based on a keyword provided in the request, saves the search
+     * results for authenticated users, and returns the courses along with the keyword used for the search.
+     * 
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class. It represents the HTTP request made to the server and contains information such as the
+     * request method, headers, query parameters, and request body.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
     public function search(Request $request): JsonResponse {
         $keyword = $request->q;
         if (!$keyword) {
             return $this->return(400, "Keyword is required");
         }
         // for authenticated users, save the results
-        if ($request->header("Authorization")) {
-            $accessToken = str_replace('Bearer ', '', $request->header("Authorization"));
-            $token = Token::where("id", $accessToken)->first();
-            if ($token && !$token->revoked) {
-                $user = $token->user;
-                if ($user) {
-                    UserSearch::updateOrCreate(['user_id' => $user->id, 'keyword' => $keyword]);
-                }
-            }
+        if (auth('api')->user()) {
+            UserSearch::updateOrCreate(['user_id' => auth('api')->user()->id, 'keyword' => $keyword]);
         }
 
         $courses = Course::selectPreview()

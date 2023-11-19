@@ -710,3 +710,10 @@ $headerHeight: 80px;
         stroke-width: 47px;
     }
 }
+
+.result-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: fit-content;
+}
