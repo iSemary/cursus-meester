@@ -14,7 +14,7 @@ export async function middleware(request, response) {
                 }
             );
             if (!apiResponse.ok) {
-                // return redirectToLogin(request);
+                return redirectToLogin(request);
             }
         } catch (error) {
             console.log("Error occurred while checking authentication:", error);
