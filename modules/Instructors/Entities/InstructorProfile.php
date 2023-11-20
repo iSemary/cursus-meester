@@ -76,8 +76,7 @@ class InstructorProfile extends Model {
 
     public static function getPublicInfo(int $userId) {
         $data = [];
-        $data = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')->
-            select(['user_id', 'position', 'bio', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
+        $data = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')->select(['user_id', 'position', 'bio', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
             ->with(["organization" => function ($query) {
                 $query->select(['id', 'name', 'slug', 'logo']);
             }])
@@ -95,5 +94,12 @@ class InstructorProfile extends Model {
 
     public static function getCourses(int $userId) {
         return self::where('user_id', $userId)->first()->courses()->selectPreview()->get();
+    }
+
+    public static function getCoursesCounter(int $userId) {
+        $courses = self::where('user_id', $userId)->first()->courses()
+            ->select('courses.id', 'courses.title', 'courses.slug', 'courses.offer_price', 'courses.offer_percentage', 'price')
+            ->get();
+        return $courses;
     }
 }

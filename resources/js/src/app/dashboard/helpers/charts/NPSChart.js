@@ -4,7 +4,7 @@ import * as echarts from "echarts/core";
 import { GaugeChart } from "echarts/charts";
 import { CanvasRenderer } from "echarts/renderers";
 
-function NPSChart() {
+function NPSChart({rate}) {
     useEffect(() => {
         echarts.use([GaugeChart, CanvasRenderer]);
         // Initialize ECharts instance
@@ -19,7 +19,7 @@ function NPSChart() {
                     center: ["50%", "75%"],
                     radius: "90%",
                     min: 0,
-                    max: 1,
+                    max: 5,
                     splitNumber: 8,
                     axisLine: {
                         lineStyle: {
@@ -60,12 +60,12 @@ function NPSChart() {
                         distance: -60,
                         rotate: "tangential",
                         formatter: function (value) {
-                            if (value === 0.875) {
-                                return "Detractors";
-                            } else if (value === 0.5) {
+                            if (value === 4.375) {
+                                return "Promoters"; // Adjusted values for the labels
+                            } else if (value === 2.5) {
                                 return "Passives";
-                            } else if (value === 0.125) {
-                                return "Promoters";
+                            } else if (value === 0.625) {
+                                return "Detractors";
                             }
                             return "";
                         },
@@ -79,13 +79,13 @@ function NPSChart() {
                         offsetCenter: [0, "-35%"],
                         valueAnimation: true,
                         formatter: function (value) {
-                            return Math.round(value * 100) + "";
+                            return value + "";
                         },
                         color: "inherit",
                     },
                     data: [
                         {
-                            value: 0.2,
+                            value: rate,
                             name: "NPS Overall",
                         },
                     ],
@@ -102,7 +102,7 @@ function NPSChart() {
             // Clean up and dispose the chart when the component unmounts
             chart.dispose();
         };
-    }, []);
+    }, [rate]);
     return <div id="npsChart" style={{ width: "100%", height: "400px" }}></div>;
 }
 export default NPSChart;

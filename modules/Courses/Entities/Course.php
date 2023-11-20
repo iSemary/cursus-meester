@@ -68,6 +68,10 @@ class Course extends Model {
         return "$"; // TODO dynamic currency
     }
 
+    public function enrolled_courses() {
+        return $this->hasMany(EnrolledCourse::class);
+    }
+
     public function getTotalStudentsAttribute() {
         $totalStudents = EnrolledCourse::whereCourseId($this->id)->count();
         return $totalStudents;
