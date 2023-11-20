@@ -99,7 +99,7 @@ export default function FormEditor({
                 setLevels(response.data.data.data.levels);
             })
             .catch(({ response }) => {
-                console.log("Something went wrong", "error");
+                console.log(response, "error");
             });
     }, []);
 

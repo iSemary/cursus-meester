@@ -1,10 +1,14 @@
 import axios from "axios";
 import toastAlert from "../Alert";
+import Cookies from "js-cookie";
 
 export const Token = {
     store(token) {
         // Store token in local storage
-        if (token) localStorage.setItem("AUTH_TOKEN", token);
+        if (token) {
+            Cookies.set("AUTH_TOKEN", token)
+            localStorage.setItem("AUTH_TOKEN", token);
+        }
     },
     explode() {
         // Delete token from local storage
@@ -28,8 +32,9 @@ export const Token = {
                 .then((response) => {
                     resolve(response.data.success);
                 })
-                .catch(({ response }) => {
-                    console.log(response.data.message, "error");
+                .catch((error) => {
+                    console.log("Error in Token.check:", error);
+                    reject(false);
                 });
         });
     },
@@ -44,8 +49,9 @@ export const Token = {
                 .then((response) => {
                     resolve(response.data);
                 })
-                .catch(({ response }) => {
-                    console.log(response.data.message, "error");
+                .catch((error) => {
+                    console.log("Error in Token.getUser:");
+                    reject(false);
                 });
         });
     },

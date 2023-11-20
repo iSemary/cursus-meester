@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 export default function SearchBar() {
     const searchParams = useSearchParams();
-    const [keyword, setKeyword] = useState(null);
+    const [keyword, setKeyword] = useState("");
     const [tinyResults, setTinyResults] = useState([]);
 
     // default query from url
@@ -34,7 +34,7 @@ export default function SearchBar() {
 
     /** Get a short list of search with title and slug */
     useEffect(() => {
-        if (keyword !== q) {
+        if (keyword !== q || keyword !== "" || q !== "") {
             axiosConfig.get(`search/tiny?q=${keyword}`).then((response) => {
                 setTinyResults(response.data.data.results);
             });

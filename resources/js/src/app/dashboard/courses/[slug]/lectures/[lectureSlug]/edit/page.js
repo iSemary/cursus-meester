@@ -27,7 +27,6 @@ export default function createLecture({ params }) {
                 if (response.data.data.lecture.additional_files) {
                     response.data.data.lecture.additional_files.map(
                         (file, i) => {
-                            console.log(i);
                             preparingLectureFiles(file);
                         }
                     );

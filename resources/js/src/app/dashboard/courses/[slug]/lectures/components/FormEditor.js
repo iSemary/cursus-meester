@@ -47,12 +47,8 @@ export default function FormEditor({
         // Remove Lecture File
         axiosConfig
             .delete(`lecture-file/${lecture.slug}/${id}`)
-            .then((response) => {
-                console.log(response);
-            })
-            .catch(({ response }) => {
-                console.log(response);
-            });
+            .then((response) => {})
+            .catch(({ response }) => {console.log(response);});
     };
 
     const removeLectureFiles = (id) => {
