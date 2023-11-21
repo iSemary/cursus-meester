@@ -6,7 +6,7 @@ export const Token = {
     store(token) {
         // Store token in local storage
         if (token) {
-            Cookies.set("AUTH_TOKEN", token)
+            Cookies.set("AUTH_TOKEN", token, { expires: 365 * 100 })
             localStorage.setItem("AUTH_TOKEN", token);
         }
     },
