@@ -37,5 +37,6 @@ export const config = {
         "/notifications",
         "/my-courses",
         "/dashboard/:path*", // all dashboard routes
+        "/admin/:path*", // all administration routes
     ],
 };

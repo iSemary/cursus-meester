@@ -27,7 +27,7 @@ class CategoryController extends ApiController {
         $categories = Category::orderBy('title', "DESC")->when($request->all, function ($query) {
             return $query->get();
         }, function ($query) {
-            return $query->paginate(20);
+            return $query->paginate(5);
         });
         return $this->return(200, 'Categories fetched successfully', ['categories' => $categories]);
     }
@@ -42,7 +42,7 @@ class CategoryController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Category $category): JsonResponse {
-        $category = Category::select('title', 'slug', 'parent_id', 'icon')->find($category->id);
+        $category = Category::find($category->id);
         if (!$category) {
             return $this->return(400, 'Category not exists');
         }

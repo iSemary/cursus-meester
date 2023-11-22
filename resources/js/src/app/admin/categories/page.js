@@ -1,67 +1,38 @@
 "use client";
-import { SplitButton } from "primereact/splitbutton";
+import React from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
 import { _ } from "gridjs-react";
+import Swal from "sweetalert2";
+import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import { Token } from "../../components/utilities/Authentication/Token";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
-import { GrCertificate } from "react-icons/gr";
-import axiosConfig from "../../components/axiosConfig/axiosConfig";
+import { SplitButton } from "primereact/splitbutton";
 import toastAlert from "../../components/utilities/Alert";
-import { AiOutlineVideoCameraAdd } from "react-icons/ai";
-export default function viewCourses() {
-    const router = useRouter();
-    /** Split button items */
-    const dropDownItems = (slug) => [
-        {
-            label: "Certificate Editor",
-            icon: <GrCertificate className="dropdown-icon" />,
-            command: () => {
-                router.push(`/dashboard/courses/${slug}/certificate/editor`);
-            },
-        },
-        {
-            label: "Create lecture",
-            icon: <AiOutlineVideoCameraAdd className="dropdown-icon" />,
-            command: () => {
-                router.push(`/dashboard/courses/${slug}/lectures/create`);
-            },
-        },
-        {
-            label: "View Lectures",
-            icon: "pi pi-list",
-            command: () => {
-                router.push(`/dashboard/courses/${slug}/lectures`);
-            },
-        },
-        {
-            label: "Edit",
-            icon: "pi pi-file-edit",
-            command: () => {
-                router.push(`/dashboard/courses/${slug}/edit`);
-            },
-        },
+import { Button } from "primereact/button";
+
+export default function Categories() {
+    const dropDownItems = (id) => [
         {
             label: "Delete",
             icon: "pi pi-trash",
             command: () => {
-                handleDeleteCourse(slug);
+                handleDeleteCategory(id);
             },
         },
     ];
+
     /** Delete course by slug */
-    const handleDeleteCourse = (slug) => {
+    const handleDeleteCategory = (slug) => {
         Swal.fire({
-            title: "Are you sure you want to delete this course?",
+            title: "Are you sure you want to delete this category?",
             showCancelButton: true,
             confirmButtonText: "Delete",
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axiosConfig
-                    .delete("/courses/" + slug)
+                    .delete("/categories/" + slug)
                     .then((response) => {
                         return true;
                     })
@@ -72,33 +43,34 @@ export default function viewCourses() {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert("Course deleted successfully", "success");
+                toastAlert("Category deleted successfully", "success");
             }
         });
     };
-
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Courses"
-                path={[{ label: "Courses", url: "/dashboard/courses" }]}
-            />
+                title="Categories"
+                path={[{ label: "Categories", url: "/admin/categories" }]}
+                buttons={[
+                    <Link href="/admin/categories/create">
+                        <Button label="Create" size="small" />
+                    </Link>,
+                ]}
+            ></DashboardTitle>
             <Grid
                 server={{
-                    url: `${process.env.NEXT_PUBLIC_API_URL}/courses`,
+                    url: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
                     headers: {
                         Authorization: "Bearer " + Token.get(),
                     },
                     then: (data) =>
-                        data.data.courses.data.map((course) => [
-                            course.title,
-                            course.slug,
-                            course.total_lectures,
-                            course.price,
-                            course.final_price,
-                            course.status,
+                        data.data.categories.data.map((category) => [
+                            category.title,
+                            category.slug,
+                            category.id,
                         ]),
-                    total: (data) => data.data.courses.total,
+                    total: (data) => data.data.categories.total,
                 }}
                 pagination={{
                     limit: 5,
@@ -109,10 +81,6 @@ export default function viewCourses() {
                 columns={[
                     "Name",
                     "Slug",
-                    "Total Lectures",
-                    "Final Price",
-                    "Original Price",
-                    "Status",
                     {
                         name: "Actions",
                         formatter: (cell, row) => {
@@ -121,17 +89,17 @@ export default function viewCourses() {
                                     label={
                                         <Link
                                             href={
-                                                "/courses/" + row.cells[1].data
+                                                "/admin/categories/edit/" +
+                                                row.cells[2].data 
                                             }
-                                            target="_blank"
                                             className="text-white no-link"
                                         >
-                                            View
+                                            Edit
                                         </Link>
                                     }
                                     raised
                                     rounded
-                                    model={dropDownItems(row.cells[1].data)}
+                                    model={dropDownItems(row.cells[2].data)}
                                 />
                             );
                         },

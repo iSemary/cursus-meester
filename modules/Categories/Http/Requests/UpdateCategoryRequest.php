@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use modules\Categories\Entities\Category;
 
 class UpdateCategoryRequest extends FormRequest {
-    protected $category;
     /**
      * Get the validation rules that apply to the request.
      *
@@ -19,7 +18,7 @@ class UpdateCategoryRequest extends FormRequest {
             'parent_id' => 'sometimes|numeric',
             'order_number' => 'sometimes|numeric',
             'status' => 'required|numeric',
-            'icon' => 'mimes:png,jpg,jpeg,gif'
+            'icon' => 'sometimes|mimes:png,jpg,jpeg,gif'
         ];
     }
 
@@ -29,8 +28,6 @@ class UpdateCategoryRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        $slug = $this->route('category');
-        $this->category = Category::where("slug", $slug)->owned()->first();
         return true;
     }
 }
