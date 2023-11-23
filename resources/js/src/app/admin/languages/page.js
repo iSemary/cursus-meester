@@ -12,27 +12,27 @@ import { SplitButton } from "primereact/splitbutton";
 import toastAlert from "../../components/utilities/Alert";
 import { Button } from "primereact/button";
 
-export default function Industries() {
+export default function Languages() {
     const dropDownItems = (id) => [
         {
             label: "Delete",
             icon: "pi pi-trash",
             command: () => {
-                handleDeleteIndustry(id);
+                handleDeleteLanguage(id);
             },
         },
     ];
 
     /** Delete course by slug */
-    const handleDeleteIndustry = (slug) => {
+    const handleDeleteLanguage = (slug) => {
         Swal.fire({
-            title: "Are you sure you want to delete this industry?",
+            title: "Are you sure you want to delete this language?",
             showCancelButton: true,
             confirmButtonText: "Delete",
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axiosConfig
-                    .delete("/industries/" + slug)
+                    .delete("/languages/" + slug)
                     .then((response) => {
                         return true;
                     })
@@ -43,7 +43,7 @@ export default function Industries() {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert("Industry deleted successfully", "success");
+                toastAlert("Language deleted successfully", "success");
             }
         });
     };
@@ -51,26 +51,26 @@ export default function Industries() {
         <DashboardTemplate>
             <DashboardTitle
                 title="Industries"
-                path={[{ label: "industries", url: "/admin/industries" }]}
+                path={[{ label: "languages", url: "/admin/languages" }]}
                 buttons={[
-                    <Link href="/admin/industries/create">
+                    <Link href="/admin/languages/create">
                         <Button label="Create" size="small" />
                     </Link>,
                 ]}
             ></DashboardTitle>
             <Grid
                 server={{
-                    url: `${process.env.NEXT_PUBLIC_API_URL}/industries`,
+                    url: `${process.env.NEXT_PUBLIC_API_URL}/languages`,
                     headers: {
                         Authorization: "Bearer " + Token.get(),
                     },
                     then: (data) =>
-                        data.data.industries.data.map((industry) => [
-                            industry.title,
-                            industry.slug,
-                            industry.id,
+                        data.data.languages.data.map((language) => [
+                            language.name,
+                            language.key,
+                            language.id,
                         ]),
-                    total: (data) => data.data.industries.total,
+                    total: (data) => data.data.languages.total,
                 }}
                 pagination={{
                     limit: 5,
@@ -80,7 +80,7 @@ export default function Industries() {
                 }}
                 columns={[
                     "Name",
-                    "Slug",
+                    "Key",
                     {
                         name: "Actions",
                         formatter: (cell, row) => {
@@ -89,7 +89,7 @@ export default function Industries() {
                                     label={
                                         <Link
                                             href={
-                                                "/admin/industries/edit/" +
+                                                "/admin/languages/edit/" +
                                                 row.cells[2].data 
                                             }
                                             className="text-white no-link"
