@@ -12,27 +12,27 @@ import { SplitButton } from "primereact/splitbutton";
 import toastAlert from "../../components/utilities/Alert";
 import { Button } from "primereact/button";
 
-export default function Languages() {
+export default function Wordings() {
     const dropDownItems = (id) => [
         {
             label: "Delete",
             icon: "pi pi-trash",
             command: () => {
-                handleDeleteLanguage(id);
+                handleDeleteWording(id);
             },
         },
     ];
 
     /** Delete course by slug */
-    const handleDeleteLanguage = (slug) => {
+    const handleDeleteWording = (slug) => {
         Swal.fire({
-            title: "Are you sure you want to delete this language?",
+            title: "Are you sure you want to delete this wording?",
             showCancelButton: true,
             confirmButtonText: "Delete",
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axiosConfig
-                    .delete("/languages/" + slug)
+                    .delete("/wordings/" + slug)
                     .then((response) => {
                         return true;
                     })
@@ -43,34 +43,35 @@ export default function Languages() {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-                toastAlert("Language deleted successfully", "success");
+                toastAlert("Wording deleted successfully", "success");
             }
         });
     };
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Languages"
-                path={[{ label: "Languages", url: "/admin/languages" }]}
+                title="Wordings"
+                path={[{ label: "Wordings", url: "/admin/wordings" }]}
                 buttons={[
-                    <Link href="/admin/languages/create">
+                    <Link href="/admin/wordings/create">
                         <Button label="Create" size="small" />
                     </Link>,
                 ]}
             ></DashboardTitle>
             <Grid
                 server={{
-                    url: `${process.env.NEXT_PUBLIC_API_URL}/languages`,
+                    url: `${process.env.NEXT_PUBLIC_API_URL}/wordings`,
                     headers: {
                         Authorization: "Bearer " + Token.get(),
                     },
                     then: (data) =>
-                        data.data.languages.data.map((language) => [
-                            language.name,
-                            language.key,
-                            language.id,
+                        data.data.wordings.data.map((wording) => [
+                            wording.wording_key,
+                            wording.wording_value,
+                            wording.language?.name,
+                            wording.id,
                         ]),
-                    total: (data) => data.data.languages.total,
+                    total: (data) => data.data.wordings.total,
                 }}
                 pagination={{
                     limit: 5,
@@ -79,8 +80,9 @@ export default function Languages() {
                     },
                 }}
                 columns={[
-                    "Name",
                     "Key",
+                    "Value",
+                    "Language",
                     {
                         name: "Actions",
                         formatter: (cell, row) => {
@@ -89,8 +91,8 @@ export default function Languages() {
                                     label={
                                         <Link
                                             href={
-                                                "/admin/languages/edit/" +
-                                                row.cells[2].data 
+                                                "/admin/wordings/edit/" +
+                                                row.cells[3].data
                                             }
                                             className="text-white no-link"
                                         >

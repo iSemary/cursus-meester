@@ -5,17 +5,17 @@ import DashboardTitle from "../../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
 import FormEditor from "../../components/FormEditor";
-export default function editLanguage({ params }) {
+export default function editWording({ params }) {
     const id = params.id;
 
-    const [language, setLanguage] = useState(null);
+    const [wording, setWording] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
 
     useEffect(() => {
         axiosConfig
-            .get(process.env.NEXT_PUBLIC_API_URL + "/languages/" + id)
+            .get(process.env.NEXT_PUBLIC_API_URL + "/wordings/" + id)
             .then((response) => {
-                setLanguage(response.data.data.language);
+                setWording(response.data.data.wording);
             });
     }, []);
     /** Calls store api with the inserted data */
@@ -24,12 +24,12 @@ export default function editLanguage({ params }) {
         setFormLoading(true);
         // Prepare data
         const formData = new FormData();
-        for (const [key, value] of Object.entries(language)) {
+        for (const [key, value] of Object.entries(wording)) {
             formData.append(key, value);
         }
         formData.append("_method", "PUT");
         axiosConfig
-            .post("languages/" + id, formData, {
+            .post("wordings/" + id, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -47,17 +47,17 @@ export default function editLanguage({ params }) {
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Edit language"
+                title="Edit wording"
                 path={[
-                    { label: "Languages", url: "/admin/languages" },
+                    { label: "Wordings", url: "/admin/wordings" },
                     { label: "Edit", url: "" },
-                    { label: language?.title, url: "" },
+                    { label: wording?.wording_key, url: "" },
                 ]}
             />
-            {language && (
+            {wording && (
                 <FormEditor
-                    language={language}
-                    setLanguage={setLanguage}
+                    wording={wording}
+                    setWording={setWording}
                     handleSubmitForm={handleSubmitForm}
                     formLoading={formLoading}
                     btnLabel="Update"

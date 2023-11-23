@@ -5,13 +5,13 @@ import DashboardTitle from "../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../components/utilities/Alert";
 import FormEditor from "../components/FormEditor";
-export default function createLanguage() {
-    const initialLanguage = {
+export default function createWording() {
+    const initialWording = {
         name: "",
         key: "",
     };
 
-    const [language, setLanguage] = useState(initialLanguage);
+    const [wording, setWording] = useState(initialWording);
     const [formLoading, setFormLoading] = useState(false);
 
     /** Calls store api with the inserted data */
@@ -20,12 +20,12 @@ export default function createLanguage() {
         setFormLoading(true);
         // Prepare data
         const formData = new FormData();
-        for (const [key, value] of Object.entries(language)) {
+        for (const [key, value] of Object.entries(wording)) {
             formData.append(key, value);
         }
 
         axiosConfig
-            .post("languages", formData, {
+            .post("wordings", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -33,7 +33,7 @@ export default function createLanguage() {
             .then((response) => {
                 setFormLoading(false);
                 toastAlert(response.data.message, "success");
-                setLanguage(initialLanguage);
+                setWording(initialWording);
             })
             .catch(({ response }) => {
                 setFormLoading(false);
@@ -44,15 +44,15 @@ export default function createLanguage() {
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Create a new language"
+                title="Create a new wording"
                 path={[
-                    { label: "Languages", url: "/admin/languages" },
-                    { label: "Create", url: "/admin/languages/create" },
+                    { label: "Wordings", url: "/admin/wordings" },
+                    { label: "Create", url: "/admin/wordings/create" },
                 ]}
             />
             <FormEditor
-                language={language}
-                setLanguage={setLanguage}
+                wording={wording}
+                setWording={setWording}
                 handleSubmitForm={handleSubmitForm}
                 formLoading={formLoading}
                 btnLabel="Save"

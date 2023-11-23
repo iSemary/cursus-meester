@@ -8,7 +8,6 @@ use modules\Courses\Http\Controllers\Api\RateController;
 use modules\Courses\Http\Controllers\Api\ExamController;
 use modules\Courses\Http\Controllers\Api\ListController;
 use modules\Courses\Http\Controllers\Api\SearchController;
-
 use modules\Payments\Http\Controllers\Api\CartController;
 
 // Administration Routes 

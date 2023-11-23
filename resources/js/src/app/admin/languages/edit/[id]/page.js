@@ -51,7 +51,7 @@ export default function editLanguage({ params }) {
                 path={[
                     { label: "Languages", url: "/admin/languages" },
                     { label: "Edit", url: "" },
-                    { label: language?.title, url: "" },
+                    { label: language?.name, url: "" },
                 ]}
             />
             {language && (
