@@ -2,18 +2,13 @@
 
 namespace App\Http\Requests\Industry;
 
-use App\Models\Utilities\Industry;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateIndustryRequest extends FormRequest {
-    protected $industry;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool {
-        $slug = $this->route('industry');
-        $this->industry = Industry::where("slug", $slug)->owned()->first();
-
         return true;
     }
 

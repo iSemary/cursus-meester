@@ -13,7 +13,7 @@ const Login = () => {
         email: "",
         password: "",
     };
-    const [formValues, setFormValues] = useState({ initialValues });
+    const [formValues, setFormValues] = useState(initialValues);
     const router = useRouter();
 
     const handleChangeValues = (e) => {

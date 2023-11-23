@@ -26,7 +26,7 @@ class OrganizationController extends ApiController {
      * fetched successfully', and an array of organizations.
      */
     public function index(Request $request): JsonResponse {
-        $organizations = Organization::orderBy('name', "DESC")->when($request->all, function ($query) {
+        $organizations = Organization::orderBy('name')->when($request->all, function ($query) {
             return $query->get();
         }, function ($query) {
             return $query->paginate(20);
@@ -45,7 +45,7 @@ class OrganizationController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Organization $organization): JsonResponse {
-        $organization = Organization::select('name', 'slug', 'description', 'logo', 'status')->find($organization->id);
+        $organization = Organization::select('name', 'slug', 'description', 'logo', 'industry_id', 'status')->find($organization->id);
         if (!$organization) {
             return $this->return(400, 'Organization not exists');
         }

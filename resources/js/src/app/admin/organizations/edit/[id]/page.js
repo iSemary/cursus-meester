@@ -5,24 +5,17 @@ import DashboardTitle from "../../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
 import FormEditor from "../../components/FormEditor";
-export default function editCategory({ params }) {
+export default function editOrganization({ params }) {
     const id = params.id;
 
-    const [category, setCategory] = useState(null);
+    const [organization, setOrganization] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
-    const [parentCategories, setParentCategories] = useState([]);
 
     useEffect(() => {
         axiosConfig
-            .get(process.env.NEXT_PUBLIC_API_URL + "/categories?all=true")
+            .get(process.env.NEXT_PUBLIC_API_URL + "/organizations/" + id)
             .then((response) => {
-                setParentCategories(response.data.data.categories);
-            });
-
-        axiosConfig
-            .get(process.env.NEXT_PUBLIC_API_URL + "/categories/" + id)
-            .then((response) => {
-                setCategory(response.data.data.category);
+                setOrganization(response.data.data.organization);
             });
     }, []);
     /** Calls store api with the inserted data */
@@ -32,7 +25,7 @@ export default function editCategory({ params }) {
         const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
         // Prepare data
         const formData = new FormData();
-        for (const [key, value] of Object.entries(category)) {
+        for (const [key, value] of Object.entries(organization)) {
             if (key === "icon" && urlRegex.test(value)) {
                 continue;
             } else {
@@ -41,7 +34,7 @@ export default function editCategory({ params }) {
         }
         formData.append("_method", "PUT");
         axiosConfig
-            .post("categories/" + id, formData, {
+            .post("organizations/" + id, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -59,19 +52,17 @@ export default function editCategory({ params }) {
     return (
         <DashboardTemplate>
             <DashboardTitle
-                title="Edit category"
+                title="Edit organization"
                 path={[
-                    { label: "Categories", url: "/admin/categories" },
+                    { label: "Organizations", url: "/admin/organizations" },
                     { label: "Edit", url: "" },
-                    { label: category?.title, url: "" },
+                    { label: organization?.name, url: "" },
                 ]}
             />
-            {category && (
+            {organization && (
                 <FormEditor
-                    category={category}
-                    setCategory={setCategory}
-                    parentCategories={parentCategories}
-                    setParentCategories={setParentCategories}
+                    organization={organization}
+                    setOrganization={setOrganization}
                     handleSubmitForm={handleSubmitForm}
                     formLoading={formLoading}
                     btnLabel="Update"

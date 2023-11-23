@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { MdOutlineTitle } from "react-icons/md";
@@ -6,13 +6,13 @@ import { AiOutlineLink } from "react-icons/ai";
 import { BiCategoryAlt, BiSolidImage } from "react-icons/bi";
 import { Dropdown } from "primereact/dropdown";
 import { GrStatusGoodSmall } from "react-icons/gr";
-import { FaSortNumericDown } from "react-icons/fa";
+import { InputTextarea } from "primereact/inputtextarea";
+import { ImFileText2 } from "react-icons/im";
+import axiosConfig from "../../../components/axiosConfig/axiosConfig";
 
 export default function FormEditor({
-    category,
-    setCategory,
-    parentCategories,
-    setParentCategories,
+    organization,
+    setOrganization,
     formLoading,
     handleSubmitForm,
     btnLabel,
@@ -28,24 +28,34 @@ export default function FormEditor({
         },
     ];
 
-    const [thumbnailImage, setThumbnailImage] = useState(category.icon);
+    const [industries, setIndustries] = useState([]);
+    const [thumbnailImage, setThumbnailImage] = useState(organization.logo);
 
-    const handleChangeCategory = (e) => {
+    const handleChangeOrganization = (e) => {
         const { name, value } = e.target;
-        setCategory({
-            ...category,
+        setOrganization({
+            ...organization,
             [name]: value,
         });
     };
 
     const handleChangeThumbnail = (e) => {
         const file = e.target.files[0];
-        setCategory({
-            ...category,
-            icon: file,
+        setOrganization({
+            ...organization,
+            logo: file,
         });
         setThumbnailImage(URL.createObjectURL(file));
     };
+
+    useEffect(() => {
+        axiosConfig
+            .get(process.env.NEXT_PUBLIC_API_URL + "/industries?all=true")
+            .then((response) => {
+                setIndustries(response.data.data.industries);
+            });
+    }, []);
+
 
     return (
         <form
@@ -59,10 +69,10 @@ export default function FormEditor({
                         <MdOutlineTitle />
                     </span>
                     <InputText
-                        placeholder="Title"
-                        name="title"
-                        onChange={handleChangeCategory}
-                        value={category.title}
+                        placeholder="Name"
+                        name="name"
+                        onChange={handleChangeOrganization}
+                        value={organization.name}
                         required
                     />
                 </div>
@@ -73,20 +83,20 @@ export default function FormEditor({
                     <InputText
                         placeholder="Slug"
                         name="slug"
-                        onChange={handleChangeCategory}
-                        value={category.slug}
+                        onChange={handleChangeOrganization}
+                        value={organization.slug}
                         required
                     />
                 </div>
-                <div className="col-md-3 mt-2 p-inputgroup flex-1">
+                <div className="col-md-12 mt-2 p-inputgroup flex-1">
                     <span className="p-inputgroup-addon">
-                        <FaSortNumericDown />
+                        <ImFileText2 />
                     </span>
-                    <InputText
-                        placeholder="Order Number"
-                        name="order_number"
-                        onChange={handleChangeCategory}
-                        value={category.order_number}
+                    <InputTextarea
+                        placeholder="Description"
+                        name="description"
+                        onChange={handleChangeOrganization}
+                        value={organization.description}
                         required
                     />
                 </div>
@@ -101,8 +111,8 @@ export default function FormEditor({
                         placeholder="Status"
                         className="w-full md:w-14rem"
                         name="status"
-                        onChange={handleChangeCategory}
-                        value={category.status}
+                        onChange={handleChangeOrganization}
+                        value={organization.status}
                         required
                     />
                 </div>
@@ -111,14 +121,14 @@ export default function FormEditor({
                         <BiCategoryAlt />
                     </span>{" "}
                     <Dropdown
-                        options={parentCategories}
+                        options={industries}
                         optionLabel="title"
                         optionValue="id"
-                        placeholder="Parent Category"
+                        placeholder="Industry"
                         className="w-full md:w-14rem"
-                        name="parent_id"
-                        onChange={handleChangeCategory}
-                        value={category.parent_id}
+                        name="industry_id"
+                        onChange={handleChangeOrganization}
+                        value={organization.industry_id}
                     />
                 </div>
                 <div className="col-md-3 mt-2 p-inputgroup flex-1">
@@ -130,7 +140,7 @@ export default function FormEditor({
                             htmlFor="thumbnailUpload"
                             className="p-button border-left-0"
                         >
-                            Upload Icon
+                            Upload Logo
                             <input
                                 id="thumbnailUpload"
                                 type="file"
@@ -150,7 +160,7 @@ export default function FormEditor({
                                 ? thumbnailImage
                                 : "https://placehold.co/160x160/EEE/31343C"
                         }
-                        className="thumbnail-image category"
+                        className="thumbnail-image organization"
                         width={160}
                         height={160}
                         alt="thumbnail"

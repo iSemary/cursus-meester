@@ -58,11 +58,11 @@ const DashboardSidebar = () => {
             ],
         },
         {
-            label: "Payroll",
+            label: "Payout",
             icon: "pi pi-shopping-cart",
             items: [
                 {
-                    label: "Payroll",
+                    label: "Payout",
                     icon: "pi pi-list",
                     url: "/dashboard/courses/all",
                 },
@@ -81,6 +81,54 @@ const DashboardSidebar = () => {
                     label: "Settings",
                     icon: "pi pi-list",
                     url: "/dashboard/settings",
+                },
+            ],
+        },
+        {
+            label: "Categories",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Categories",
+                    icon: "pi pi-list",
+                    url: "/admin/categories",
+                },
+                {
+                    label: "Create Category",
+                    icon: "pi pi-list",
+                    url: "/admin/categories/create",
+                },
+            ],
+        },
+        {
+            label: "Industries",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Industries",
+                    icon: "pi pi-list",
+                    url: "/admin/industries",
+                },
+                {
+                    label: "Create Industry",
+                    icon: "pi pi-list",
+                    url: "/admin/industries/create",
+                },
+            ],
+        },
+        {
+            label: "Organizations",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Organizations",
+                    icon: "pi pi-list",
+                    url: "/admin/organizations",
+                },
+                {
+                    label: "Create Organization",
+                    icon: "pi pi-list",
+                    url: "/admin/organizations/create",
                 },
             ],
         },
