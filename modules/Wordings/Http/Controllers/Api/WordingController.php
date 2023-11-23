@@ -31,7 +31,14 @@ class WordingController extends ApiController {
                 return $query->paginate(5);
             });
 
-        return $this->return(200, 'Wording fetched successfully', ['wordings' => $wordings]);
+        $lastWordingUpdatedAt = Wording::orderBy('updated_at', 'DESC')->first();
+        if ($lastWordingUpdatedAt) {
+            $lastWordingUpdatedAt = strtotime($lastWordingUpdatedAt->updated_at);
+        }
+
+        $allowGeneration = $lastWordingUpdatedAt;
+
+        return $this->return(200, 'Wording fetched successfully', ['wordings' => $wordings, 'allow_generation' => $allowGeneration]);
     }
 
     /**

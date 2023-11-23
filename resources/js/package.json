@@ -23,6 +23,8 @@
     "framer-motion": "^10.15.0",
     "gridjs": "^6.0.6",
     "gridjs-react": "^6.0.1",
+    "i18next": "^23.7.6",
+    "i18next-http-backend": "^2.4.2",
     "intl-tel-input": "^18.2.1",
     "js-cookie": "^3.0.5",
     "next": "^13.5.6",

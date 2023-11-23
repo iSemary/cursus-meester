@@ -11,6 +11,7 @@ import Link from "next/link";
 import { SplitButton } from "primereact/splitbutton";
 import toastAlert from "../../components/utilities/Alert";
 import { Button } from "primereact/button";
+import i18next from "../../components/utilities/i18next";
 
 export default function Wordings() {
     const dropDownItems = (id) => [
@@ -53,11 +54,13 @@ export default function Wordings() {
                 title="Wordings"
                 path={[{ label: "Wordings", url: "/admin/wordings" }]}
                 buttons={[
+                        <Button severity="success" className="mx-2" label="Generate" size="small" />,
                     <Link href="/admin/wordings/create">
                         <Button label="Create" size="small" />
                     </Link>,
                 ]}
-            ></DashboardTitle>
+            />
+            <div>{i18next.t("hello")}</div>
             <Grid
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/wordings`,
