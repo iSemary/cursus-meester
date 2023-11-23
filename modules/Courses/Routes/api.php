@@ -8,7 +8,15 @@ use modules\Courses\Http\Controllers\Api\RateController;
 use modules\Courses\Http\Controllers\Api\ExamController;
 use modules\Courses\Http\Controllers\Api\ListController;
 use modules\Courses\Http\Controllers\Api\SearchController;
+
 use modules\Payments\Http\Controllers\Api\CartController;
+
+// Administration Routes 
+// TODO add admin middleware
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('courses/all', [CourseController::class, "all"]);
+    Route::post('courses/change-status', [CourseController::class, "changeStatus"]);
+});
 
 // Builder Routes [For Instructors]
 Route::group(['middleware' => 'auth:api'], function () {

@@ -3,6 +3,7 @@
 namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Jobs\Notifications\CourseStatusChanged;
 use App\Models\Utilities\Language;
 use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,47 @@ class CourseController extends ApiController {
         return $this->return(200, 'Courses fetched successfully', ['courses' => $courses]);
     }
 
+    /**
+     * The function retrieves all courses with their associated instructors and returns them as a JSON
+     * response.
+     * 
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class. It represents an incoming HTTP request and contains information such as the request method,
+     * headers, and input data. It is used to retrieve data from the request and perform actions based on
+     * the request data.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200, a message of 'All Courses fetched
+     * successfully', and an array containing the fetched courses.
+     */
+    public function all(Request $request): JsonResponse {
+        $courses = Course::orderBy('id', "DESC")->withTrashed()->with(['instructor' => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->paginate(5);
+        return $this->return(200, 'All Courses fetched successfully', ['courses' => $courses]);
+    }
+
+    /**
+     * The function changes the status of a course based on the provided request data and returns a success
+     * message.
+     * 
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class. It represents an HTTP request made to the server and contains information such as the request
+     * method, headers, and request data.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function changeStatus(Request $request): JsonResponse {
+        $course = Course::where("id", $request->id)->first();
+        $course->update(['status' => $request->status]);
+        // Send notification to instructor
+        $data = [
+            'user_id' => $course->user_id,
+            'status' => $request->status,
+            'course_name' => $course->title,
+        ];
+        CourseStatusChanged::dispatch($data);
+        return $this->return(200, 'Course status changed successfully');
+    }
 
     /**
      * The function retrieves a course with a given slug and returns a JSON response with the course data

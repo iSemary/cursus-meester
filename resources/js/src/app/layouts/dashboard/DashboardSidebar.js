@@ -132,6 +132,49 @@ const DashboardSidebar = () => {
                 },
             ],
         },
+        {
+            label: "Languages",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Languages",
+                    icon: "pi pi-list",
+                    url: "/admin/languages",
+                },
+                {
+                    label: "Create Language",
+                    icon: "pi pi-list",
+                    url: "/admin/languages/create",
+                },
+            ],
+        },
+        {
+            label: "Translations",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Wordings",
+                    icon: "pi pi-list",
+                    url: "/admin/wordings",
+                },
+                {
+                    label: "Create Wording",
+                    icon: "pi pi-list",
+                    url: "/admin/wordings/create",
+                },
+            ],
+        },
+        {
+            label: "Approvals",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "Courses Approval",
+                    icon: "pi pi-list",
+                    url: "/admin/courses-approval",
+                },
+            ],
+        },
     ];
     return (
         <div>

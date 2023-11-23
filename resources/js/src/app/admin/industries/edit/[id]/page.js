@@ -49,7 +49,7 @@ export default function editIndustry({ params }) {
             <DashboardTitle
                 title="Edit industry"
                 path={[
-                    { label: "Categories", url: "/admin/categories" },
+                    { label: "Industries", url: "/admin/industries" },
                     { label: "Edit", url: "" },
                     { label: industry?.title, url: "" },
                 ]}

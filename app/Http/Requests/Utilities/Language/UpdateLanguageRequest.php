@@ -19,8 +19,8 @@ class UpdateLanguageRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'name' => 'required|unique:languages.name' . $this->language->id . ',id',
-            'key' => 'required|unique:languages.key' . $this->language->id . ',id',
+            'name' => 'required|unique:languages,name,' . $this->language->id . ',id',
+            'key' => 'required|unique:languages,key,' . $this->language->id . ',id',
         ];
     }
 }
