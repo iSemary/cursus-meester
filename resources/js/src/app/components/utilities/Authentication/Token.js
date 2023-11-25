@@ -7,7 +7,6 @@ export const Token = {
         // Store token in local storage
         if (token) {
             Cookies.set("AUTH_TOKEN", token, { expires: 365 * 100 })
-            localStorage.setItem("AUTH_TOKEN", token);
         }
     },
     explode() {
@@ -16,9 +15,7 @@ export const Token = {
     },
     get() {
         // Get token from local storage
-        return typeof localStorage !== "undefined"
-            ? localStorage.getItem("AUTH_TOKEN")
-            : null;
+        return Cookies.get("AUTH_TOKEN")
     },
     check() {
         // Check storage token is expired or not [Returns True/False]

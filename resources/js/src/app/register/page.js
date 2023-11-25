@@ -67,7 +67,7 @@ const Register = () => {
                     toastAlert(response.data.message, "error", 5000);
                 }
             })
-            .catch(({response}) => {
+            .catch(({ response }) => {
                 toastAlert(response.data.message, "error");
             });
     };
@@ -124,22 +124,23 @@ const Register = () => {
                 windowTop
         );
 
-        // window.addEventListener(
-        //     "message",
-        //     function () {
-        //         console.log("message received");
-        //     },
-        //     false
-        // );
-        window.addEventListener("message", function (event) {
-            if (
-                event.origin === "http://127.0.0.1:3000"
-            ) {
-                console.log(event);
-                console.log(event.data);
-                console.log(event.data.data);
+        const checkClosed = setInterval(() => {
+            if (registerWindow.closed) {
+                clearInterval(checkClosed);
+                const authToken = Cookies.get("AUTH_TOKEN");
+                if (authToken) {
+                    nextLogin(authToken);
+                } else {
+                    toastAlert("Invalid login.", "error");
+                }
             }
-        });
+        }, 1000);
+    };
+
+    const nextLogin = (authToken) => {
+        toastAlert("Logged in successfully!", "success", 3000);
+        // Navigate to home page
+        router.push("/");
     };
 
     return (
