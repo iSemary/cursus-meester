@@ -58,11 +58,11 @@ const DashboardSidebar = () => {
             ],
         },
         {
-            label: "Payroll",
+            label: "Payout",
             icon: "pi pi-shopping-cart",
             items: [
                 {
-                    label: "Payroll",
+                    label: "Payout",
                     icon: "pi pi-list",
                     url: "/dashboard/courses/all",
                 },
@@ -81,6 +81,97 @@ const DashboardSidebar = () => {
                     label: "Settings",
                     icon: "pi pi-list",
                     url: "/dashboard/settings",
+                },
+            ],
+        },
+        {
+            label: "Categories",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Categories",
+                    icon: "pi pi-list",
+                    url: "/admin/categories",
+                },
+                {
+                    label: "Create Category",
+                    icon: "pi pi-list",
+                    url: "/admin/categories/create",
+                },
+            ],
+        },
+        {
+            label: "Industries",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Industries",
+                    icon: "pi pi-list",
+                    url: "/admin/industries",
+                },
+                {
+                    label: "Create Industry",
+                    icon: "pi pi-list",
+                    url: "/admin/industries/create",
+                },
+            ],
+        },
+        {
+            label: "Organizations",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Organizations",
+                    icon: "pi pi-list",
+                    url: "/admin/organizations",
+                },
+                {
+                    label: "Create Organization",
+                    icon: "pi pi-list",
+                    url: "/admin/organizations/create",
+                },
+            ],
+        },
+        {
+            label: "Languages",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Languages",
+                    icon: "pi pi-list",
+                    url: "/admin/languages",
+                },
+                {
+                    label: "Create Language",
+                    icon: "pi pi-list",
+                    url: "/admin/languages/create",
+                },
+            ],
+        },
+        {
+            label: "Translations",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "All Wordings",
+                    icon: "pi pi-list",
+                    url: "/admin/wordings",
+                },
+                {
+                    label: "Create Wording",
+                    icon: "pi pi-list",
+                    url: "/admin/wordings/create",
+                },
+            ],
+        },
+        {
+            label: "Approvals",
+            icon: "pi pi-shopping-cart",
+            items: [
+                {
+                    label: "Courses Approval",
+                    icon: "pi pi-list",
+                    url: "/admin/courses-approval",
                 },
             ],
         },

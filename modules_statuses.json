@@ -4,5 +4,6 @@
     "Students": true,
     "Instructors": true,
     "Courses": true,
-    "Payments": true
+    "Payments": true,
+    "Wordings": true
 }

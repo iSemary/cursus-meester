@@ -125,8 +125,6 @@ export default function Profile() {
                 link_url: event.target.value,
             });
         }
-
-        console.log(updatedLinks);
         setSocialLinks(updatedLinks);
     };
 

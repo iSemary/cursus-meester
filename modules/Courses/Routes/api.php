@@ -7,10 +7,17 @@ use modules\Courses\Http\Controllers\Api\LectureController;
 use modules\Courses\Http\Controllers\Api\RateController;
 use modules\Courses\Http\Controllers\Api\ExamController;
 use modules\Courses\Http\Controllers\Api\ListController;
+use modules\Courses\Http\Controllers\Api\SearchController;
 use modules\Payments\Http\Controllers\Api\CartController;
 
+// Administration Routes 
+Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
+    Route::get('courses/all', [CourseController::class, "all"]);
+    Route::post('courses/change-status', [CourseController::class, "changeStatus"]);
+});
+
 // Builder Routes [For Instructors]
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function () {
     // Courses Routes
     Route::resource('courses', CourseController::class)->except(['edit']);
     // Course Lectures
@@ -63,6 +70,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 // Public Routes
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
-
 // Get certificate by reference code [Provide an existing certificate]
-Route::get("{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
+Route::get("certificates/{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
+/** Search APIs */
+Route::get("search", [SearchController::class, "search"]);
+Route::get("search/tiny", [SearchController::class, "searchTiny"]);

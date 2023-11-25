@@ -2,7 +2,7 @@
 import { SplitButton } from "primereact/splitbutton";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
-import { Grid, html } from "gridjs-react";
+import { Grid } from "gridjs-react";
 import { _ } from "gridjs-react";
 import { Token } from "../../components/utilities/Authentication/Token";
 import Link from "next/link";

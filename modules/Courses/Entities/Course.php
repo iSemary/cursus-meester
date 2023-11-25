@@ -2,6 +2,7 @@
 
 namespace modules\Courses\Entities;
 
+use App\Enums\CourseStatuses;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,12 +36,13 @@ class Course extends Model {
         'offer_percentage',
         'offer_expired_at',
         'has_certificate',
+        'status',
         'published_at',
     ];
 
     protected $dates = ['offer_expired_at', 'published_at'];
 
-    protected $casts = ['offer_price' => 'boolean',];
+    protected $casts = ['offer_price' => 'boolean'];
 
     protected $hidden = [
         "deleted_at",
@@ -66,6 +68,10 @@ class Course extends Model {
     }
     public function getCurrencyAttribute() {
         return "$"; // TODO dynamic currency
+    }
+
+    public function enrolled_courses() {
+        return $this->hasMany(EnrolledCourse::class);
     }
 
     public function getTotalStudentsAttribute() {
@@ -96,15 +102,8 @@ class Course extends Model {
         return $finalPrice;
     }
 
-
     public function getStatusAttribute() {
-        $status = "Active";
-        if ($this->published_at > now()) {
-            $status = "In Active";
-        }
-        if ($this->deleted_at) {
-            $status = "Deleted";
-        }
+        $status = CourseStatuses::getTitle($this->attributes['status']);
         return $status;
     }
 
@@ -142,6 +141,10 @@ class Course extends Model {
 
     public function  scopeOwned($query) {
         return $query->where("user_id", auth()->guard('api')->id());
+    }
+
+    public function scopeSelectPreview($query) {
+        return $query->select(['id', 'user_id', 'thumbnail', 'title', 'status', 'slug', 'description', 'price', 'offer_price', 'offer_percentage']);
     }
 
     public function setThumbnailAttribute($value) {

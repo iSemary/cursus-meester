@@ -10,7 +10,7 @@ import { PieChart } from "echarts/charts";
 import { LabelLayout } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 
-function TopCoursesChart() {
+function TopCoursesChart({ labels, values }) {
     useEffect(() => {
         echarts.use([
             TitleComponent,
@@ -34,20 +34,20 @@ function TopCoursesChart() {
             },
             legend: {
                 orient: "vertical",
-                left: "left",
+                left: "bottom",
             },
             series: [
                 {
                     name: "Access From",
                     type: "pie",
                     radius: "50%",
-                    data: [
-                        { value: 1048, name: "Search Engine" },
-                        { value: 735, name: "Direct" },
-                        { value: 580, name: "Email" },
-                        { value: 484, name: "Union Ads" },
-                        { value: 300, name: "Video Ads" },
-                    ],
+                    data:
+                        labels && labels.length > 0
+                            ? labels.map((label, index) => ({
+                                  value: values[index],
+                                  name: label,
+                              }))
+                            : [],
                     emphasis: {
                         itemStyle: {
                             shadowBlur: 10,
@@ -68,7 +68,7 @@ function TopCoursesChart() {
             // Clean up and dispose the chart when the component unmounts
             chart.dispose();
         };
-    }, []);
+    }, [labels, values]);
     return (
         <div
             id="topCoursesChart"

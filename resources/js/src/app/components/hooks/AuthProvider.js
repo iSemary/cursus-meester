@@ -9,10 +9,11 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (Token.check()) {
+            if (await Token.check()) {
                 setUser(await Token.getUser());
             }
         };
+
         fetchUser();
     }, []);
 

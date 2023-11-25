@@ -2,6 +2,7 @@
 
 namespace App\Models\Utilities;
 
+use App\Enums\SocialLinks;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,9 +13,14 @@ class ProfileSocialLink extends Model {
     use HasFactory, SoftDeletes, LogsActivity;
     protected $fillable = ['user_id', 'link_type', 'link_url'];
 
+    protected $appends = ['link_title'];
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults();
+    }
+
+    public function getLinkTitleAttribute() {
+        return SocialLinks::getTitle($this->link_type);
     }
 
     public static function syncLinks(int $userId, array $socialLinks) {

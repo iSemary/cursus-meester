@@ -6,9 +6,12 @@ use App\Http\Controllers\Api\ApiController;
 use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use modules\Courses\Entities\Course;
+use modules\Instructors\Entities\InstructorProfile;
 use modules\Organizations\Entities\Organization;
 use modules\Organizations\Http\Requests\CreateOrganizationRequest;
 use modules\Organizations\Http\Requests\UpdateOrganizationRequest;
+use stdClass;
 
 class OrganizationController extends ApiController {
     /**
@@ -23,12 +26,12 @@ class OrganizationController extends ApiController {
      * fetched successfully', and an array of organizations.
      */
     public function index(Request $request): JsonResponse {
-        $organizations = Organization::orderBy('name', "DESC")->when($request->all, function ($query) {
+        $organizations = Organization::orderBy('name')->when($request->all, function ($query) {
             return $query->get();
         }, function ($query) {
             return $query->paginate(20);
         });
-        
+
         return $this->return(200, 'Organizations fetched successfully', ['organizations' => $organizations]);
     }
 
@@ -42,13 +45,49 @@ class OrganizationController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(Organization $organization): JsonResponse {
-        $organization = Organization::select('name', 'slug', 'description', 'logo', 'status')->find($organization->id);
+        $organization = Organization::select('name', 'slug', 'description', 'logo', 'industry_id', 'status')->find($organization->id);
         if (!$organization) {
             return $this->return(400, 'Organization not exists');
         }
         return $this->return(200, 'Organization fetched Successfully', ['organization' => $organization]);
     }
 
+
+    /**
+     * The getCoursesBySlug function retrieves information about an organization, its courses, and its
+     * instructors based on the organization's slug.
+     * 
+     * @param string organizationSlug The parameter `organizationSlug` is a string that represents the
+     * slug of an organization. A slug is a URL-friendly version of a string, typically used in URLs to
+     * identify a resource. In this case, it is used to identify a specific organization.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function getCoursesBySlug(string $organizationSlug): JsonResponse {
+        $organization = Organization::select('id', 'name', 'slug', 'description', 'logo', 'status')
+            ->whereSlug($organizationSlug)
+            ->first();
+        if (!$organization) {
+            return $this->return(400, 'Organization not exists');
+        }
+        $courses = Course::selectPreview()->whereOrganizationId($organization->id)->paginate(20);
+        $instructors = InstructorProfile::leftJoin('users', 'users.id', 'instructor_profiles.user_id')
+            ->select([
+                'user_id',
+                'bio',
+                'position',
+                'avatar',
+                'users.full_name',
+                'users.username',
+            ])->whereOrganizationId($organization->id)->get();
+
+        $response = new stdClass();
+        $response->organization = $organization;
+        $response->courses = $courses;
+        $response->instructors = $instructors;
+
+        return $this->return(200, 'Organization fetched Successfully', ['data' => $response]);
+    }
     /**
      * The function stores a new organization using the validated data from the CreateOrganizationRequest and
      * returns a JSON response with a success message.

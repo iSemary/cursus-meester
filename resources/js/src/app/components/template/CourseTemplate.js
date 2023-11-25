@@ -9,6 +9,7 @@ import ChangeToCartBtn from "./Course/buttons/ChangeToCartBtn";
 
 export default function CourseTemplate({
     course,
+    instructorName,
     containerClass,
     cols,
     imageWidth = 230,
@@ -24,7 +25,7 @@ export default function CourseTemplate({
     handleMoveToCart,
 }) {
     return (
-        <div className={"course-box " + containerClass}>
+        <div className={"course-box mb-3 " + containerClass}>
             <div className="row">
                 <div className={cols ? cols[0] : "col-12"}>
                     <Link href={`/courses/${course.slug}`} className="no-link">
@@ -47,7 +48,8 @@ export default function CourseTemplate({
                         >
                             <h5 className="my-1">{course.title}</h5>
                             <p className="text-muted my-1">
-                                {course.instructor.full_name}
+                                {course?.instructor?.full_name ??
+                                    instructorName}
                             </p>
                             <StarsRate
                                 rate={course.rates}

@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->float('offer_percentage')->unsigned();
             $table->timestamp('offer_expired_at')->nullable();
             $table->tinyInteger('has_certificate')->default(1);
+            $table->tinyInteger('status')->default(0); // default is pending
             $table->timestamp('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

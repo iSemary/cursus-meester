@@ -8,14 +8,21 @@ use App\Models\Utilities\ProfileSocialLink;
 use Illuminate\Http\JsonResponse;
 use modules\Students\Entities\StudentProfile;
 use modules\Students\Http\Requests\UpdateProfileRequest;
+use stdClass;
 
 class ProfileController extends ApiController {
-    /**
-     * The function "getProfile" returns a JSON response with a success message and a status code of 200.
-     * 
-     * @return JsonResponse A JsonResponse object is being returned.
-     */
-    public function getProfile(): JsonResponse {
+
+    public function getProfile(string $username): JsonResponse {
+        $user = User::select('id')->where("username", $username)->first();
+        if ($user) {
+            $student = new stdClass();
+            $student->info = StudentProfile::getPublicInfo($user->id);
+            $student->social_links = StudentProfile::getSocialLinks($user->id);
+            $student->courses = StudentProfile::getCourses($user->id);
+            return $this->return(200, 'Student details fetched', ['student' => $student]);
+        } else {
+            return $this->return(409, 'Invalid username');
+        }
         return $this->return(200, 'Profile fetched successfully');
     }
 

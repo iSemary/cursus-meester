@@ -1,19 +1,20 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StudentTemplate from "../Templates/StudentTemplate";
 import axios from "axios";
 import toastAlert from "../components/utilities/Alert";
 import { useRouter } from "next/navigation";
 import { Token } from "../components/utilities/Authentication/Token";
+import Cookies from "js-cookie";
 
 const Login = () => {
     const initialValues = {
         email: "",
         password: "",
     };
-    const [formValues, setFormValues] = useState({ initialValues });
+    const [formValues, setFormValues] = useState(initialValues);
     const router = useRouter();
 
     const handleChangeValues = (e) => {
@@ -67,17 +68,23 @@ const Login = () => {
                 ",top=" +
                 windowTop
         );
+        const checkClosed = setInterval(() => {
+            if (loginWindow.closed) {
+                clearInterval(checkClosed);
+                const authToken = Cookies.get("AUTH_TOKEN");
+                if (authToken) {
+                    nextLogin(authToken);
+                } else {
+                    toastAlert("Invalid login.", "error");
+                }
+            }
+        }, 1000);
+    };
 
-        // Listen for the message from the popup window
-        window.addEventListener("message", (event) => {
-            // Ensure the message is from a trusted source (your backend)
-            // if (event.origin === process.env.NEXT_PUBLIC_URL) {
-            // Access the user data from the message
-            const userData = event.data.user;
-            // Do something with the user data (e.g., set it in your React state)
-            console.log(userData);
-            // }
-        });
+    const nextLogin = (authToken) => {
+        toastAlert("Logged in successfully!", "success", 3000);
+        // Navigate to home page
+        router.push("/");
     };
 
     return (
