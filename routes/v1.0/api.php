@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\Utilities\CountryController;
 use App\Http\Controllers\Api\Utilities\CurrencyController;
 use App\Http\Controllers\Api\Utilities\LanguageController;
@@ -11,8 +12,16 @@ use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 use modules\Categories\Http\Controllers\Api\CategoryController;
 
-/* User Authentication Routes */
+/**
+ * Please note that file doesn't contain all the APIs on the application
+ * There's also another APIs exists in each module for ex:
+ * modules/courses/routes/api.php
+ * modules/payments/routes/api.php
+ */
 
+// Home API
+Route::get("/", [HomeController::class, "index"]);
+/* User Authentication Routes */
 Route::group(['prefix' => 'auth'], function () {
     // Registration Routes
     Route::post("register", [AuthController::class, "register"]);
@@ -46,16 +55,18 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+// Administration routes
+Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
+    Route::apiResource('industries', IndustryController::class)->except(['index', 'show']);
+    Route::apiResource('countries', CountryController::class)->except(['index', 'show']);
+    Route::apiResource('currencies', CurrencyController::class)->except(['index', 'show']);
+    Route::apiResource('languages', LanguageController::class)->except(['index', 'show']);
+});
+
 // Authenticated routes
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::apiResource('industries', IndustryController::class);
-    Route::apiResource('countries', CountryController::class);
-    Route::apiResource('currencies', CurrencyController::class);
-    Route::apiResource('languages', LanguageController::class);
-
     // Profile Route
     Route::get("user/profile", [UserController::class, "getUserDetails"]);
-
     // Notification
     Route::get("notifications", [NotificationController::class, "index"]);
     Route::post("notifications/{id}/seen", [NotificationController::class, "seen"]);

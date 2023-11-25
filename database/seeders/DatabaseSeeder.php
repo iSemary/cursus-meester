@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use LaratrustSeeder;
 
 class DatabaseSeeder extends Seeder {
     /**
@@ -12,12 +10,19 @@ class DatabaseSeeder extends Seeder {
      */
     public function run(): void {
         // Create an admin user for moderation
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'full_name' => 'Administration User',
             'username' => 'administration',
             'email' => 'administration@app.com',
             'password' => bcrypt("123456789")
         ]);
 
+        // Create Roles and Permissions seeder
+        $this->call([
+            RolePermissionSeeder::class,
+        ]);
+
+        // Assign admin user to administration role
+        $user->assignRole('super_admin');
     }
 }

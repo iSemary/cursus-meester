@@ -7,8 +7,8 @@ import toastAlert from "../../../components/utilities/Alert";
 import FormEditor from "../components/FormEditor";
 export default function createWording() {
     const initialWording = {
-        name: "",
-        key: "",
+        wording_key: "",
+        wording_value: "",
     };
 
     const [wording, setWording] = useState(initialWording);

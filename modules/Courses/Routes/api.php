@@ -11,14 +11,13 @@ use modules\Courses\Http\Controllers\Api\SearchController;
 use modules\Payments\Http\Controllers\Api\CartController;
 
 // Administration Routes 
-// TODO add admin middleware
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
     Route::get('courses/all', [CourseController::class, "all"]);
     Route::post('courses/change-status', [CourseController::class, "changeStatus"]);
 });
 
 // Builder Routes [For Instructors]
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function () {
     // Courses Routes
     Route::resource('courses', CourseController::class)->except(['edit']);
     // Course Lectures

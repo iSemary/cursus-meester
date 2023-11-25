@@ -24,6 +24,17 @@ export default function Wordings() {
         },
     ];
 
+    const handleGenerateJsonFiles = () => {
+        axiosConfig
+            .get("wordings/generate")
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+            })
+            .catch(({ response }) => {
+                toastAlert(response.data.message, "error");
+            });
+    };
+
     /** Delete course by slug */
     const handleDeleteWording = (slug) => {
         Swal.fire({
@@ -54,13 +65,21 @@ export default function Wordings() {
                 title="Wordings"
                 path={[{ label: "Wordings", url: "/admin/wordings" }]}
                 buttons={[
-                        <Button severity="success" className="mx-2" label="Generate" size="small" />,
+                    <Button
+                        severity="success"
+                        className="mx-2"
+                        label="Generate"
+                        onClick={handleGenerateJsonFiles}
+                        size="small"
+                    />,
                     <Link href="/admin/wordings/create">
-                        <Button label="Create" size="small" />
+                        <Button
+                            label="Create"
+                            size="small"
+                        />
                     </Link>,
                 ]}
             />
-            <div>{i18next.t("hello")}</div>
             <Grid
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/wordings`,

@@ -36,7 +36,7 @@ class ProfileController extends ApiController {
      * successfully'.
      */
     public function updateProfile(UpdateProfileRequest $updateProfileRequest): JsonResponse {
-        $user = auth()->guard('api')->user();
+        $user = User::whereId(auth()->guard('api')->id())->first();
         $avatar = null;
         if ($updateProfileRequest->file('new_avatar')) {
             $avatar = $updateProfileRequest->file('new_avatar');
@@ -48,6 +48,10 @@ class ProfileController extends ApiController {
             'organization_id' => $updateProfileRequest->organization_id,
             'avatar' => $avatar
         ]);
+        
+        if (!$user->hasRole('instructor')) {
+            $user->assignRole("instructor");
+        }
 
         return $this->return(200, 'Profile updated successfully');
     }

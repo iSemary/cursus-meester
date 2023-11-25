@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Models\Auth\EmailToken;
 use App\Models\Auth\UserOTP;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,12 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use Laratrust\Contracts\LaratrustUser;
-use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements LaratrustUser {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRolesAndPermissions;
+class User extends Authenticatable {
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
     /**
      * The attributes that are mass assignable.
      *

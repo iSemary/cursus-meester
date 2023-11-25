@@ -3,11 +3,14 @@
 namespace modules\Wordings\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Models\Utilities\Language;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use modules\Wordings\Entities\Wording;
 use modules\Wordings\Http\Requests\CreateWordingRequest;
 use modules\Wordings\Http\Requests\UpdateWordingRequest;
+use stdClass;
 
 class WordingController extends ApiController {
     /**
@@ -74,6 +77,77 @@ class WordingController extends ApiController {
         // create a new wording from the validated data
         Wording::create($createWordingRequest->validated());
         return $this->return(200, 'Wording Added Successfully');
+    }
+
+
+    /**
+     * The function generates translation files for multiple languages based on the available wordings and
+     * exported translation paths.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function generate(): JsonResponse {
+        try {
+            $languages = Language::select("id", "key")->get();
+            $generatedPaths = (new Wording)->translationPaths;
+            if ($languages && count($languages)) {
+                // loop over available system languages
+                foreach ($languages as $language) {
+                    // Check and get wordings by it's language
+                    $wordings = $this->getWordingsByLanguageId($language->id);
+                    if ($wordings && count($wordings)) {
+                        // loop over exported generated translation paths
+                        foreach ($generatedPaths as $key => $generatedPath) {
+                            if (chmod($generatedPath, 0777)) {
+                                $this->createTranslationFile($generatedPath, $language->key, $wordings);
+                            } else {
+                                return $this->return(400, 'Permission denied: Couldn\'t overwrite the translation.');
+                            }
+                        }
+                    }
+                }
+            }
+            return $this->return(200, 'Translation files generated successfully');
+        } catch (\Exception $e) {
+            return $this->return(400, 'Something went wrong', debug: $e->getMessage());
+        }
+    }
+
+
+    /**
+     * The function creates a translation file in JSON format with the provided language key and wordings.
+     * 
+     * @param string generatedPath The path where the translation file will be generated. It should be a
+     * string representing the directory path where the file will be created.
+     * @param string languageKey The `languageKey` parameter is a string that represents the language code
+     * or key for the translation file. It is used to generate the file name for the translation file. For
+     * example, if the `languageKey` is "en", the generated file name will be "en.json".
+     * @param Collection wordings The `wordings` parameter is a `Collection` object that contains a
+     * collection of wordings. Each wording has a `wording_key` and a `wording_value`.
+     */
+    public function createTranslationFile(string $generatedPath, string $languageKey, Collection $wordings): void {
+        // prepare file path
+        $langPath = $generatedPath . $languageKey . '.json';
+        // check if file not exists then create the file
+        if (!file_exists($langPath)) {
+            fopen($langPath, "w");
+        }
+        $translateObject = new stdClass();
+
+        foreach ($wordings as $wording) {
+            $translateObject->{$wording->wording_key} = $wording->wording_value;
+        }
+        $translateArray = (array) $translateObject;
+        $jsonResult = json_encode($translateArray, JSON_PRETTY_PRINT);
+
+        file_put_contents($langPath, $jsonResult);
+    }
+
+    public function getWordingsByLanguageId($languageId) {
+        return Wording::select('wording_key', 'wording_value')
+            ->where("wording_language_id", $languageId)
+            ->orderBy("wording_key")
+            ->get();
     }
 
     /**
