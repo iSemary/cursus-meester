@@ -7,6 +7,7 @@ use App\Models\Utilities\ProfileSocialLink;
 use App\Services\Uploader\FileHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Rate;
 use modules\Organizations\Entities\Organization;
@@ -101,5 +102,28 @@ class InstructorProfile extends Model {
             ->select('courses.id', 'courses.title', 'courses.slug', 'courses.offer_price', 'courses.offer_percentage', 'price')
             ->get();
         return $courses;
+    }
+
+    public static function getTopInCategoryId(int $categoryId, int $limit = 5) {
+        $topInstructorsIds = DB::table('courses')
+            ->join('rates', 'rates.course_id', 'courses.id')
+            ->where("category_id", $categoryId)
+            ->select('courses.user_id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->groupBy('courses.user_id')
+            ->orderBy("max_rate", "DESC")
+            ->limit($limit)
+            ->pluck('courses.user_id');
+
+        $topInstructors = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')->select(['user_id', 'position', 'bio', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
+            ->whereIn("user_id", $topInstructorsIds)
+            ->with(["organization" => function ($query) {
+                $query->select(['id', 'name', 'slug', 'logo']);
+            }])
+            ->with(["industry" => function ($query) {
+                $query->select(['id', 'title', 'slug']);
+            }])->get();
+
+        return $topInstructors;
     }
 }

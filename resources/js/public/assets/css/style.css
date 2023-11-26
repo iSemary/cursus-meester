@@ -164,17 +164,17 @@
   .course-box.col-12 .course-details {
     padding: 0 25px; }
 
-.home-page .home-categories {
+.home-categories {
   justify-content: space-between; }
-  .home-page .home-categories .home-category-box {
+  .home-categories .home-category-box {
     width: 375px;
     margin: 5px 5px 0 0;
     background-color: #8080801f; }
-    .home-page .home-categories .home-category-box img {
+    .home-categories .home-category-box img {
       width: 200px;
       height: 200px;
       margin: 20%; }
-    .home-page .home-categories .home-category-box h5 {
+    .home-categories .home-category-box h5 {
       font-weight: bold; }
 
 .home-page .partners-container .row {
@@ -208,8 +208,7 @@
   border: 1px solid #0d6efd14;
   padding: 15px;
   border-radius: 7px;
-  padding: 12px;
-  width: 18vw; }
+  padding: 12px; }
   .instructors .instructor-box img {
     border-radius: 25px; }
 

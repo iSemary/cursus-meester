@@ -144,7 +144,7 @@ class Course extends Model {
     }
 
     public function scopeSelectPreview($query) {
-        return $query->select(['id', 'user_id', 'thumbnail', 'title', 'status', 'slug', 'description', 'price', 'offer_price', 'offer_percentage']);
+        return $query->select(['courses.id', 'courses.user_id', 'courses.thumbnail', 'courses.title', 'courses.status', 'courses.slug', 'courses.description', 'courses.price', 'courses.offer_price', 'courses.offer_percentage']);
     }
 
     public function setThumbnailAttribute($value) {

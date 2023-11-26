@@ -15,17 +15,17 @@ export default function InstructorProfileBoxTemplate({
             >
                 <div className="row">
                     <div className="col-3 grid-center">
-                        <Image
-                            src={instructor.image}
+                        <img
+                            src={instructor.avatar}
                             width={50}
                             height={50}
-                            alt={instructor.name + " thumbnail"}
+                            alt={instructor.full_name + " thumbnail"}
                         />
                     </div>
                     <div className="col-9">
-                        <h6 className="mb-1 font-weight-bold">{instructor.name}</h6>
-                        <p className="mt-1 mb-0 text-14">{instructor.specialty}</p>
-                        <InstructorStarRate rate={instructor.rate} />
+                        <h6 className="mb-1 font-weight-bold">{instructor.full_name}</h6>
+                        <p className="mt-1 mb-0 text-14">{instructor.industry.title}</p>
+                        <InstructorStarRate overallRate={instructor.overall_rate} totalStudents={instructor.total_students} />
                         <div className="text-14">
                             <span className="font-weight-bold">
                                 {instructor.total_courses}

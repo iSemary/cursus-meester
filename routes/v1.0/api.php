@@ -78,8 +78,6 @@ Route::apiResource('countries', CountryController::class)->only(['index', 'show'
 Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
 Route::apiResource('languages', LanguageController::class)->only(['index', 'show']);
 
-Route::get("categories/{categorySlug}/courses", [CategoryController::class, "getCoursesBySlug"]);
-
 /* Landing Page APIs */
 // Newsletter
 Route::group(['prefix' => 'newsletter'], function () {

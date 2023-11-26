@@ -223,22 +223,20 @@ $headerHeight: 80px;
     }
 }
 
-.home-page {
-    .home-categories {
-        justify-content: space-between;
+.home-categories {
+    justify-content: space-between;
 
-        .home-category-box {
-            width: 375px;
-            margin: 5px 5px 0 0;
-            background-color: #8080801f;
-            img {
-                width: 200px;
-                height: 200px;
-                margin: 20%;
-            }
-            h5 {
-                font-weight: bold;
-            }
+    .home-category-box {
+        width: 375px;
+        margin: 5px 5px 0 0;
+        background-color: #8080801f;
+        img {
+            width: 200px;
+            height: 200px;
+            margin: 20%;
+        }
+        h5 {
+            font-weight: bold;
         }
     }
 }
@@ -285,7 +283,6 @@ $headerHeight: 80px;
         padding: 15px;
         border-radius: 7px;
         padding: 12px;
-        width: 18vw;
         img {
             border-radius: 25px;
         }
