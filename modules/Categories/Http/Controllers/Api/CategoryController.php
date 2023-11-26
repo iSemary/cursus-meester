@@ -82,7 +82,7 @@ class CategoryController extends ApiController {
             ->orderBy("max_rate", "DESC")
             ->limit(10)
             ->get();
-        $response->top_instructors = InstructorProfile::getTopInCategoryId($category->id, 10);
+        $response->top_instructors = InstructorProfile::getTopInTypeId('category_id', $category->id, 10);
         $response->new_courses = Course::selectPreview()->whereCategoryId($category->id)->latest()->limit(10)->get();
         return $this->return(200, 'Courses fetched successfully', ['data' => $response]);
     }

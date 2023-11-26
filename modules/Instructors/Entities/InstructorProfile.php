@@ -104,10 +104,10 @@ class InstructorProfile extends Model {
         return $courses;
     }
 
-    public static function getTopInCategoryId(int $categoryId, int $limit = 5) {
+    public static function getTopInTypeId(string $type, int $typeId, int $limit = 5) {
         $topInstructorsIds = DB::table('courses')
             ->join('rates', 'rates.course_id', 'courses.id')
-            ->where("category_id", $categoryId)
+            ->where($type, $typeId)
             ->select('courses.user_id')
             ->selectRaw('MAX(rates.rate) AS max_rate')
             ->groupBy('courses.user_id')
@@ -115,7 +115,8 @@ class InstructorProfile extends Model {
             ->limit($limit)
             ->pluck('courses.user_id');
 
-        $topInstructors = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')->select(['user_id', 'position', 'bio', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
+        $topInstructors = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')
+            ->select(['user_id', 'position', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
             ->whereIn("user_id", $topInstructorsIds)
             ->with(["organization" => function ($query) {
                 $query->select(['id', 'name', 'slug', 'logo']);
