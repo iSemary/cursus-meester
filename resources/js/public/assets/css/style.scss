@@ -714,3 +714,15 @@ $headerHeight: 80px;
     text-overflow: ellipsis;
     max-width: fit-content;
 }
+
+.notification-item {
+    border-radius: 5px;
+    &.unseen {
+        background-color: #556cd61f;
+    }
+    margin-bottom: 10px;
+    padding: 10px;
+    .notification-body {
+        font-size: 14px;
+    }
+}

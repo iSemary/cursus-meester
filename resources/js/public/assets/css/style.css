@@ -520,4 +520,13 @@
   text-overflow: ellipsis;
   max-width: fit-content; }
 
+.notification-item {
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px; }
+  .notification-item.unseen {
+    background-color: #556cd61f; }
+  .notification-item .notification-body {
+    font-size: 14px; }
+
 /*# sourceMappingURL=style.css.map */

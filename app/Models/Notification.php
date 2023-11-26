@@ -21,6 +21,6 @@ class Notification extends Model {
     }
 
     public function scopeSelectList($query) {
-        return $query->select(["id", "subject", 'localized', "read_at", "body"]);
+        return $query->select(["id", "subject", 'localized', "read_at", "body", "created_at"]);
     }
 }
