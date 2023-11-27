@@ -73,6 +73,7 @@ class CourseController extends ApiController {
         $data = [
             'user_id' => $course->user_id,
             'status' => $request->status,
+            'course_id' => $course->id,
             'course_name' => $course->title,
         ];
         CourseStatusChanged::dispatch($data);

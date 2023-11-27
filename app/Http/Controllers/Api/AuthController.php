@@ -120,7 +120,7 @@ class AuthController extends ApiController {
 
     public function collectExtraDetails(User $user): array {
         $extra = [];
-        $extra['notifications_count'] = Notification::where("user_id", $user->id)->count();
+        $extra['notifications_count'] = Notification::where("user_id", $user->id)->whereNull("read_at")->count();
         return $extra;
     }
 

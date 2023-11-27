@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->integer('type_id');
+            $table->integer('object_id')->nullable();
             $table->string('subject', 255)->nullable();
             $table->tinyInteger('localized')->default(0);
             $table->text('body');
