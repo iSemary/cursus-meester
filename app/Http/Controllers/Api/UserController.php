@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\User\UpdatePasswordRequest;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\Utilities\ProfileSocialLink;
 use Illuminate\Http\JsonResponse;
@@ -64,8 +65,15 @@ class UserController extends ApiController {
         $response->student_profile = (object) StudentProfile::select(['bio', 'position', 'avatar'])->where("user_id", $user->id)->first();
         $response->instructor_profile = (object) InstructorProfile::select(['bio', 'position', 'industry_id', 'organization_id', 'avatar'])->where("user_id", $user->id)->first();
         $response->social_links = (object) ProfileSocialLink::select(['link_type', 'link_url'])->where("user_id", $user->id)->get();
+        $response->extra = $this->collectExtraDetails($user);
 
         return $this->return(200, "User details fetched successfully", ['data' => $response]);
+    }
+
+    public function collectExtraDetails(User $user): array {
+        $extra = [];
+        $extra['notifications_count'] = Notification::where("user_id", $user->id)->whereNull("read_at")->count();
+        return $extra;
     }
 
     public function deactivate(): JsonResponse {

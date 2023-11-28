@@ -180,12 +180,6 @@ class AuthController extends ApiController {
         return $userData;
     }
 
-    public function collectExtraDetails(User $user): array {
-        $extra = [];
-        $extra['notifications_count'] = Notification::where("user_id", $user->id)->whereNull("read_at")->count();
-        return $extra;
-    }
-
     private function generateAccessToken(User $user): string {
         return $user->createToken('web-app')->accessToken;
     }

@@ -26,9 +26,9 @@ export default function LoggedInUserList({ user }) {
             <li className="notifications-icon">
                 <Link href="/notifications" className="nav-link">
                     <RiNotification2Line size={23} />
-                    {user.data.extra.notifications_count > 0 && (
+                    {user.data.data.extra.notifications_count > 0 && (
                         <span className="counter">
-                            {user.data.extra.notifications_count}
+                            {user.data.data.extra.notifications_count}
                         </span>
                     )}
                 </Link>
@@ -42,10 +42,10 @@ export default function LoggedInUserList({ user }) {
                 <Dropdown className="split-button">
                     <Link
                         variant="primary"
-                        href={`/students/${user.data.user.username}`}
+                        href={`/students/${user.data.data.user.username}`}
                         className="btn btn-primary split-main-button"
                     >
-                        {user.data.user.full_name.split(" ")[0]}
+                        {user.data.data.user.full_name.split(" ")[0]}
                     </Link>
                     <Dropdown.Toggle split variant="primary" />
                     <Dropdown.Menu className="split-sub-buttons">

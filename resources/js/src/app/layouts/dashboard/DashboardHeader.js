@@ -38,6 +38,10 @@ export default function DashboardHeader() {
         },
     ];
 
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
+
     const [tinyNotifications, setTinyNotifications] = useState([]);
 
     /** Mark notification as seen and update current state to be seen */
@@ -91,12 +95,16 @@ export default function DashboardHeader() {
                                     notificationsPanel.current.toggle(e)
                                 }
                             />
-                            <OverlayPanel ref={notificationsPanel} className="notifications-header-container">
+                            <OverlayPanel
+                                ref={notificationsPanel}
+                                className="notifications-header-container"
+                            >
                                 {tinyNotifications &&
                                 tinyNotifications.length > 0 ? (
                                     <div className="tiny-notifications notifications-list dashboard">
-                                        {tinyNotifications.slice(0, 5).map(
-                                            (notification, index) => {
+                                        {tinyNotifications
+                                            .slice(0, 5)
+                                            .map((notification, index) => {
                                                 return (
                                                     <NotificationItem
                                                         id={notification.id}
@@ -117,8 +125,7 @@ export default function DashboardHeader() {
                                                         }
                                                     />
                                                 );
-                                            }
-                                        )}
+                                            })}
                                     </div>
                                 ) : (
                                     <p>There's no notifications yet</p>
@@ -173,8 +180,7 @@ export default function DashboardHeader() {
                                     >
                                         <img
                                             src={
-                                                user?.data?.data
-                                                    ?.instructor_profile.avatar
+                                                user?.data?.data?.instructor_profile?.avatar
                                             }
                                             alt="profile"
                                             width="32"
