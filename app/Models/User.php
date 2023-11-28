@@ -10,6 +10,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
+use modules\Instructors\Entities\InstructorProfile;
+use modules\Students\Entities\StudentProfile;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable {
@@ -29,6 +31,8 @@ class User extends Authenticatable {
     protected $hidden = ['password', 'remember_token'];
 
     protected $guard_name = 'api';
+
+    protected $appends = ['base_avatar'];
 
     /**
      * The attributes that should be cast.
@@ -137,5 +141,20 @@ class User extends Authenticatable {
 
     public function rate() {
         $this->hasMany(User::class, 'user_id');
+    }
+
+    public function getBaseAvatarAttribute() {
+        if ($this->hasRole('instructor')) {
+            $instructorProfile = InstructorProfile::where("user_id", $this->attributes['id'])->first();
+            if ($instructorProfile) {
+                return $instructorProfile->avatar;
+            }
+        } else {
+            $studentProfile = StudentProfile::where("user_id", $this->attributes['id'])->first();
+            if ($studentProfile) {
+                return $studentProfile->avatar;
+            }
+        }
+        return asset("users/default.png");
     }
 }
