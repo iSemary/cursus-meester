@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ForgetPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
-use App\Http\Requests\OTP\SendRequest;
 use App\Http\Requests\OTP\VerifyRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\RegisterInstructorRequest;
+use App\Http\Requests\JoinInstructorRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Jobs\AttemptMailJob;
 use App\Jobs\ForgetPasswordMailJob;
@@ -23,6 +24,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use modules\Instructors\Entities\InstructorProfile;
 
 class AuthController extends ApiController {
     /**
@@ -49,7 +51,67 @@ class AuthController extends ApiController {
         // collect user details to return in the json response
         $response = $this->collectUserDetails($user);
         // Return Success Json Response
-        return $this->return(200, 'User Registered Successfully', ['user' => $response]);
+        return $this->return(200, 'Student Registered Successfully', ['user' => $response]);
+    }
+    /**
+     * The function registers a new instructor, creates a user record, fires an email confirmation queue,
+     * collects user details, and returns a success JSON response.
+     * 
+     * @param RegisterUserRequest request The  parameter is an instance of the RegisterUserRequest
+     * class. It contains the data that was sent in the HTTP request to register a new user. This data is
+     * validated against the rules defined in the RegisterUserRequest class before being used to create a
+     * new user record.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function registerAsInstructor(RegisterInstructorRequest $request): JsonResponse {
+        /* Requested data passed the validation */
+        // Create new user record
+        $user = User::create($request->validated());
+        // Create new instructor Profile
+        InstructorProfile::create([
+            'user_id' => $user->id,
+            'position' => $request->validated()['position'],
+            'organization_id' => $request->validated()['organization_id'],
+            'industry_id' => $request->validated()['industry_id'],
+        ]);
+        // Assign instructor role
+        $user->assignRole("instructor");
+        // Create email token
+        $token = EmailToken::createToken($user->id);
+        // Fire Email Confirmation Queue
+        RegistrationMailJob::dispatchAfterResponse($user, $token);
+        // collect user details to return in the json response
+        $response = $this->collectUserDetails($user);
+        // Return Success Json Response
+        return $this->return(200, 'Instructor Registered Successfully', ['user' => $response]);
+    }
+
+
+    /**
+     * The function `joinAsInstructor` creates or updates an instructor profile for a user and assigns them
+     * the "instructor" role.
+     * 
+     * @param RegisterInstructorRequest request The request parameter is an instance of the
+     * RegisterInstructorRequest class. It is used to validate and retrieve the data sent in the request to
+     * join as an instructor.
+     * 
+     * @return JsonResponse A JsonResponse with a status code of 200 and a message of 'Instructor Profile
+     * Created'.
+     */
+    public function joinAsInstructor(JoinInstructorRequest $request): JsonResponse {
+        $user = User::whereId(auth()->guard('api')->id())->first();
+        // create or update existing instructor profile
+        InstructorProfile::updateOrCreate([
+            'user_id' => $user->id,
+        ], [
+            'position' => $request->validated()['position'],
+            'organization_id' => $request->validated()['organization_id'],
+            'industry_id' => $request->validated()['industry_id'],
+        ]);
+        // Assign instructor role
+        $user->assignRole("instructor");
+        return $this->return(200, 'Instructor Profile Created');
     }
 
     /**

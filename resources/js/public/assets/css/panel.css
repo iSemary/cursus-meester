@@ -16,7 +16,6 @@
 
 .counter-card.card {
   background: linear-gradient(135deg, #3498db, #9b59b6);
-  border: 1px solid #2980b9;
   border-radius: 8px;
   padding: 20px;
   text-align: center;
@@ -258,5 +257,42 @@ hr {
 .question-options-container .question-option .question-option-input {
   right: 0;
   top: 15px; }
+
+.notifications-list.dashboard.tiny-notifications {
+  width: 385px; }
+  .notifications-list.dashboard.tiny-notifications .notification-item {
+    padding: 0;
+    margin: 0; }
+.notifications-list.dashboard a {
+  text-decoration: none;
+  color: #6366f1; }
+.notifications-list.dashboard .notification-item {
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px; }
+  .notifications-list.dashboard .notification-item.unseen {
+    background-color: #556cd61f; }
+  .notifications-list.dashboard .notification-item h5 {
+    margin-bottom: 5px;
+    font-weight: bold; }
+  .notifications-list.dashboard .notification-item .col-3 .btn {
+    margin-bottom: 10px; }
+  .notifications-list.dashboard .notification-item small {
+    display: block;
+    margin-top: 10px; }
+  .notifications-list.dashboard .notification-item .notification-body {
+    margin-bottom: 10px;
+    font-size: 14px; }
+
+.text-primary {
+  color: #6366f1 !important; }
+
+.btn {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer; }
+
+.notifications-header-container {
+  margin-top: 65px; }
 
 /*# sourceMappingURL=panel.css.map */

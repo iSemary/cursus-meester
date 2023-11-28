@@ -6,33 +6,13 @@ import axiosConfig from "../components/axiosConfig/axiosConfig";
 import toastAlert from "../components/utilities/Alert";
 import CourseListLoader from "../components/loaders/CourseListLoader";
 import NotificationItem from "../components/template/NotificationItem";
+import { IoCodeDownloadOutline } from "react-icons/io5";
 
 export default function notifications() {
     const [notifications, setNotifications] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totals, setTotals] = useState(0);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!loading) {
-            appendMoreNotifications(currentPage);
-        }
-    }, [currentPage, loading]);
-
-    const handleScroll = () => {
-        const { scrollTop, clientHeight, scrollHeight } =
-            document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 20) {
-            setLoading(true);
-        }
-    };
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         appendMoreNotifications(currentPage);
@@ -59,10 +39,10 @@ export default function notifications() {
             .get(`notifications?page=${pageId}`)
             .then((response) => {
                 if (notifications) {
-                    setNotifications(
-                        ...notifications,
-                        response.data.data.notifications.data
-                    );
+                    setNotifications((prevNotifications) => [
+                        ...prevNotifications,
+                        ...response.data.data.notifications.data,
+                    ]);
                 } else {
                     setNotifications(response.data.data.notifications.data);
                 }
@@ -103,6 +83,20 @@ export default function notifications() {
                                         }
                                     />
                                 ))}
+
+                                {totals !== notifications.length && (
+                                    <div className="d-block">
+                                        <button
+                                            type="button"
+                                            class="btn text-primary d-flex align-items-centner text-center m-auto"
+                                            onClick={() =>
+                                                setCurrentPage(currentPage + 1)
+                                            }
+                                        >
+                                            <IoCodeDownloadOutline className="me-2" size={25} />{" "} Load more
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <p className="text-center">
@@ -110,8 +104,9 @@ export default function notifications() {
                             </p>
                         )
                     ) : (
-                        <CourseListLoader />
+                        ""
                     )}
+                    {loading && <CourseListLoader />}
                 </Card.Body>
             </Card>
         </StudentTemplate>

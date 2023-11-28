@@ -1,13 +1,16 @@
 "use client";
 import Link from "next/link";
 import { Button } from "primereact/button";
-import React, { Suspense, useRef } from "react";
+import React, { Suspense, useRef, useState } from "react";
 import { useVisibility } from "../../components/utilities/dashboard/SidebarVisibility";
 import { SplitButton } from "primereact/splitbutton";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useRouter } from "next/navigation";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import { useAuth } from "../../components/hooks/AuthProvider";
+import { useEffect } from "react";
+import NotificationItem from "../../components/template/NotificationItem";
+import { Token } from "../../components/utilities/Authentication/Token";
 
 export default function DashboardHeader() {
     const messagesPanel = useRef(null);
@@ -34,6 +37,31 @@ export default function DashboardHeader() {
             },
         },
     ];
+
+    const [tinyNotifications, setTinyNotifications] = useState([]);
+
+    /** Mark notification as seen and update current state to be seen */
+    const markAsSeen = (id) => {
+        axiosConfig
+            .post(`notifications/${id}/seen`)
+            .then((response) => {
+                const updatedNotifications = [...notifications];
+                updatedNotifications.find(
+                    (notification) => notification.id === id
+                ).read_at = 1;
+                setNotifications(updatedNotifications);
+            })
+            .catch(({ error }) => {
+                toastAlert("Something went wrong", "error");
+            });
+    };
+
+    useEffect(() => {
+        axiosConfig.get("notifications").then((response) => {
+            setTinyNotifications(response.data.data.notifications.data);
+        });
+    }, []);
+
     return (
         <Suspense fallback={<h2>"Loading header..."</h2>}>
             <header className="px-3 mb-3 border-bottom">
@@ -63,8 +91,39 @@ export default function DashboardHeader() {
                                     notificationsPanel.current.toggle(e)
                                 }
                             />
-                            <OverlayPanel ref={notificationsPanel}>
-                                <p>There's no notifications yet</p>
+                            <OverlayPanel ref={notificationsPanel} className="notifications-header-container">
+                                {tinyNotifications &&
+                                tinyNotifications.length > 0 ? (
+                                    <div className="tiny-notifications notifications-list dashboard">
+                                        {tinyNotifications.slice(0, 5).map(
+                                            (notification, index) => {
+                                                return (
+                                                    <NotificationItem
+                                                        id={notification.id}
+                                                        subject={
+                                                            notification.subject
+                                                        }
+                                                        href={notification.href}
+                                                        body={notification.body}
+                                                        seen={
+                                                            notification.read_at
+                                                        }
+                                                        createdDate={
+                                                            notification.created_at
+                                                        }
+                                                        markAsSeen={markAsSeen}
+                                                        createdDateDiff={
+                                                            notification.created_at_diff
+                                                        }
+                                                    />
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>There's no notifications yet</p>
+                                )}
+
                                 <div className="text-center">
                                     <Link
                                         href={"/dashboard/notifications"}
