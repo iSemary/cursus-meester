@@ -14,7 +14,7 @@ class DashboardController extends ApiController {
         $response->counter = new stdClass();
         $response->counter->total_courses = $instructorProfile->total_courses;
         $response->counter->total_students = $instructorProfile->total_students;
-        $response->counter->overall_rate = 2.5;
+        $response->counter->overall_rate = $instructorProfile->overall_rate;
         $response->counter->total_revenue = 100000;
 
         // Charts data

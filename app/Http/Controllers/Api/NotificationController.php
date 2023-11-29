@@ -14,7 +14,10 @@ class NotificationController extends ApiController {
      * successfully", and an array containing the paginated list of notifications.
      */
     public function index(): JsonResponse {
-        $notifications = Notification::whereUserId(auth()->guard('api')->id())->selectList()->paginate(10);
+        $notifications = Notification::whereUserId(auth()->guard('api')->id())->selectList()->orderBy("id", "DESC")->paginate(10);
+        foreach($notifications as $notification) {
+            $notification->created_at_diff = $notification->created_at->diffForHumans();
+        }
         return $this->return(200, "Notification fetched successfully", ['notifications' => $notifications]);
     }
 

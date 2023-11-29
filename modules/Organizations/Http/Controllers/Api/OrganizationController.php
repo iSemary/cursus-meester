@@ -70,21 +70,18 @@ class OrganizationController extends ApiController {
         if (!$organization) {
             return $this->return(400, 'Organization not exists');
         }
-        $courses = Course::selectPreview()->whereOrganizationId($organization->id)->paginate(20);
-        $instructors = InstructorProfile::leftJoin('users', 'users.id', 'instructor_profiles.user_id')
-            ->select([
-                'user_id',
-                'bio',
-                'position',
-                'avatar',
-                'users.full_name',
-                'users.username',
-            ])->whereOrganizationId($organization->id)->get();
-
         $response = new stdClass();
         $response->organization = $organization;
-        $response->courses = $courses;
-        $response->instructors = $instructors;
+        $response->top_instructors = InstructorProfile::getTopInTypeId('organization_id', $organization->id, 10);
+        $response->top_courses = Course::selectPreview()
+            ->join('rates', 'rates.course_id', 'courses.id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->whereOrganizationId($organization->id)
+            ->groupBy('courses.id')
+            ->orderBy("max_rate", "DESC")
+            ->limit(10)
+            ->get();
+        $response->new_courses = Course::selectPreview()->whereOrganizationId($organization->id)->latest()->limit(10)->get();
 
         return $this->return(200, 'Organization fetched Successfully', ['data' => $response]);
     }

@@ -34,7 +34,7 @@ export default function SearchBar() {
 
     /** Get a short list of search with title and slug */
     useEffect(() => {
-        if (keyword !== q || keyword !== "" || q !== "") {
+        if (keyword !== q && keyword !== "" && keyword !== null) {
             axiosConfig.get(`search/tiny?q=${keyword}`).then((response) => {
                 setTinyResults(response.data.data.results);
             });

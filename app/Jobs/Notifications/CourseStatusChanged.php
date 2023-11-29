@@ -31,6 +31,7 @@ class CourseStatusChanged implements ShouldQueue {
         Notification::create([
             'user_id' => $this->data['user_id'],
             'type_id' =>  $this->data['status'] == 1 ? NotificationTypes::NEW_COURSE_APPROVED : NotificationTypes::NEW_COURSE_REJECTED,
+            'object_id' => $this->data['course_id'],
             'localized' => false,
             'subject' => "Your course has been " . CourseStatuses::getTitle($this->data['status']),
             'body' => "{$this->data['course_name']} has been " . CourseStatuses::getTitle($this->data['status'])

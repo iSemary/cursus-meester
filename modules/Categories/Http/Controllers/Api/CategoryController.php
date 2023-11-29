@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Categories\Http\Requests\CreateCategoryRequest;
 use modules\Categories\Http\Requests\UpdateCategoryRequest;
+use modules\Courses\Entities\Course;
+use modules\Instructors\Entities\InstructorProfile;
 use stdClass;
 
 class CategoryController extends ApiController {
@@ -24,11 +26,15 @@ class CategoryController extends ApiController {
      * fetched successfully', and an array of categories.
      */
     public function index(Request $request): JsonResponse {
-        $categories = Category::orderBy('title', "DESC")->when($request->all, function ($query) {
-            return $query->get();
-        }, function ($query) {
-            return $query->paginate(5);
-        });
+        $categories = Category::orderBy('title', "DESC")
+            ->when($request->parents, function ($query, $request) {
+                $query->where("parent_id", null);
+            })
+            ->when($request->all, function ($query) {
+                return $query->get();
+            }, function ($query) {
+                return $query->paginate(5);
+            });
         return $this->return(200, 'Categories fetched successfully', ['categories' => $categories]);
     }
 
@@ -61,14 +67,23 @@ class CategoryController extends ApiController {
      * @return JsonResponse a JsonResponse.
      */
     public function getCoursesBySlug(string $categorySlug): JsonResponse {
-        $category = Category::select(['title', 'slug', 'parent_id', 'icon'])->whereSlug($categorySlug)->first();
+        $category = Category::select(['id', 'title', 'slug', 'parent_id', 'icon'])->whereSlug($categorySlug)->first();
         if (!$category) {
             return $this->return(400, 'Category not exists');
         }
         $response = new stdClass();
         $response->category = $category;
         $response->sub_categories = Category::select(['title', 'slug', 'parent_id', 'icon'])->where("parent_id", $category->id)->get();
-        $response->courses = $category->with("courses")->paginate(10);
+        $response->top_courses = Course::selectPreview()
+            ->join('rates', 'rates.course_id', 'courses.id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->whereCategoryId($category->id)
+            ->groupBy('courses.id')
+            ->orderBy("max_rate", "DESC")
+            ->limit(10)
+            ->get();
+        $response->top_instructors = InstructorProfile::getTopInTypeId('category_id', $category->id, 10);
+        $response->new_courses = Course::selectPreview()->whereCategoryId($category->id)->latest()->limit(10)->get();
         return $this->return(200, 'Courses fetched successfully', ['data' => $response]);
     }
 

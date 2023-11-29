@@ -25,6 +25,7 @@ Route::get("/", [HomeController::class, "index"]);
 Route::group(['prefix' => 'auth'], function () {
     // Registration Routes
     Route::post("register", [AuthController::class, "register"]);
+    Route::post("register/instructor", [AuthController::class, "registerAsInstructor"]);
     Route::post("login", [AuthController::class, "login"]);
     // Password Validation Routes
     Route::post("forget-password", [AuthController::class, "forgetPassword"]);
@@ -50,6 +51,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('update-password', [UserController::class, "updatePassword"]);
         // toggle 2 factor authenticate [From settings]
         Route::post('toggle-factor-authenticate', [UserController::class, "toggleFactorAuthenticate"]);
+        // Join as instructor
+        Route::post("join/instructor", [AuthController::class, "joinAsInstructor"]);
         // deactivate account [From settings]
         Route::post('deactivate', [UserController::class, "deactivate"]);
     });
@@ -77,8 +80,6 @@ Route::apiResource('industries', IndustryController::class)->only(['index', 'sho
 Route::apiResource('countries', CountryController::class)->only(['index', 'show']);
 Route::apiResource('currencies', CurrencyController::class)->only(['index', 'show']);
 Route::apiResource('languages', LanguageController::class)->only(['index', 'show']);
-
-Route::get("categories/{categorySlug}/courses", [CategoryController::class, "getCoursesBySlug"]);
 
 /* Landing Page APIs */
 // Newsletter

@@ -247,6 +247,8 @@ export default function Profile() {
                                         newAvatarImage
                                             ? newAvatarImage
                                             : profile.avatar
+                                            ? profile.avatar
+                                            : "/assets/images/icons/avatar.png"
                                     }
                                     className="avatar-image settings"
                                     alt="avatar"

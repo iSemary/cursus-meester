@@ -30,6 +30,7 @@ class CertificateClaimed implements ShouldQueue {
         Notification::create([
             'user_id' => $this->data['user_id'],
             'type_id' => NotificationTypes::NEW_CERTIFICATE_CLAIMED,
+            'object_id' => $this->data['course_id'],
             'localized' => false,
             'subject' => 'New Claimed Certificate!',
             'body' => "Congratulations! You have successfully claimed a new certificate on {$this->data['course_name']}",

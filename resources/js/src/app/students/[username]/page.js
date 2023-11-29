@@ -50,10 +50,16 @@ export default function StudentProfile({ params }) {
                                     </div>
                                 </div>
                                 <hr className="home-hr" />
-                                <h5 className="font-weight-bold">Summary</h5>
-                                <p className="text-muted">
-                                    {student?.info?.bio}
-                                </p>
+                                {student?.info?.bio && (
+                                    <>
+                                        <h5 className="font-weight-bold">
+                                            Summary
+                                        </h5>
+                                        <p className="text-muted">
+                                            {student?.info?.bio}
+                                        </p>
+                                    </>
+                                )}
                             </div>
                         </div>
                         {/* Social Links */}
@@ -66,17 +72,15 @@ export default function StudentProfile({ params }) {
                     <div className="student-courses">
                         <h5 className="font-weight-bold">Enrolled Courses</h5>
                         <div className="row justify-content-around">
-                            {student?.courses &&
-                                student.courses.length > 0 &&
-                                student.courses.map((course, index) => (
-                                    <CourseTemplate
-                                        course={course}
-                                        studentName={
-                                            student?.info?.full_name
-                                        }
-                                        containerClass={"col-3"}
-                                    />
-                                ))}
+                            {student?.courses && student.courses.length > 0
+                                ? student.courses.map((course, index) => (
+                                      <CourseTemplate
+                                          course={course}
+                                          studentName={student?.info?.full_name}
+                                          containerClass={"col-3"}
+                                      />
+                                  ))
+                                : "There's no enrolled courses yet."}
                         </div>
                     </div>
                 </div>

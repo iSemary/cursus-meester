@@ -148,6 +148,7 @@ class CertificateController extends ApiController {
     private function prepareDataForCertificate(Course $course, User $user): array {
         $data =  [
             'course_name' => $course->title,
+            'course_id' => $course->id,
             'instructor_name' => $course->instructor->full_name,
             'user_id' => $user->id,
             'student_name' => $user->full_name,

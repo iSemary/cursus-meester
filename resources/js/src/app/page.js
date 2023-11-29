@@ -12,6 +12,7 @@ import { useEffect } from "react";
 
 export default function Home() {
     const { user } = useAuth();
+
     useEffect(() => {
         if (user) {
             console.log(user);
@@ -118,15 +119,15 @@ export default function Home() {
             <div className="container home-page">
                 <hr className="home-hr" />
                 {/* Most watched courses */}
-                <div className="courses">
+                {/* <div className="courses">
                     <h3>
                         <BsStars /> Most watched courses
                     </h3>
                     <CoursesTemplate courses={courses} childClass={"col-3"} />
-                </div>
+                </div> */}
                 <hr className="home-hr" />
                 {/* Our Partners */}
-                <div className="partners">
+                {/* <div className="partners">
                     <div className="partners-container">
                         <div className="row my-3">
                             <div className="col-1 partner-image">
@@ -185,10 +186,10 @@ export default function Home() {
                             quality, integrity, and innovation.
                         </h6>
                     </div>
-                </div>
+                </div> */}
                 <hr className="home-hr" />
                 {/* Top Categories Clicked */}
-                <div className="home-categories">
+                {/* <div className="home-categories">
                     <h3>
                         <TbCategory2 /> Top categories clicked
                     </h3>
@@ -202,7 +203,7 @@ export default function Home() {
                                 />
                             ))}
                     </div>
-                </div>
+                </div> */}
                 <hr className="home-hr" />
 
                 <div className="join-instructors">
@@ -217,7 +218,7 @@ export default function Home() {
                                 />
                             </div>
                             <div className="col-6">
-                                <div className="mt-4">
+                                <div className="m-4">
                                     <h3 className="font-weight-bold">
                                         Become a teacher
                                     </h3>
@@ -229,7 +230,11 @@ export default function Home() {
                                         share your passion.
                                     </p>
                                     <Link
-                                        href="/register/instructor"
+                                        href={
+                                            user
+                                                ? "/join/instructor"
+                                                : "/register/instructor"
+                                        }
                                         className="join-btn"
                                     >
                                         Join now

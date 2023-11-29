@@ -32,6 +32,8 @@ class RegistrationMailJob implements ShouldQueue {
             'email' => $this->user->email,
             'token' => $this->token,
         ];
-        Mail::to($this->user['email'])->send(new RegistrationMail($data));
+
+        if (env("APP_ENV") == "production")
+            Mail::to($this->user['email'])->send(new RegistrationMail($data));
     }
 }

@@ -7,27 +7,23 @@ import { BiSolidHot } from "react-icons/bi";
 import StudentTemplate from "../../Templates/StudentTemplate";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
-import SubCategoriesTemplate from "../../components/template/SubCategoriesTemplate";
-import { MdOutlineCategory } from "react-icons/md";
 import CourseListLoader from "../../components/loaders/CourseListLoader";
 
-export default function CategoryCourses({ params }) {
+export default function organizations({ params }) {
     const slug = params.slug;
-    const [category, setCategory] = useState(null);
+    const [organization, setOrganization] = useState(null);
     const [topInstructors, setTopInstructors] = useState(null);
     const [topCourses, setTopCourses] = useState(null);
     const [newCourses, setNewCourses] = useState(null);
-    const [subCategories, setSubCategories] = useState(null);
 
     useEffect(() => {
         axiosConfig
-            .get(`categories/${slug}/courses`)
+            .get(`organizations/${slug}/courses`)
             .then((response) => {
-                setCategory(response.data.data.data.category);
+                setOrganization(response.data.data.data.organization);
                 setTopInstructors(response.data.data.data.top_instructors);
                 setTopCourses(response.data.data.data.top_courses);
                 setNewCourses(response.data.data.data.new_courses);
-                setSubCategories(response.data.data.data.sub_categories);
             })
             .catch(({ response }) => {
                 toastAlert(response.data.message, "error");
@@ -39,16 +35,17 @@ export default function CategoryCourses({ params }) {
             <div className="container">
                 <div className="category-page">
                     <div className="row">
-                        <div className="col-6">
-                            <h1>{category?.title}</h1>
+                        <div className="col-9">
+                            <h1>{organization?.name}</h1>
+                            <p>{organization?.description}</p>
                         </div>
-                        <div className="col-6 text-right">
-                            {category?.icon && (
+                        <div className="col-3 d-grid align-items-center justify-content-center">
+                            {organization?.logo && (
                                 <img
-                                    src={category?.icon}
+                                    src={organization?.logo}
                                     height={50}
                                     width={50}
-                                    alt="category"
+                                    alt="logo"
                                 />
                             )}
                         </div>
@@ -102,30 +99,6 @@ export default function CategoryCourses({ params }) {
                                             }
                                             courses={topCourses}
                                             childClass={"col-3"}
-                                        />
-                                    </div>
-                                </div>
-                            </>
-                        )
-                    ) : (
-                        <CourseListLoader classes="my-2" />
-                    )}
-                    {/* Sub Categories */}
-                    {subCategories ? (
-                        subCategories.length > 0 && (
-                            <>
-                                <hr className="home-hr" />
-                                <div className="courses">
-                                    <h4 className="font-weight-bold">
-                                        <MdOutlineCategory /> What's inside
-                                    </h4>
-                                    <div className="">
-                                        <SubCategoriesTemplate
-                                            containerClass={
-                                                "justify-content-around"
-                                            }
-                                            categories={subCategories}
-                                            childClass={"col-3 bg-light"}
                                         />
                                     </div>
                                 </div>
