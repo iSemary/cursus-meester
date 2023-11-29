@@ -10,9 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
+use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\Rate;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
 use modules\Courses\Http\Requests\Course\UpdateCourseRequest;
 use modules\Instructors\Entities\InstructorProfile;
+use stdClass;
 
 class CourseController extends ApiController {
     protected array $courseLevels;
@@ -90,13 +93,23 @@ class CourseController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(string $slug): JsonResponse {
-        $course = Course::where('slug', $slug)->withTrashed()->first();
+        $course = Course::where('slug', $slug)->first();
         if (!$course) {
             return $this->return(400, 'Course not exists');
         }
-        return $this->return(200, 'Course fetched Successfully', ['course' => $course]);
+        $response = new stdClass();
+        $response->course = $course;
+        $response->lectures = Lecture::getByCourseId($course->id);
+        $response->rates = Rate::getByCourseId($course->id);
+        return $this->return(200, 'Course fetched Successfully', ['data' => $response]);
     }
 
+    /**
+     * The function creates a JSON response with essential data including categories, languages, and
+     * levels.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
     public function create(): JsonResponse {
         $data['categories'] = Category::select(['id', 'title'])->where("status", 1)->orderBy("order_number")->get();
         $data['languages'] = Language::select(['id', 'name'])->get();

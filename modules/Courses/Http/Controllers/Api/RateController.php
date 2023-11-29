@@ -39,6 +39,7 @@ class RateController extends ApiController {
      */
     public function submitRate(CreateRateRequest $createRateRequest, string $courseSlug): JsonResponse {
         $course = Course::where("slug", $courseSlug)->firstOrFail();
+        // TODO Check if enrolled
         // Update or create the rate based on the user id and the course id
         Rate::updateOrCreate(
             [

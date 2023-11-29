@@ -17,4 +17,11 @@ class Rate extends Model {
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public static function getByCourseId(int $courseId) {
+        $rates = self::where('course_id', $courseId)->with(["user" => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->get();
+        return $rates;
+    }
 }

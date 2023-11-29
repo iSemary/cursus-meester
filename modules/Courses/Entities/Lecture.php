@@ -51,6 +51,11 @@ class Lecture extends Model {
         return LectureFile::getAdditionalFiles($this->id);
     }
 
+    public static function getByCourseId(int $courseId) {
+        $lectures = self::where('course_id', $courseId)->get();
+        return $lectures;
+    }
+
     // public function getMediaFileAttribute($value): string {
     //     if ($value) {
     //         return asset('storage/' . $this->mediaPath . '/' . $value);

@@ -68,7 +68,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
 });
 
-// Public Routes
+/**  Public Routes */
+/**
+ * Course Details Page
+ */
+Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
+// Rate Course
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
 // Get certificate by reference code [Provide an existing certificate]
 Route::get("certificates/{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
