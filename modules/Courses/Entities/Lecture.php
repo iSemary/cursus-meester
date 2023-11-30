@@ -13,7 +13,7 @@ class Lecture extends Model {
     public static $mediaPath = "lectures";
     public static $additionalFilePath = "lectures/additional";
 
-    protected $fillable = ['course_id', 'title', 'slug', 'description', 'lecture_media_id', 'order_number'];
+    protected $fillable = ['course_id', 'title', 'slug', 'description', 'lecture_media_id', 'order_number', 'lecture_section_id'];
 
     public function course() {
         return $this->belongsTo(Course::class, 'course_id');

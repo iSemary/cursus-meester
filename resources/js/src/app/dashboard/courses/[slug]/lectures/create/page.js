@@ -5,13 +5,15 @@ import DashboardTitle from "../../../../../layouts/dashboard/DashboardTitle";
 import FormEditor from "../components/FormEditor";
 import axiosConfig from "../../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../../components/utilities/Alert";
+
 export default function createLecture({ params }) {
     const initialLecture = {
         course_id: "",
-        title: "Lecture 1",
-        slug: "lecture-1",
-        description: "lecture descr",
+        title: "",
+        slug: "",
+        description: "",
         order_number: "",
+        lecture_section_id: "",
     };
 
     const [course, setCourse] = useState({});
@@ -34,8 +36,8 @@ export default function createLecture({ params }) {
                 });
                 setCourse(response.data.data.course);
             })
-            .catch(({ response }) => {
-                toastAlert(response.data.message, "error");
+            .catch((error) => {
+                console.log(error);
             });
     }, [params.slug]);
 
