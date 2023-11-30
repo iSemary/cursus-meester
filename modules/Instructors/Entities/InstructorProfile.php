@@ -127,4 +127,27 @@ class InstructorProfile extends Model {
 
         return $topInstructors;
     }
+    
+    public static function getTop(int $limit = 5) {
+        $topInstructorsIds = DB::table('courses')
+            ->join('rates', 'rates.course_id', 'courses.id')
+            ->select('courses.user_id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->groupBy('courses.user_id')
+            ->orderBy("max_rate", "DESC")
+            ->limit($limit)
+            ->pluck('courses.user_id');
+
+        $topInstructors = self::leftJoin('users', 'users.id', 'instructor_profiles.user_id')
+            ->select(['user_id', 'position', 'avatar', 'industry_id', 'organization_id', 'users.full_name', 'users.username'])
+            ->whereIn("user_id", $topInstructorsIds)
+            ->with(["organization" => function ($query) {
+                $query->select(['id', 'name', 'slug', 'logo']);
+            }])
+            ->with(["industry" => function ($query) {
+                $query->select(['id', 'title', 'slug']);
+            }])->get();
+
+        return $topInstructors;
+    }
 }

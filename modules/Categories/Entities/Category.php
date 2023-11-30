@@ -12,6 +12,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Category extends Model {
     use SoftDeletes, LogsActivity, HasFactory;
+    const SOFT_SKILLS_ID = 1; // Soft skills ID
+
     protected $fillable = ['title', 'slug', 'parent_id', 'icon', 'order_number', 'status'];
 
     protected $filePath = "categories/icons";
@@ -43,5 +45,18 @@ class Category extends Model {
         } else {
             return asset('storage/' . $this->filePath . '/' . 'default.png');
         }
+    }
+
+    public static function scopeGetRandomWithCourses($query) {
+        return $query->inRandomOrder()->with(['courses' => function ($query) {
+            $query->selectPreview()->limit(10);
+        }]);
+    }
+
+
+    public static function scopeGetSoftSkillsCourses($query) {
+        return $query->whereId(self::SOFT_SKILLS_ID)->with(['courses' => function ($query) {
+            $query->selectPreview()->limit(10);
+        }]);
     }
 }

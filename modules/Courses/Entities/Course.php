@@ -16,6 +16,7 @@ use modules\Payments\Entities\EnrolledCourse;
 
 class Course extends Model {
     use HasFactory, SoftDeletes;
+    const SHORT_COURSES_DURATION = 7 * 60 * 60; // 7 Hours in seconds
 
     protected $filePath = "courses/thumbnails";
 
@@ -173,5 +174,22 @@ class Course extends Model {
             ->where("lecture_files.main_file", 1)
             ->where("lectures.course_id", $this->id)
             ->sum("lecture_files.duration");
+    }
+
+    public static function scopeTopRated($query) {
+        return $query->join('rates', 'rates.course_id', 'courses.id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->groupBy('courses.id')
+            ->orderBy("max_rate", "DESC");
+    }
+
+    public static function scopeShorts($query) {
+        return $query->join('lectures', 'lectures.course_id', 'lectures.id')
+            ->join('lecture_files', 'lecture_files.lecture_id', 'lectures.id')
+            ->selectRaw('SUM(lecture_files.duration) AS total_lectures_duration')
+            ->where("lecture_files.main_file", 1)
+            ->havingRaw("SUM(lecture_files.duration) < ". self::SHORT_COURSES_DURATION)
+            ->groupBy('lectures.id', 'courses.id')
+            ->orderBy("total_lectures_duration", "DESC");
     }
 }

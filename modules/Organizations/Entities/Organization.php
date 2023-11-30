@@ -41,4 +41,14 @@ class Organization extends Model {
             return asset('storage/' . $this->filePath . '/' . 'default.png');
         }
     }
+
+    public function scopeGetTop($query) {
+        return $query
+            ->join('courses', 'courses.organization_id', 'organizations.id')
+            ->join('rates', 'rates.course_id', 'courses.id')
+            ->select('organizations.slug', 'organizations.name', 'organizations.logo')
+            ->groupBy('organizations.slug', 'organizations.name', 'organizations.logo')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->orderBy("max_rate", "DESC");
+    }
 }
