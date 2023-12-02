@@ -41,18 +41,6 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
             <div className="row">
                 <div className="col-8">
                     {/* Requirements */}
-                    <div className="requirements">
-                        <h3 className="font-weight-bold">
-                            <PiTarget /> Requirements
-                        </h3>
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: course.requirements,
-                            }}
-                        />
-                    </div>
-                    <hr className="home-hr" />
-                    {/* Requirements */}
                     <div className="content">
                         <h3 className="font-weight-bold">
                             <FaChalkboardTeacher /> Course Content
