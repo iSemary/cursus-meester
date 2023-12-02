@@ -10,6 +10,7 @@ use modules\Courses\Http\Controllers\Api\ListController;
 use modules\Courses\Http\Controllers\Api\SearchController;
 use modules\Payments\Http\Controllers\Api\CartController;
 
+
 // Administration Routes 
 Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
     Route::get('courses/all', [CourseController::class, "all"]);
@@ -20,6 +21,7 @@ Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function (
 Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function () {
     // Courses Routes
     Route::resource('courses', CourseController::class)->except(['edit']);
+    Route::get("courses/modify/{courseSlug}", [CourseController::class, "getForModify"]);
     // Course Lectures
     Route::get("courses/{courseSlug}/lectures", [LectureController::class, "getCourseLectures"]);
     // Lecture By Slug
@@ -69,10 +71,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 /**  Public Routes */
+
 /**
  * Course Details Page
  */
 Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
+
 // Rate Course
 Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
 // Get certificate by reference code [Provide an existing certificate]

@@ -8,8 +8,8 @@ export default function HomeCategoryTemplate({ category, containerClass }) {
             <Link href={`/categories/${category.slug}`} className="no-link">
                 <img
                     src={category.icon}
-                    width={300}
-                    height={300}
+                    width={200}
+                    height={200}
                     alt={category.title + " thumbnail"}
                 />
                 <h5 className="my-1">{category.title}</h5>

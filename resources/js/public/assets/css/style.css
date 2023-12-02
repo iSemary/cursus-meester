@@ -467,16 +467,22 @@
 .text-primary {
   color: #556cd6 !important; }
 
-.course-actions button:first-child {
-  padding-left: 0; }
-.course-actions .remove-wishlist-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 0; }
-.course-actions .move-to-cart-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 30px; }
+.course-actions {
+  height: 25px; }
+  .course-actions button:first-child {
+    padding-left: 0; }
+  .course-actions .remove-wishlist-btn, .course-actions .add-wishlist-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 0; }
+  .course-actions .move-to-cart-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 30px; }
+  .course-actions .add-cart-btn, .course-actions .remove-cart-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 0; }
 
 .social-links-container {
   align-items: center;

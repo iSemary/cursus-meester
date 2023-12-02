@@ -6,6 +6,8 @@ import RemoveCartBtn from "./Course/buttons/RemoveCartBtn";
 import ChangeToWishlistBtn from "./Course/buttons/ChangeToWishlistBtn";
 import RemoveWishlistBtn from "./Course/buttons/RemoveWishlistBtn";
 import ChangeToCartBtn from "./Course/buttons/ChangeToCartBtn";
+import AddWishlistBtn from "./Course/buttons/AddWishlistBtn";
+import AddCardBtn from "./Course/buttons/AddCardBtn";
 
 export default function CourseTemplate({
     course,
@@ -85,6 +87,16 @@ export default function CourseTemplate({
                             <RemoveWishlistBtn
                                 id={course.id}
                                 handleRemoveWishlist={handleRemoveWishlist}
+                            />
+                        )}
+                        {addWishlist && (
+                            <AddWishlistBtn
+                                id={course.id}
+                            />
+                        )}
+                        {addCart && (
+                            <AddCardBtn
+                                id={course.id}
                             />
                         )}
                         {changeToCart && (

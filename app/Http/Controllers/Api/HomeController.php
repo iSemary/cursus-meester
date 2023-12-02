@@ -69,8 +69,13 @@ class HomeController extends ApiController {
         return Course::selectPreview()->shorts()->limit(10)->get();
     }
 
+    /**
+     * The function "getTopInstructors" returns a collection of the top 10 instructor profiles.
+     * 
+     * @return Collection a collection of the top 10 instructor profiles.
+     */
     public function getTopInstructors(): Collection {
-        return InstructorProfile::getTop(10);
+        return InstructorProfile::getTop(4);
     }
 
     /**

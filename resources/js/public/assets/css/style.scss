@@ -645,10 +645,12 @@ $headerHeight: 80px;
     color: #556cd6 !important;
 }
 .course-actions {
+    height: 25px;
+
     button:first-child {
         padding-left: 0;
     }
-    .remove-wishlist-btn {
+    .remove-wishlist-btn,.add-wishlist-btn {
         position: absolute;
         bottom: 10px;
         right: 0;
@@ -657,6 +659,12 @@ $headerHeight: 80px;
         position: absolute;
         bottom: 10px;
         right: 30px;
+    }
+
+    .add-cart-btn,.remove-cart-btn {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
     }
 }
 

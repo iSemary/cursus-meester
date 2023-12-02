@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Entities\LectureFile;
+use modules\Courses\Entities\LectureSection;
 use modules\Courses\Http\Requests\Lecture\CreateLectureRequest;
 use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
 
@@ -80,6 +81,8 @@ class LectureController extends ApiController {
         $courseData['user_id'] = auth()->guard('api')->id();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
         $courseData['media_file'] = $createLectureRequest->file('media_file');
+        // add or get section id
+        $courseData['lecture_section_id'] = $this->returnSectionIdFromSection($courseData['course_id'], $courseData['lecture_section_id']);
         // Create lecture row, with it's files: media video file, and additional files
         Lecture::create($courseData);
         return $this->return(200, 'Lecture Added Successfully');
@@ -110,6 +113,21 @@ class LectureController extends ApiController {
         $courseData['media_file'] = $updateLectureRequest->file('media_file');
         $lecture->update($courseData);
         return $this->return(200, 'Lecture updated Successfully');
+    }
+
+
+    private function returnSectionIdFromSection(int $courseId, string|int $section): int {
+        if (is_numeric($section)) {
+            $lectureSection = LectureSection::whereCourseId($courseId)->where('id', $section)->first();
+            if ($lectureSection) {
+                return $lectureSection->id;
+            }
+        }
+        $newLectureSection = LectureSection::create([
+            'course_id' => $courseId,
+            'title' => $section,
+        ]);
+        return $newLectureSection->id;
     }
 
     public function deleteFile($lectureSlug, $lectureFileId): JsonResponse {

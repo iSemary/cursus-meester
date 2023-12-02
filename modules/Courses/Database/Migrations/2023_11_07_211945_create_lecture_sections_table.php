@@ -13,8 +13,8 @@ return new class extends Migration {
     public function up() {
         Schema::create('lecture_sections', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('lecture_id');
-            $table->string('original_name', 255);
+            $table->unsignedBigInteger('course_id');
+            $table->string('title', 255);
             $table->softDeletes();
             $table->timestamps();
         });

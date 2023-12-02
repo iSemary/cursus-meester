@@ -27,7 +27,7 @@ export default function createLecture({ params }) {
     useEffect(() => {
         // Get Course Details
         axiosConfig
-            .get(`courses/${params.slug}`)
+            .get(`courses/modify/${params.slug}`)
             .then((response) => {
                 setLecture({
                     ...lecture,
@@ -82,19 +82,21 @@ export default function createLecture({ params }) {
                     { label: "Create" },
                 ]}
             />
-            <FormEditor
-                course={course}
-                lecture={lecture}
-                lectureVideo={lectureVideo}
-                setLectureVideo={setLectureVideo}
-                lectureFiles={lectureFiles}
-                setLectureFiles={setLectureFiles}
-                setLecture={setLecture}
-                formLoading={formLoading}
-                setFormLoading={setFormLoading}
-                handleSubmitLecture={handleSubmitLecture}
-                btnLabel="Create"
-            />
+            {course && (
+                <FormEditor
+                    course={course}
+                    lecture={lecture}
+                    lectureVideo={lectureVideo}
+                    setLectureVideo={setLectureVideo}
+                    lectureFiles={lectureFiles}
+                    setLectureFiles={setLectureFiles}
+                    setLecture={setLecture}
+                    formLoading={formLoading}
+                    setFormLoading={setFormLoading}
+                    handleSubmitLecture={handleSubmitLecture}
+                    btnLabel="Create"
+                />
+            )}
         </DashboardTemplate>
     );
 }

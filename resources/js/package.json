@@ -14,6 +14,8 @@
     "@files-ui/react": "^1.0.8",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.7",
+    "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/splide": "^4.1.4",
     "autoprefixer": "10.4.14",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.1",

@@ -51,8 +51,8 @@ export default function organizations({ params }) {
                         </div>
                     </div>
                     {/* Top Instructors */}
-                    {topCourses ? (
-                        topCourses.length > 0 && (
+                    {topInstructors ? (
+                        topInstructors.length > 0 && (
                             <>
                                 <hr className="home-hr" />
                                 <div className="instructors">

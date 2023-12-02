@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LectureSection extends Model {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['lecture_id', 'title'];
+    protected $fillable = ['course_id', 'title'];
 }

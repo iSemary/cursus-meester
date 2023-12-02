@@ -8,10 +8,24 @@ import JoinInstructorsImage from "/public/assets/images/landing/instructor-1.jpg
 import Link from "next/link";
 import StudentTemplate from "./Templates/StudentTemplate";
 import { useAuth } from "./components/hooks/AuthProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axiosConfig from "./components/axiosConfig/axiosConfig";
+import { PiChalkboardTeacherFill } from "react-icons/pi";
+import InstructorProfileBoxTemplate from "./components/template/instructor/InstructorProfileBoxTemplate";
+import CoursesCarousel from "./components/home/CoursesCarousel";
 
 export default function Home() {
     const { user } = useAuth();
+
+    const [categories, setCategories] = useState([]);
+    const [mostRecentCourses, setMostRecentCourses] = useState([]);
+    const [topRatedCourses, setTopRatedCourses] = useState([]);
+    const [randomPopularCategoryCourses, setRandomPopularCategoryCourses] =
+        useState({});
+    const [shortCourses, setShortCourses] = useState([]);
+    const [topInstructors, setTopInstructors] = useState([]);
+    const [topOrganizations, setTopOrganizations] = useState([]);
+    const [topSoftSkillsCourses, setTopSoftSkillsCourses] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -19,165 +33,119 @@ export default function Home() {
         }
     }, [user]);
 
-    const courses = [
-        {
-            name: "Course 1",
-            slug: "course-1",
-            rate: {
-                average: 4.2,
-                total: 4454852,
-            },
-            final_price: "$500",
-            original_price: "$500",
-            image: "https://placehold.co/600x450.png",
-            instructor: {
-                name: "Ahmed",
-            },
-        },
-        {
-            name: "Course 1",
-            slug: "course-1",
-            rate: {
-                average: 4.2,
-                total: 4454852,
-            },
-            final_price: "$500",
-            original_price: "$500",
-            image: "https://placehold.co/600x450.png",
-            instructor: {
-                name: "Ahmed",
-            },
-        },
-        {
-            name: "Course 1",
-            slug: "course-1",
-            rate: {
-                average: 4.2,
-                total: 4454852,
-            },
-            final_price: "$500",
-            original_price: "$500",
-            image: "https://placehold.co/600x450.png",
-            instructor: {
-                name: "Ahmed",
-            },
-        },
-        {
-            name: "Course 1",
-            slug: "course-1",
-            rate: {
-                average: 4.2,
-                total: 4454852,
-            },
-            final_price: "$500",
-            original_price: "$700",
-            image: "https://placehold.co/600x450.png",
-            instructor: {
-                name: "Ahmed",
-            },
-        },
-    ];
-    const categories = [
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-        {
-            name: "Front End Development",
-            slug: "front-end-development",
-            image: "https://cdn.icon-icons.com/icons2/1857/PNG/512/vector_117831.png",
-        },
-    ];
+    useEffect(() => {
+        axiosConfig
+            .get("/")
+            .then((response) => {
+                setMostRecentCourses(
+                    response.data.data.response.most_recent_courses
+                );
+                setTopRatedCourses(
+                    response.data.data.response.top_rated_courses
+                );
+                setRandomPopularCategoryCourses(
+                    response.data.data.response.random_popular_category_courses
+                );
+                setShortCourses(response.data.data.response.short_courses);
+                setTopInstructors(response.data.data.response.top_instructors);
+                setTopOrganizations(
+                    response.data.data.response.top_organizations
+                );
+                setTopSoftSkillsCourses(
+                    response.data.data.response.top_soft_skills_courses
+                );
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        axiosConfig.get("categories?parents=1").then((response) => {
+            setCategories(response.data.data.categories.data);
+        });
+    }, []);
+
     return (
         <StudentTemplate>
-            <div className="container home-page">
-                <hr className="home-hr" />
-                {/* Most watched courses */}
-                {/* <div className="courses">
+            <div className="home-page">
+                {/* Most recent courses */}
+                <div className="courses">
                     <h3>
-                        <BsStars /> Most watched courses
+                        <BsStars /> Most Recent Courses
                     </h3>
-                    <CoursesTemplate courses={courses} childClass={"col-3"} />
-                </div> */}
+                    <CoursesCarousel courses={mostRecentCourses} />
+                </div>
+                {/* Top Instructors */}
+                {topInstructors ? (
+                    topInstructors.length > 0 && (
+                        <>
+                            <hr className="home-hr" />
+                            <div className="instructors">
+                                <h4 className="font-weight-bold">
+                                    <PiChalkboardTeacherFill /> Our top
+                                    instructors
+                                </h4>
+                                <div className="row m-auto">
+                                    {topInstructors &&
+                                        topInstructors.length > 0 &&
+                                        topInstructors.map(
+                                            (instructor, index) => (
+                                                <InstructorProfileBoxTemplate
+                                                    instructor={instructor}
+                                                    containerClass={
+                                                        "col-3 me-2"
+                                                    }
+                                                />
+                                            )
+                                        )}
+                                </div>
+                            </div>
+                        </>
+                    )
+                ) : (
+                    <CourseListLoader classes="my-2" />
+                )}
+                <hr className="home-hr" />
+                {/* Top Soft Skills courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Top Soft Skills Courses
+                    </h3>
+                    <CoursesCarousel courses={topSoftSkillsCourses?.courses} />
+                </div>
+                <hr className="home-hr" />
+                {/* Short and sweet courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Short & Sweet Courses
+                    </h3>
+                    <CoursesCarousel courses={shortCourses} />
+                </div>
                 <hr className="home-hr" />
                 {/* Our Partners */}
-                {/* <div className="partners">
+                <div className="partners">
                     <div className="partners-container">
                         <div className="row my-3">
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
-                            <div className="col-1 partner-image">
-                                <Image
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png"
-                                    className="grayscale-image"
-                                    width={100}
-                                    height="50"
-                                />
-                            </div>
+                            {topOrganizations &&
+                                topOrganizations.length > 0 &&
+                                topOrganizations.map((organization, index) => (
+                                    <div className="col-1 partner-image">
+                                        <Link
+                                            href={
+                                                "/organizations/" +
+                                                organization.slug
+                                            }
+                                        >
+                                            <img
+                                                src={organization.logo}
+                                                className="grayscale-image"
+                                                width={100}
+                                                title={organization.name}
+                                                alt={organization.name}
+                                                height={100}
+                                            />
+                                        </Link>
+                                    </div>
+                                ))}
                         </div>
                         <h6 className="text-center text-muted font-weight-bold">
                             Our partners are an integral part of our journey.{" "}
@@ -186,10 +154,29 @@ export default function Home() {
                             quality, integrity, and innovation.
                         </h6>
                     </div>
-                </div> */}
+                </div>
+                <hr className="home-hr" />
+                {/* Top Rated courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Top Rated Courses
+                    </h3>
+                    <CoursesCarousel courses={topRatedCourses} />
+                </div>
+                <hr className="home-hr" />
+                {/* Top Rated courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Top {randomPopularCategoryCourses?.title}{" "}
+                        Courses
+                    </h3>
+                    <CoursesCarousel
+                        courses={randomPopularCategoryCourses?.courses}
+                    />
+                </div>
                 <hr className="home-hr" />
                 {/* Top Categories Clicked */}
-                {/* <div className="home-categories">
+                <div className="home-categories">
                     <h3>
                         <TbCategory2 /> Top categories clicked
                     </h3>
@@ -199,13 +186,12 @@ export default function Home() {
                             categories.map((category, index) => (
                                 <HomeCategoryTemplate
                                     category={category}
-                                    containerClass={"col-4"}
+                                    containerClass={"col-3"}
                                 />
                             ))}
                     </div>
-                </div> */}
+                </div>
                 <hr className="home-hr" />
-
                 <div className="join-instructors">
                     <div className="w-75 m-auto">
                         <div className="row">

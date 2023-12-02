@@ -7,30 +7,34 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { MdOndemandVideo } from "react-icons/md";
 import { GoDeviceDesktop } from "react-icons/go";
 import { PiExam, PiTarget, PiCertificateDuotone } from "react-icons/pi";
-import Image from "next/image";
 
 export default function CourseDetailsTemplate({ course, containerClass }) {
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
                 <div className="col-8">
-                    <h1 className="font-weight-bold">{course.name}</h1>
+                    <h1 className="font-weight-bold">{course.title}</h1>
                     <p>{course.description}</p>
 
-                    <StarsRate rate={course.rate} />
-
+                    {course.rates && (
+                        <StarsRate
+                            rate={course.rates}
+                            totalStudents={course.total_students}
+                        />
+                    )}
+                    <br />
                     <h6>
-                        Instructor{" "}
+                        Instructor:{" "}
                         <b>
                             <Link
-                                href={`/instructors/${course.instructor.username}`}
+                                href={`/instructors/${course?.instructor?.username}`}
                             >
-                                {course.instructor.name}
+                                {course?.instructor?.full_name}
                             </Link>
                         </b>
                     </h6>
 
-                    <h6>Last updated {course.last_updated}</h6>
+                    <h6>Last updated: {course.updated_at_diff}</h6>
                 </div>
             </div>
             <hr className="home-hr" />
@@ -75,8 +79,8 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                 <div className="col-4">
                     <div className="lecture-viewer">
                         <div className="preview-image">
-                            <Image
-                                src="https://placehold.co/250x150.png"
+                            <img
+                                src={course.thumbnail}
                                 alt="course preview"
                                 width={250}
                                 height={150}
@@ -84,7 +88,7 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                             <h5>Preview the course</h5>
                         </div>
                         <h4 className="font-weight-bold mt-2">
-                            {course.currency + course.total_price}
+                            {course.currency + course.final_price}
                         </h4>
                         <div className="row m-auto">
                             <button className="w-100 btn btn-primary">
@@ -101,12 +105,11 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                             </h6>
                             <div className="includes">
                                 <p>
-                                    <MdOndemandVideo /> {course.total_hours}{" "}
+                                    <MdOndemandVideo /> {course.total_lectures}{" "}
                                     on-demand video
                                 </p>
                                 <p>
-                                    <PiExam /> {course.total_assignments}{" "}
-                                    Assignments
+                                    <PiExam /> {course.total_exams} Assignments
                                 </p>
                                 <p>
                                     <BsDownload /> {course.total_files}{" "}

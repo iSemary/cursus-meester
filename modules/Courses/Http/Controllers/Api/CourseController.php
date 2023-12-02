@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\LectureSection;
 use modules\Courses\Entities\Rate;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
 use modules\Courses\Http\Requests\Course\UpdateCourseRequest;
@@ -93,7 +94,9 @@ class CourseController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(string $slug): JsonResponse {
-        $course = Course::where('slug', $slug)->first();
+        $course = Course::where('slug', $slug)->with(['instructor' => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->first();
         if (!$course) {
             return $this->return(400, 'Course not exists');
         }
@@ -102,6 +105,19 @@ class CourseController extends ApiController {
         $response->lectures = Lecture::getByCourseId($course->id);
         $response->rates = Rate::getByCourseId($course->id);
         return $this->return(200, 'Course fetched Successfully', ['data' => $response]);
+    }
+
+    public function getForModify(string $slug): JsonResponse {
+        $course = Course::where('slug', $slug)->with(['instructor' => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->first();
+        if (!$course) {
+            return $this->return(400, 'Course not exists');
+        }
+        $response = new stdClass();
+        $response->course = $course;
+        $response->course->sections = LectureSection::select('id', 'title')->whereCourseId($course->id)->get();
+        return $this->return(200, 'Course fetched Successfully', ['course' => $course]);
     }
 
     /**
@@ -132,7 +148,8 @@ class CourseController extends ApiController {
         $courseData = $createCourseRequest->validated();
         $courseData['user_id'] = auth()->guard('api')->id();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
-        $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
+        $courseData['offer_price'] = isset($courseData['offer_price']) && in_array($courseData['offer_price'], ["true", 1]) ? 1 : 0;
+        $courseData['has_certificate'] = isset($courseData['has_certificate']) && in_array($courseData['has_certificate'], ["true", 1]) ? 1 : 0;
         $courseData['currency_id'] = 1;
         $isOrganization = isset($courseData['organization_id']) && $courseData['organization_id'] == "false" ? 0 : 1;
         $courseData['organization_id'] = null;

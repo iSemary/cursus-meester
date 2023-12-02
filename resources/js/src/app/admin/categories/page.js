@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
@@ -90,7 +90,7 @@ export default function Categories() {
                                         <Link
                                             href={
                                                 "/admin/categories/edit/" +
-                                                row.cells[2].data 
+                                                row.cells[2].data
                                             }
                                             className="text-white no-link"
                                         >

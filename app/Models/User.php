@@ -149,7 +149,7 @@ class User extends Authenticatable {
             if ($instructorProfile) {
                 return $instructorProfile->avatar;
             }
-        } else {
+        } elseif ($this->hasRole('student')) {
             $studentProfile = StudentProfile::where("user_id", $this->attributes['id'])->first();
             if ($studentProfile) {
                 return $studentProfile->avatar;

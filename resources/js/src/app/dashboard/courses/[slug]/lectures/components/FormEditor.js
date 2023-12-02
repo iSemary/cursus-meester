@@ -39,6 +39,7 @@ export default function FormEditor({
         const file = files[0];
         setLectureVideo(file);
     };
+    
     const handleChangeLectureFiles = (files) => {
         setLectureFiles(files);
     };
@@ -77,6 +78,9 @@ export default function FormEditor({
         }
     }, [lecture.id]);
 
+    useEffect(() => {
+        setSections(course.sections);
+    }, [course.sections]);
     return (
         <form
             method="POST"
