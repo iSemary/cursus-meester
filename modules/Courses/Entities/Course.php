@@ -71,12 +71,15 @@ class Course extends Model {
                 'cart' => false,
                 'wishlist' => false,
                 'purchased' => false,
+                'can_rate' => false,
             ];
         }
+        $courseEnrolled = EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists();
         return [
             'cart' => Cart::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
             'wishlist' => Wishlist::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
             'purchased' => EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'can_rate' => $courseEnrolled && !Rate::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
         ];
     }
 

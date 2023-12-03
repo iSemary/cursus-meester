@@ -16,9 +16,11 @@ export default function StarsRate({ rate, totalStudents }) {
                     }
                 />
             ))}
-            <span className="text-muted mx-2">
-                {"(" + totalStudents + ") Students"}
-            </span>
+            {totalStudents && (
+                <span className="text-muted mx-2">
+                    {"(" + totalStudents + ") Students"}
+                </span>
+            )}
         </div>
     );
 }

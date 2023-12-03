@@ -4,11 +4,17 @@ import Link from "next/link";
 import CourseResourcesTemplate from "./CourseResourcesTemplate";
 import { BsBoxes, BsDownload } from "react-icons/bs";
 import { FaChalkboardTeacher } from "react-icons/fa";
-import { MdOndemandVideo } from "react-icons/md";
+import { MdOndemandVideo, MdOutlineReviews } from "react-icons/md";
 import { GoDeviceDesktop } from "react-icons/go";
 import { PiExam, PiTarget, PiCertificateDuotone } from "react-icons/pi";
+import CourseReviews from "./CourseReviews";
+import MediaPlayer from "../../MediaPlayer/MediaPlayer";
 
-export default function CourseDetailsTemplate({ course, containerClass }) {
+export default function CourseDetailsTemplate({
+    course,
+    rates,
+    containerClass,
+}) {
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
@@ -58,10 +64,24 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                             <BsBoxes /> Resources
                         </h3>
                         <div className="row">
+                            <MediaPlayer />
+
                             <CourseResourcesTemplate
                                 resources={course.resources}
                             />
                         </div>
+                    </div>
+                    <hr className="home-hr" />
+                    {/* Rate and reviews */}
+                    <div className="reviews">
+                        <h3 className="font-weight-bold">
+                            <MdOutlineReviews /> Rate & Reviews
+                        </h3>
+                        <CourseReviews
+                            rates={rates}
+                            courseSlug={course?.slug}
+                            canRate={course?.actions?.can_rate}
+                        />
                     </div>
                 </div>
                 <div className="col-4">

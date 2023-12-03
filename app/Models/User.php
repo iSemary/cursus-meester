@@ -155,6 +155,6 @@ class User extends Authenticatable {
                 return $studentProfile->avatar;
             }
         }
-        return asset("users/default.png");
+        return asset("storage/users/avatar/default.png");
     }
 }

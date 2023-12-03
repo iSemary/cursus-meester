@@ -4,9 +4,11 @@ namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Rate;
 use modules\Courses\Http\Requests\Rate\CreateRateRequest;
+use modules\Payments\Entities\EnrolledCourse;
 
 class RateController extends ApiController {
     /**
@@ -38,12 +40,20 @@ class RateController extends ApiController {
      * successfully".
      */
     public function submitRate(CreateRateRequest $createRateRequest, string $courseSlug): JsonResponse {
-        $course = Course::where("slug", $courseSlug)->firstOrFail();
-        // TODO Check if enrolled
+        $course = DB::table('courses')->select('id')->where("slug", $courseSlug)->first();
+        if (!$course) {
+            return $this->return(400, "Course not exists.");
+        }
+        $user = auth()->guard("api")->user();
+        // Check if user is enrolled to this course
+        $enrolledCourse = EnrolledCourse::where("user_id", $user->id)->where("course_id", $course->id)->exists();
+        if (!$enrolledCourse) {
+            return $this->return(400, "You have to be enrolled to this course.");
+        }
         // Update or create the rate based on the user id and the course id
         Rate::updateOrCreate(
             [
-                'user_id' => auth()->guard('api')->id(),
+                'user_id' => $user->id,
                 'course_id' => $course->id
             ],
             [
@@ -51,7 +61,6 @@ class RateController extends ApiController {
                 'comment' => $createRateRequest->comment,
             ]
         );
-
         return $this->return(200, "Rate submitted successfully");
     }
 }

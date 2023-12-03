@@ -737,3 +737,18 @@ $headerHeight: 80px;
         font-size: 14px;
     }
 }
+
+.star-button {
+    background-color: transparent;
+    border: transparent;
+    font-size: 25px;
+    color: #ffc107;
+}
+
+.disable-content {
+    opacity: 0.5;
+    * {
+        user-select: none;
+        pointer-events: none;
+    }
+}
