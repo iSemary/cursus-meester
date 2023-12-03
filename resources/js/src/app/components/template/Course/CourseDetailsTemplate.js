@@ -33,6 +33,7 @@ export default function CourseDetailsTemplate({
                         Instructor:{" "}
                         <b>
                             <Link
+                                className="text-primary"
                                 href={`/instructors/${course?.instructor?.username}`}
                             >
                                 {course?.instructor?.full_name}
@@ -77,11 +78,17 @@ export default function CourseDetailsTemplate({
                         <h3 className="font-weight-bold">
                             <MdOutlineReviews /> Rate & Reviews
                         </h3>
-                        <CourseReviews
-                            rates={rates}
-                            courseSlug={course?.slug}
-                            canRate={course?.actions?.can_rate}
-                        />
+                        {rates && rates.length ? (
+                            <CourseReviews
+                                rates={rates}
+                                courseSlug={course?.slug}
+                                canRate={course?.actions?.can_rate}
+                            />
+                        ) : (
+                            <p className="text-center text-muted">
+                                There's no review on this course yet.
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="col-4">

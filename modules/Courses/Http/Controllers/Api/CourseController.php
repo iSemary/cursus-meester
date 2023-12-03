@@ -102,7 +102,7 @@ class CourseController extends ApiController {
         }
         $response = new stdClass();
         $response->course = $course;
-        $response->lectures = Lecture::getByCourseId($course->id);
+        $response->recourses = Lecture::getByCourseId($course->id);
         $response->rates = Rate::getByCourseId($course->id);
         return $this->return(200, 'Course fetched Successfully', ['data' => $response]);
     }

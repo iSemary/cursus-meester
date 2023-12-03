@@ -19,7 +19,7 @@ export default function CourseReviews({ rates, courseSlug, canRate }) {
                             <div className="user-info w-50">
                                 <Link
                                     className="no-link"
-                                    href={"students/" + rate?.user?.username}
+                                    href={"/students/" + rate?.user?.username}
                                 >
                                     <div className="row">
                                         <div className="col-2 px-0">

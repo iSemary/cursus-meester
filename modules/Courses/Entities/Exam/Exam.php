@@ -14,4 +14,10 @@ class Exam extends Model {
     public function scopeOwned($query) {
         return $query->leftJoin('courses', 'courses.id', 'lectures.course_id')->where("courses.user_id", auth()->guard('api')->id());
     }
+
+    protected $appends = ['total_questions'];
+
+    public function getTotalQuestionsAttribute() {
+        return ExamQuestion::where("exam_id", $this->attributes['id'])->count();
+    }
 }

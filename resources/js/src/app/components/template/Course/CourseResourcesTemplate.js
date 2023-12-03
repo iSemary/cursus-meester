@@ -17,6 +17,7 @@ export default function CourseResourcesTemplate({ resources }) {
                                     <div className="row lecture">
                                         <div className="col-12 row">
                                             <div className="col-6 align-flex-center">
+                                                {/* TODO Add exam type here */}
                                                 {lecture.type === 1 ? (
                                                     <GoVideo className="mx-1" />
                                                 ) : (
@@ -25,7 +26,9 @@ export default function CourseResourcesTemplate({ resources }) {
                                                 {lecture.title}
                                             </div>
                                             <div className="col-6 lecture-length text-right text-muted">
-                                                <h6 className="text-14">{lecture.length}</h6>
+                                                <h6 className="text-14">
+                                                    {lecture.length}
+                                                </h6>
                                             </div>
                                         </div>
                                     </div>
