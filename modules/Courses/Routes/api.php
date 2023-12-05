@@ -1,15 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use modules\Courses\Http\Controllers\Api\CertificateController;
-use modules\Courses\Http\Controllers\Api\CourseController;
-use modules\Courses\Http\Controllers\Api\LectureController;
-use modules\Courses\Http\Controllers\Api\RateController;
-use modules\Courses\Http\Controllers\Api\ExamController;
-use modules\Courses\Http\Controllers\Api\ListController;
-use modules\Courses\Http\Controllers\Api\SearchController;
 use modules\Payments\Http\Controllers\Api\CartController;
-
+use modules\Courses\Http\Controllers\Api\{
+    CertificateController,
+    CourseController,
+    LectureController,
+    RateController,
+    ExamController,
+    ListController,
+    SearchController,
+    ResourceController,
+};
 
 // Administration Routes 
 Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
@@ -59,6 +61,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         // Move course from wishlist to cart
         Route::post("{courseId}/move-cart", [ListController::class, "moveToCart"]);
     });
+
+    /**
+     *  Requesting a resource file for ex: [lecture media file, lecture additional file, exam]
+     */
+    Route::get("resources/course/{courseId}/lecture/{fileId}", [ResourceController::class, "lecture"]);
+    Route::get("resources/course/{courseId}/file/{fileId}", [ResourceController::class, "file"]);
+    Route::get("resources/course/{courseId}/exam/{fileId}", [ResourceController::class, "exam"]);
 
     // Get enrolled courses
     Route::get("my-courses", [ListController::class, "getEnrolledCourses"]);

@@ -15,21 +15,25 @@ use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
 class LectureController extends ApiController {
     /**
      * The index function retrieves lectures from the database and returns them as a JSON response.
-     * 
-     * @param Request request The  parameter is an instance of the Request class, which represents
-     * an HTTP request. It contains information about the request such as the request method, headers,
-     * query parameters, and request body. In this case, it is used to retrieve any query parameters that
-     * may be passed to the index method.
-     * 
+
      * @return JsonResponse a JsonResponse with a status code of 200, a success message of 'Lectures
      * fetched successfully', and an array of lectures.
      */
-    public function index(Request $request): JsonResponse {
+    public function index(): JsonResponse {
         $lectures = Lecture::orderBy('title', "DESC")->owned()->withTrashed()->paginate(5);
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
-
+    /**
+     * The function retrieves lectures for a specific course based on the course slug and the authenticated
+     * user's ID.
+     * 
+     * @param string courseSlug The courseSlug parameter is a string that represents the unique identifier
+     * or slug of a course. It is used to retrieve the lectures associated with the specified course.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200, a success message of 'Lectures
+     * fetched successfully', and an array containing the lectures fetched.
+     */
     public function getCourseLectures(string $courseSlug): JsonResponse {
         $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
             ->select(['lectures.*'])
@@ -38,6 +42,18 @@ class LectureController extends ApiController {
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
+    /**
+     * The function retrieves a specific lecture from a course based on the course slug and lecture slug,
+     * and returns it as a JSON response.
+     * 
+     * @param string courseSlug The courseSlug parameter is a string that represents the unique identifier
+     * or slug of a course. It is used to retrieve the lecture associated with the specified course.
+     * @param string lectureSlug The `lectureSlug` parameter is a string that represents the unique
+     * identifier (slug) of a lecture. It is used to retrieve a specific lecture from a course.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200, a message of 'Lecture fetched
+     * successfully', and an array containing the fetched lecture.
+     */
     public function getCourseLecture(string $courseSlug, string $lectureSlug): JsonResponse {
         $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
             ->select(['lectures.*'])
@@ -46,7 +62,6 @@ class LectureController extends ApiController {
             ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->first();
         return $this->return(200, 'Lecture fetched successfully', ['lecture' => $lectures]);
     }
-
 
     /**
      * The function retrieves a lecture with a given slug and returns a JSON response with the lecture data
@@ -88,7 +103,6 @@ class LectureController extends ApiController {
         return $this->return(200, 'Lecture Added Successfully');
     }
 
-
     /**
      * The function updates a lecture with the validated data and returns a JSON response indicating the
      * success or failure of the update.
@@ -115,7 +129,16 @@ class LectureController extends ApiController {
         return $this->return(200, 'Lecture updated Successfully');
     }
 
-
+    /**
+     * The function takes a course ID and a section (either a numeric ID or a string title), and
+     * returns the corresponding section ID.
+     * 
+     * @param int courseId The courseId parameter is an integer that represents the ID of a course.
+     * @param string section The "section" parameter can be either a string or an integer. It
+     * represents the title or ID of a lecture section in a course.
+     * 
+     * @return int an integer value, which is the section ID.
+     */
     private function returnSectionIdFromSection(int $courseId, string|int $section): int {
         if (is_numeric($section)) {
             $lectureSection = LectureSection::whereCourseId($courseId)->where('id', $section)->first();
@@ -130,7 +153,19 @@ class LectureController extends ApiController {
         return $newLectureSection->id;
     }
 
-    public function deleteFile($lectureSlug, $lectureFileId): JsonResponse {
+    /**
+     * The function deletes a lecture file based on the lecture slug and file ID, and returns a success
+     * message.
+     * 
+     * @param string lectureSlug The lectureSlug parameter is a string that represents the unique
+     * identifier (slug) of a lecture.
+     * @param string lectureFileId The lectureFileId parameter is the unique identifier of the lecture
+     * file that you want to delete.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200 and a message of 'Lecture file
+     * deleted Successfully'.
+     */
+    public function deleteFile(string $lectureSlug, string $lectureFileId): JsonResponse {
         $lectureFile = LectureFile::leftJoin('lectures', 'lectures.id', 'lecture_files.lecture_id')
             ->leftJoin('courses', 'courses.id', 'lectures.course_id')
             ->select(['lecture_files.id'])
@@ -141,7 +176,7 @@ class LectureController extends ApiController {
             $lectureFile->delete();
         }
 
-        return $this->return(200, 'Lecture file deleted Successfully', ['' => $lectureFileId, '2' => $lectureFile]);
+        return $this->return(200, 'Lecture file deleted Successfully');
     }
 
     /**
@@ -163,8 +198,15 @@ class LectureController extends ApiController {
         return $this->return(200, 'Lecture deleted Successfully');
     }
 
-
-
+    /**
+     * The function restores a deleted lecture by its slug and returns a JSON response indicating the
+     * success or failure of the operation.
+     * 
+     * @param string slug The slug parameter is a string that represents the unique identifier for a
+     * lecture. It is used to find the lecture in the database and perform operations on it.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
     public function restore(string $slug): JsonResponse {
         $lecture = Lecture::select(['lectures.id'])->where("lectures.slug", $slug)->owned()->withTrashed()->first();
         // Checking if the lecture not exists

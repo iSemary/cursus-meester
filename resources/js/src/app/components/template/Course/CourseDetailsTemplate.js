@@ -69,6 +69,7 @@ export default function CourseDetailsTemplate({
                         <div className="row">
                             {/* <MediaPlayer /> */}
                             <CourseResourcesTemplate
+                                courseId={course.id}
                                 purchased={course?.actions?.purchased}
                                 resources={resources}
                             />
@@ -139,12 +140,14 @@ export default function CourseDetailsTemplate({
                                     <GoDeviceDesktop /> Access on mobile and TV
                                 </p>
                                 {course.has_certificate &&
-                                    course.has_certificate === 1 && (
-                                        <p>
-                                            <PiCertificateDuotone /> Certificate
-                                            after completing the course
-                                        </p>
-                                    )}
+                                course.has_certificate === 1 ? (
+                                    <p>
+                                        <PiCertificateDuotone /> Certificate
+                                        after completing the course
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
                     </div>

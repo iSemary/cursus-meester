@@ -111,7 +111,18 @@ class CourseController extends ApiController {
     }
 
 
-    public function courseCounters(int $courseId) {
+    /**
+     * The function "courseCounters" returns an array with the total number of files and exams associated
+     * with a given course ID.
+     * 
+     * @param int courseId The `courseId` parameter is an integer that represents the ID of a course.
+     * 
+     * @return array The function `courseCounters` returns an array with two keys: 'total_files' and
+     * 'total_exams'. The value of 'total_files' is the count of LectureFile records that are associated
+     * with a specific course, and the value of 'total_exams' is the count of Exam records that are
+     * associated with the same course.
+     */
+    public function courseCounters(int $courseId): array {
         return [
             'total_files' => LectureFile::join('lectures', 'lectures.id', 'lecture_files.lecture_id')
                 ->join('courses', 'courses.id', 'lectures.course_id')
@@ -122,6 +133,15 @@ class CourseController extends ApiController {
         ];
     }
 
+    /**
+     * The function retrieves a course and its associated instructor and lecture sections based on a given
+     * slug.
+     * 
+     * @param string slug The "slug" parameter is a string that represents a unique identifier for a
+     * course. It is used to retrieve a specific course from the database.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
     public function getForModify(string $slug): JsonResponse {
         $course = Course::where('slug', $slug)->with(['instructor' => function ($query) {
             $query->select(['id', 'full_name', 'username']);

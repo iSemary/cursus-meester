@@ -60,7 +60,7 @@ class Lecture extends Model {
 
                 $preparedResources = [];
                 foreach ($lectures as $i => $lecture) {
-                    $preparedResources[] = self::prepareLectureResources($lecture);
+                    $preparedResources = self::prepareLectureResources($lecture);
                     /** Lecture Files */
                     if ($lecture->additional_files && count($lecture->additional_files)) {
                         foreach ($lecture->additional_files as $additionalFile) {
@@ -78,11 +78,11 @@ class Lecture extends Model {
     public static function prepareLectureResources(Lecture $lecture) {
         $resources = [];
         /** Main Lecture */
-        $resources = self::formatResource($lecture, ResourceTypes::LECTURE_TYPE);
+        $resources[] = self::formatResource($lecture, ResourceTypes::LECTURE_TYPE);
         /** Lecture Exam */
         if ($lecture->has_exam) {
             $exam = Exam::select(['id', 'title', 'description'])->where("lecture_id", $lecture->id)->first();
-            $resources = self::formatResource($exam, ResourceTypes::EXAM_TYPE);
+            $resources[] = self::formatResource($exam, ResourceTypes::EXAM_TYPE);
         }
         return $resources;
     }
@@ -102,7 +102,6 @@ class Lecture extends Model {
             case ResourceTypes::FILE_TYPE:
                 $formattedResource['id'] = $resource['id'];
                 $formattedResource['title'] = $resource['original_name'] . '.' . $resource['extension'];
-                $formattedResource['path'] = $resource['path'];
                 $formattedResource['size'] = $resource['size'];
                 $formattedResource['type_id'] = ResourceTypes::FILE_TYPE;
                 $formattedResource['type'] = "file";

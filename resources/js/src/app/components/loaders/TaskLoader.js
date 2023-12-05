@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function TaskLoader() {
-    return <div className="task-loader"></div>;
+export default function TaskLoader({ className }) {
+    return <div className={"task-loader " + className}></div>;
 }

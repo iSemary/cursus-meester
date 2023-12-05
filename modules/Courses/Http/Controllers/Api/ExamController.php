@@ -38,8 +38,8 @@ class ExamController extends ApiController {
      * 
      * @return collection of ExamQuestion objects.
      */
-    private function getQuestions(int $examId) {
-        $questions = ExamQuestion::where("exam_id", $examId)->get();
+    private function getQuestions(int $examId, $fields = ['*']) {
+        $questions = ExamQuestion::select($fields)->where("exam_id", $examId)->get();
         return $questions;
     }
 
@@ -54,9 +54,9 @@ class ExamController extends ApiController {
      * or multiple choice, or it returns false if the exam question type is not single choice or multiple
      * choice.
      */
-    private function getOptions(ExamQuestion $examQuestion) {
+    private function getOptions(ExamQuestion $examQuestion, $fields = ['*']) {
         if ($examQuestion->type == QuestionTypes::SINGLE_CHOICE->value || $examQuestion->type == QuestionTypes::MULTIPLE_CHOICE->value) {
-            return ExamQuestionOption::where("exam_question_id", $examQuestion->id)->get();
+            return ExamQuestionOption::select($fields)->where("exam_question_id", $examQuestion->id)->get();
         }
         return false;
     }
@@ -75,6 +75,29 @@ class ExamController extends ApiController {
             $exam->questions = $questions;
             foreach ($questions as $question) {;
                 $choices = $this->getOptions($question);
+                if ($choices) {
+                    $question->options = $choices;
+                }
+            }
+        }
+        return $exam;
+    }
+
+
+    /**
+     * The function prepares an exam for a student by retrieving the questions and options for each
+     * question.
+     * 
+     * @param Exam exam An object of the Exam class, which represents an exam.
+     * 
+     * @return Exam object with the questions and options added to it.
+     */
+    public function prepareExamForStudent(Exam $exam) {
+        $questions = $this->getQuestions($exam->id, ['id', 'title', 'type']);
+        if ($questions) {
+            $exam->questions = $questions;
+            foreach ($questions as $question) {;
+                $choices = $this->getOptions($question, ['id', 'title']);
                 if ($choices) {
                     $question->options = $choices;
                 }

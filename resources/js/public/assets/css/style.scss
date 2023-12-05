@@ -767,3 +767,9 @@ $headerHeight: 80px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.primary-hover {
+    &:hover {
+        color: $primaryColor;
+    }
+}

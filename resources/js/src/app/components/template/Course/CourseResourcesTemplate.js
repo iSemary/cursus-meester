@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { GoVideo } from "react-icons/go";
 import { AiOutlineFile } from "react-icons/ai";
 import { PiExam } from "react-icons/pi";
@@ -6,11 +6,21 @@ import Accordion from "react-bootstrap/Accordion";
 import AccordionContext from "react-bootstrap/AccordionContext";
 import { useAccordionButton } from "react-bootstrap/AccordionButton";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import toastAlert from "../../utilities/Alert";
+import axiosConfig from "../../axiosConfig/axiosConfig";
+import ExamModal from "./ExamModal";
 
-export default function CourseResourcesTemplate({ purchased, resources }) {
+export default function CourseResourcesTemplate({
+    courseId,
+    purchased,
+    resources,
+}) {
     const LECTURE_TYPE = 1;
     const FILE_TYPE = 2;
     const EXAM_TYPE = 3;
+
+    const [examId, setExamId] = useState(null);
+    const [showExamModal, setShowExamModal] = useState(false);
 
     /** Toggle List Button */
     function ContextAwareToggle({ children, eventKey, callback }) {
@@ -47,9 +57,72 @@ export default function CourseResourcesTemplate({ purchased, resources }) {
     }
 
     /** Load Selected Resource */
-    const handleLoadResource = (id, typeId) => {};
+    const handleLoadResource = (id, typeId) => {
+        // In case user didn't purchase the course
+        if (!purchased) {
+            toastAlert(
+                "You have to purchase the course",
+                "info",
+                3000,
+                "bottom"
+            );
+            return false;
+        }
+        switch (typeId) {
+            case LECTURE_TYPE:
+                loadLecture(id);
+                break;
+            case FILE_TYPE:
+                downloadFile(id);
+                break;
+            case EXAM_TYPE:
+                openExamModal(id);
+                break;
+            default:
+                return false;
+        }
+    };
+
+    /** Load Lecture Media */
+    const loadLecture = (id) => {
+        axiosConfig
+            .get(`resources/course/${courseId}/lecture/${id}`)
+            .then((response) => {})
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    /** Prepare file to be downloaded */
+    const downloadFile = (id) => {
+        axiosConfig
+            .get(`resources/course/${courseId}/file/${id}`)
+            .then((response) => {
+                var link = document.createElement("a");
+                link.download = response.data.data.data.name;
+                link.href = response.data.data.data.path;
+                link.click();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    /** Open exam modal  */
+    const openExamModal = (id) => {
+        setExamId(id);
+        setShowExamModal(true);
+    };
+
     return (
         <>
+            <ExamModal
+                courseId={courseId}
+                examId={examId}
+                isShow={showExamModal}
+                setExamId={setExamId}
+                setShowExamModal={setShowExamModal}
+            />
             <div className="row m-auto">
                 <Accordion defaultActiveKey={0}>
                     {resources &&
@@ -83,7 +156,7 @@ export default function CourseResourcesTemplate({ purchased, resources }) {
                                                     (item, i) => (
                                                         <button
                                                             type="button"
-                                                            className="w-100 transparent-button"
+                                                            className="w-100 primary-hover transparent-button"
                                                             onClick={() =>
                                                                 handleLoadResource(
                                                                     item.id,
@@ -93,7 +166,7 @@ export default function CourseResourcesTemplate({ purchased, resources }) {
                                                             key={i}
                                                         >
                                                             <div className="row">
-                                                                <div className="col-6 align-flex-center">
+                                                                <div className="col-10 align-flex-center">
                                                                     {item.type_id ===
                                                                         LECTURE_TYPE && (
                                                                         <GoVideo className="mx-1" />
@@ -108,7 +181,7 @@ export default function CourseResourcesTemplate({ purchased, resources }) {
                                                                     )}
                                                                     {item.title}
                                                                 </div>
-                                                                <div className="col-6 lecture-length text-right text-muted">
+                                                                <div className="col-2 lecture-length text-right text-muted">
                                                                     <h6 className="text-14">
                                                                         {item.type_id ===
                                                                             LECTURE_TYPE &&
