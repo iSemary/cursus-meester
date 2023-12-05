@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
+use modules\Courses\Entities\Exam\Exam;
 use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\LectureFile;
 use modules\Courses\Entities\LectureSection;
 use modules\Courses\Entities\Rate;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
@@ -102,9 +104,22 @@ class CourseController extends ApiController {
         }
         $response = new stdClass();
         $response->course = $course;
-        $response->recourses = Lecture::getByCourseId($course->id);
+        $response->course->counters = $this->courseCounters($course->id);
+        $response->resources = Lecture::getByCourseId($course->id);
         $response->rates = Rate::getByCourseId($course->id);
         return $this->return(200, 'Course fetched Successfully', ['data' => $response]);
+    }
+
+
+    public function courseCounters(int $courseId) {
+        return [
+            'total_files' => LectureFile::join('lectures', 'lectures.id', 'lecture_files.lecture_id')
+                ->join('courses', 'courses.id', 'lectures.course_id')
+                ->where("courses.id", $courseId)->count(),
+            'total_exams' => Exam::join('lectures', 'lectures.id', 'exams.lecture_id')
+                ->join('courses', 'courses.id', 'lectures.course_id')
+                ->where("courses.id", $courseId)->count()
+        ];
     }
 
     public function getForModify(string $slug): JsonResponse {

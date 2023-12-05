@@ -6,12 +6,14 @@ import { BsBoxes, BsDownload } from "react-icons/bs";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { MdOndemandVideo, MdOutlineReviews } from "react-icons/md";
 import { GoDeviceDesktop } from "react-icons/go";
-import { PiExam, PiTarget, PiCertificateDuotone } from "react-icons/pi";
+import { PiExam, PiCertificateDuotone } from "react-icons/pi";
 import CourseReviews from "./CourseReviews";
 import MediaPlayer from "../../MediaPlayer/MediaPlayer";
+import PurchaseCourseButtons from "./PurchaseCourseButtons";
 
 export default function CourseDetailsTemplate({
     course,
+    resources,
     rates,
     containerClass,
 }) {
@@ -65,10 +67,10 @@ export default function CourseDetailsTemplate({
                             <BsBoxes /> Resources
                         </h3>
                         <div className="row">
-                            <MediaPlayer />
-
+                            {/* <MediaPlayer /> */}
                             <CourseResourcesTemplate
-                                resources={course.resources}
+                                purchased={course?.actions?.purchased}
+                                resources={resources}
                             />
                         </div>
                     </div>
@@ -102,17 +104,18 @@ export default function CourseDetailsTemplate({
                             />
                             <h5>Preview the course</h5>
                         </div>
-                        <h4 className="font-weight-bold mt-2">
-                            {course.currency + course.final_price}
-                        </h4>
-                        <div className="row m-auto">
-                            <button className="w-100 btn btn-primary">
-                                Add to cart
-                            </button>
-                            <button className="w-100 mt-2 btn btn-outline-primary">
-                                Purchase Now
-                            </button>
-                        </div>
+                        {/* Purchase Course Buttons */}
+                        {course && !course?.actions?.purchased && (
+                            <>
+                                <h4 className="font-weight-bold mt-2">
+                                    {course.currency + course.final_price}
+                                </h4>
+                                <PurchaseCourseButtons
+                                    id={course.id}
+                                    inCart={course?.actions?.cart}
+                                />
+                            </>
+                        )}
 
                         <div className="course-includes mt-3">
                             <h6 className="font-weight-bold">
@@ -124,19 +127,24 @@ export default function CourseDetailsTemplate({
                                     on-demand video
                                 </p>
                                 <p>
-                                    <PiExam /> {course.total_exams} Assignments
+                                    <PiExam /> {course?.counters?.total_exams}{" "}
+                                    Assignments
                                 </p>
                                 <p>
-                                    <BsDownload /> {course.total_files}{" "}
-                                    downloadable file resources
+                                    <BsDownload />{" "}
+                                    {course?.counters?.total_files} downloadable
+                                    file resources
                                 </p>
                                 <p>
                                     <GoDeviceDesktop /> Access on mobile and TV
                                 </p>
-                                <p>
-                                    <PiCertificateDuotone /> Certificate after
-                                    completing the course
-                                </p>
+                                {course.has_certificate &&
+                                    course.has_certificate === 1 && (
+                                        <p>
+                                            <PiCertificateDuotone /> Certificate
+                                            after completing the course
+                                        </p>
+                                    )}
                             </div>
                         </div>
                     </div>

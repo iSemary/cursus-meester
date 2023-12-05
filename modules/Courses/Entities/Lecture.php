@@ -58,9 +58,17 @@ class Lecture extends Model {
                 $resources[$key]['section'] = $section;
                 $lectures = self::where('course_id', $courseId)->where("lecture_section_id", $section->id)->get();
 
+                $preparedResources = [];
                 foreach ($lectures as $i => $lecture) {
-                    $resources[$key]['section']['resources'] = self::prepareLectureResources($lecture);
+                    $preparedResources[] = self::prepareLectureResources($lecture);
+                    /** Lecture Files */
+                    if ($lecture->additional_files && count($lecture->additional_files)) {
+                        foreach ($lecture->additional_files as $additionalFile) {
+                            $preparedResources[] = self::formatResource($additionalFile, ResourceTypes::FILE_TYPE);
+                        }
+                    }
                 }
+                $resources[$key]['section']['resources'] = $preparedResources;
             }
         }
 
@@ -69,17 +77,12 @@ class Lecture extends Model {
 
     public static function prepareLectureResources(Lecture $lecture) {
         $resources = [];
-        if ($lecture) {
-            $resources[] = self::formatResource($lecture, ResourceTypes::LECTURE_TYPE);
-        }
-        if ($lecture->additional_files && count($lecture->additional_files)) {
-            foreach ($lecture->additional_files as $additionalFile) {
-                $resources[] = self::formatResource($additionalFile, ResourceTypes::FILE_TYPE);
-            }
-        }
+        /** Main Lecture */
+        $resources = self::formatResource($lecture, ResourceTypes::LECTURE_TYPE);
+        /** Lecture Exam */
         if ($lecture->has_exam) {
             $exam = Exam::select(['id', 'title', 'description'])->where("lecture_id", $lecture->id)->first();
-            $resources[] = self::formatResource($exam, ResourceTypes::EXAM_TYPE);
+            $resources = self::formatResource($exam, ResourceTypes::EXAM_TYPE);
         }
         return $resources;
     }
