@@ -10,6 +10,7 @@ import { PiExam, PiCertificateDuotone } from "react-icons/pi";
 import CourseReviews from "./CourseReviews";
 import MediaPlayer from "../../MediaPlayer/MediaPlayer";
 import PurchaseCourseButtons from "./PurchaseCourseButtons";
+import CertificateClaim from "./CertificateClaim";
 
 export default function CourseDetailsTemplate({
     course,
@@ -117,7 +118,7 @@ export default function CourseDetailsTemplate({
                                 />
                             </>
                         )}
-
+                        {/* Course Includes Information */}
                         <div className="course-includes mt-3">
                             <h6 className="font-weight-bold">
                                 This course includes:
@@ -149,6 +150,23 @@ export default function CourseDetailsTemplate({
                                     ""
                                 )}
                             </div>
+                        </div>
+
+                        {/* Claim or Download certificate */}
+                        <div className="course-certificate">
+                            {course.has_certificate ? (
+                                <CertificateClaim
+                                    courseId={course.id}
+                                    canClaim={
+                                        course?.actions?.can_claim_certificate
+                                    }
+                                    canDownload={
+                                        course?.actions?.can_download_certificate
+                                    }
+                                />
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 </div>

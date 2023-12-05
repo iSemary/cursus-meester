@@ -72,14 +72,19 @@ class Course extends Model {
                 'wishlist' => false,
                 'purchased' => false,
                 'can_rate' => false,
+                'can_claim_certificate' => false,
+                'can_download_certificate' => false,
             ];
         }
-        $courseEnrolled = EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists();
+        $courseEnrolled = EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->first();
+        $userCertificate = UserCertificate::whereCourseId($this->attributes['id'])->whereUserId($user->id)->exists();
         return [
             'cart' => Cart::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
             'wishlist' => Wishlist::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
-            'purchased' => EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'purchased' => $courseEnrolled ? true : false,
             'can_rate' => $courseEnrolled && !Rate::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'can_claim_certificate' => $courseEnrolled && ($courseEnrolled->finished_at != null) && (!$userCertificate),
+            'can_download_certificate' => $userCertificate,
         ];
     }
 

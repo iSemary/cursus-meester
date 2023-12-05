@@ -66,7 +66,7 @@ class CertificateController extends ApiController {
             $this->sendCertificateViaMail($preparedData);
             // Fire Sending new notification
             $this->pushCertificateClaimedNotification($preparedData);
-            return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $preparedData['certificate_link']]);
+            return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $preparedData['certificate_link'], 'reference_code' => $preparedData['reference_code']]);
         } catch (\Exception $e) {
             return $this->return(409, 'Something went wrong!', debug: $e->getFile());
         }

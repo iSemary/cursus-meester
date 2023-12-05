@@ -773,3 +773,18 @@ $headerHeight: 80px;
         color: $primaryColor;
     }
 }
+
+.loader-icon {
+    margin-right: 7px;
+    top: 2px;
+    animation: spinner 1s infinite linear;
+}
+
+@keyframes spinner {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
