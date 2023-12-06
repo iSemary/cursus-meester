@@ -24,7 +24,7 @@ class FileHandler {
      * 
      * @return string the path of the saved image file.
      */
-    public static function image($file, string $path, bool $createThumbnail = false, int $width = 512, int $height = 512): string {
+    public static function image($file, string $path, bool $createThumbnail = false, int $width = 512, int $height = 512, string $disk = 'public'): string {
         // `Unique filename
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $image = Image::make($file);
@@ -35,9 +35,9 @@ class FileHandler {
             $constraint->upsize();
         });
         // Save the image to the specified path
-        Storage::disk('public')->put($path . '/' . $filename, $image->encode());
+        Storage::disk($disk)->put($path . '/' . $filename, $image->encode());
         // create a thumbnail
-        if ($createThumbnail) self::thumbnail($file, $filename, $path . '/thumbnails');
+        if ($createThumbnail) self::thumbnail($file, $filename, $path . '/thumbnails', 100, 100, $disk);
         // Return the path
         return $path . '/' . $filename;
     }
@@ -56,7 +56,7 @@ class FileHandler {
      * @param width The width of the thumbnail image in pixels. By default, it is set to 100 pixels.
      * @param height The height parameter specifies the desired height of the thumbnail image.
      */
-    public static function thumbnail($file, $filename, $thumbnailPath, $width = 100, $height = 100): void {
+    public static function thumbnail($file, $filename, $thumbnailPath, $width = 100, $height = 100, $disk = 'public'): void {
         $image = Image::make($file);
         // Resize the image to create the thumbnail
         $image->resize($width, $height, function ($constraint) {
@@ -64,11 +64,11 @@ class FileHandler {
             $constraint->upsize();
         });
         // Save the thumbnail to the specified path
-        Storage::disk('public')->put($thumbnailPath . '/' . $filename, $image->encode());
+        Storage::disk($disk)->put($thumbnailPath . '/' . $filename, $image->encode());
     }
 
 
-    public static function file($file, string $path, int $type = null): JsonResponse {
+    public static function file($file, string $path, int $type = null, string $disk = 'public'): JsonResponse {
         try {
             $extra = [];
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -79,10 +79,9 @@ class FileHandler {
 
             $fullPath = $path . '/' . $hashName . '.' . $extension;
 
+            Storage::disk($disk)->putFileAs($path, $file, $hashName . '.' . $extension);
 
-            Storage::disk('public')->putFileAs($path, $file, $hashName . '.' . $extension);
-
-            if (Storage::disk('public')->exists($fullPath)) {
+            if (Storage::disk($disk)->exists($fullPath)) {
                 // Switch between file types to append extra data into the response
                 switch ($type) {
                     case 2: // Video
@@ -109,14 +108,14 @@ class FileHandler {
     }
 
     /**
-     * The function deletes multiple files from the public disk in a Laravel application.
+     * The function deletes multiple files from the public / protected disk in a Laravel application.
      * 
      * @param array files An array of file paths to be deleted.
      */
-    public static function delete(array $files): void {
+    public static function delete(array $files, string $disk = 'public'): void {
         if ($files && is_array($files)) {
             foreach ($files as $key => $file) {
-                Storage::disk('public')->delete($file);
+                Storage::disk($disk)->delete($file);
             }
         }
     }

@@ -106,11 +106,18 @@ export default function ExamModal({
                                                                   placeholder="Write your answer..."
                                                                   type="text"
                                                                   name={`answers[${question.id}]`}
+                                                                  disabled={
+                                                                      exam.can_answer
+                                                                          ? ""
+                                                                          : "disabled"
+                                                                  }
                                                                   value={
-                                                                      examResults
-                                                                          ?.answers
-                                                                          ?.question
-                                                                          ?.id
+                                                                      exam.can_answer
+                                                                          ? examResults
+                                                                                ?.answers
+                                                                                ?.question
+                                                                                ?.id
+                                                                          : question.student_answer_text
                                                                   }
                                                                   onChange={(
                                                                       e
@@ -138,13 +145,37 @@ export default function ExamModal({
                                                                                   i
                                                                               }
                                                                           >
-                                                                              <label>
+                                                                              <label
+                                                                                  className={
+                                                                                      exam.can_answer
+                                                                                          ? ""
+                                                                                          : option.valid_answer
+                                                                                          ? "text-success font-weight-bold"
+                                                                                          : "text-danger"
+                                                                                  }
+                                                                              >
                                                                                   <input
                                                                                       name={`answers[${question.id}]`}
                                                                                       value={
                                                                                           option.id
                                                                                       }
+                                                                                      checked={
+                                                                                          exam.can_answer
+                                                                                              ? examResults
+                                                                                                    ?.answers
+                                                                                                    ?.question
+                                                                                                    ?.id
+                                                                                              : question.student_answer_id ===
+                                                                                                option.id
+                                                                                              ? "checked"
+                                                                                              : ""
+                                                                                      }
                                                                                       className="me-1"
+                                                                                      disabled={
+                                                                                          exam.can_answer
+                                                                                              ? ""
+                                                                                              : "disabled"
+                                                                                      }
                                                                                       type="radio"
                                                                                       onChange={(
                                                                                           e
@@ -177,14 +208,39 @@ export default function ExamModal({
                                                                                   i
                                                                               }
                                                                           >
-                                                                              <label>
+                                                                              <label
+                                                                                  className={
+                                                                                      exam.can_answer
+                                                                                          ? ""
+                                                                                          : option.valid_answer
+                                                                                          ? "text-success font-weight-bold"
+                                                                                          : "text-danger"
+                                                                                  }
+                                                                              >
                                                                                   <input
                                                                                       name={`answers[${question.id}]`}
                                                                                       value={
                                                                                           option.id
                                                                                       }
+                                                                                      checked={
+                                                                                          exam.can_answer
+                                                                                              ? examResults
+                                                                                                    ?.answers
+                                                                                                    ?.question
+                                                                                                    ?.id
+                                                                                              : question.student_answer_id.includes(
+                                                                                                    option.id
+                                                                                                )
+                                                                                              ? "checked"
+                                                                                              : ""
+                                                                                      }
                                                                                       className="me-1"
                                                                                       type="checkbox"
+                                                                                      disabled={
+                                                                                          exam.can_answer
+                                                                                              ? ""
+                                                                                              : "disabled"
+                                                                                      }
                                                                                       required
                                                                                   />
                                                                                   {
@@ -213,7 +269,11 @@ export default function ExamModal({
                             <Button variant="secondary" onClick={handleClose}>
                                 Close
                             </Button>
-                            <Button variant="primary" type="submit">
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                disabled={exam.can_answer ? "" : "disabled"}
+                            >
                                 Submit
                             </Button>
                         </Modal.Footer>

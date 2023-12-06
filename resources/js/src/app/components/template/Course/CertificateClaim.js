@@ -7,19 +7,19 @@ import { FaCloudDownloadAlt } from "react-icons/fa";
 import { GrCertificate } from "react-icons/gr";
 import axiosConfig from "../../axiosConfig/axiosConfig";
 import toastAlert from "../../utilities/Alert";
-import axios from "axios";
+import FileDownloader from "../../utilities/FileDownloader";
 
 export default function CertificateClaim({ courseId, canClaim, canDownload }) {
     const [loading, setLoading] = useState(false);
-
+    /** Generate and claim new certificate */
     const handleClaimCertificate = (e) => {
         setLoading(true);
         axiosConfig
             .post(`certificates/${courseId}/claim`)
             .then((response) => {
                 downloadFile(
-                    response.data.data.certificate_url,
-                    response.data.data.reference_code
+                    response.data.data.certificate_path,
+                    response.data.data.certificate_name
                 );
                 setLoading(false);
             })
@@ -29,14 +29,15 @@ export default function CertificateClaim({ courseId, canClaim, canDownload }) {
             });
     };
 
+    /** Download a claimed certificate */
     const handleDownloadCertificate = (e) => {
         setLoading(true);
         axiosConfig
             .get(`certificates/${courseId}/get`)
             .then((response) => {
                 downloadFile(
-                    response.data.data.certificate.certificate_link,
-                    response.data.data.certificate.reference_code
+                    response.data.data.certificate_path,
+                    response.data.data.certificate_name
                 );
                 setLoading(false);
             })
@@ -46,54 +47,9 @@ export default function CertificateClaim({ courseId, canClaim, canDownload }) {
             });
     };
 
+    /** Get file content as blob and download it */
     const downloadFile = (filePath, fileName) => {
-        axios({
-            method: "get",
-            url: filePath,
-            responseType: "blob",
-            headers: {
-                "Content-Type": "application/pdf",
-            },
-        })
-            .then((response) => {
-                // Create blob link to download
-                const url = window.URL.createObjectURL(
-                    new Blob([response.data])
-                );
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", fileName + ".pdf");
-                // Append to html link element page
-                document.body.appendChild(link);
-                // Start download
-                link.click();
-                // Clean up and remove the link
-                link.parentNode.removeChild(link);
-            })
-            .catch((error) => {
-                // Handle errors
-                console.error("Error downloading PDF:", error);
-            });
-        // fetch(filePath, {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/pdf",
-        //     },
-        // })
-        //     .then((response) => response.blob())
-        //     .then((blob) => {
-        //         // Create blob link to download
-        //         const url = window.URL.createObjectURL(new Blob([blob]));
-        //         const link = document.createElement("a");
-        //         link.href = url;
-        //         link.setAttribute("download", fileName + `.pdf`);
-        //         // Append to html link element page
-        //         document.body.appendChild(link);
-        //         // Start download
-        //         link.click();
-        //         // Clean up and remove the link
-        //         link.parentNode.removeChild(link);
-        //     });
+        FileDownloader(filePath, fileName);
     };
 
     return (

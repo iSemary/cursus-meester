@@ -4,7 +4,11 @@ namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use modules\Courses\Entities\Exam\Exam;
+use modules\Courses\Entities\Lecture;
 use modules\Courses\Entities\LectureFile;
 use modules\Courses\Interfaces\ResourceTypes;
 use modules\Payments\Entities\EnrolledCourse;
@@ -53,18 +57,37 @@ class ResourceController extends ApiController {
         return EnrolledCourse::where("user_id", $this->user->id)->where("course_id", $courseId)->exists();
     }
 
+    /**
+     * The function `checkFileExists` checks if a file exists based on the given resource ID and resource
+     * type ID, and returns true if it exists, false otherwise.
+     * 
+     * @param int resourceId The `resourceId` parameter is an integer that represents the ID of the
+     * resource. It is used to retrieve the specific resource from the database.
+     * @param int resourceTypeId The `resourceTypeId` parameter is an integer that represents the type of
+     * resource. It is used in a switch statement to determine the type of resource and perform different
+     * actions based on the type. The possible values for `resourceTypeId` are defined in the
+     * `ResourceTypes` class.
+     * 
+     * @return bool a boolean value. It returns true if the file exists and false if it does not.
+     */
     private function checkFileExists(int $resourceId, int $resourceTypeId): bool {
         $resource = [];
         switch ($resourceTypeId) {
             case ResourceTypes::LECTURE_TYPE:
-                $file = LectureFile::where("id", $resourceId)->first();
+                $lecture = Lecture::whereId($resourceId)->first();
+                $file = LectureFile::where("id", $lecture->lecture_media_id)->first();
                 if (!$file) return false;
-                $resource = $file->path;
+                $resource = [
+                    'path' => 'public/' . Lecture::$mediaPath . '/' . $file->hash_name . '.' . $file->extension,
+                ];
                 break;
             case ResourceTypes::FILE_TYPE:
                 $file = LectureFile::where("id", $resourceId)->first();
                 if (!$file) return false;
-                $resource = ['path' => $file->path, 'name' => $file->original_name];
+                $resource = [
+                    'path' => 'public/' . Lecture::$additionalFilePath . '/' . $file->hash_name . '.' . $file->extension,
+                    'name' => $file->original_name . '.' . $file->extension
+                ];
                 break;
             case ResourceTypes::EXAM_TYPE:
                 $exam = Exam::select(['id', 'title', 'description'])->where("exams.id", $resourceId)->first();
@@ -90,6 +113,16 @@ class ResourceController extends ApiController {
         $this->resource = $resource;
     }
 
+    /**
+     * The function "lecture" fetches a lecture resource based on the provided course ID and resource ID.
+     * 
+     * @param int courseId The courseId parameter is an integer that represents the ID of the course for
+     * which the lecture is being fetched.
+     * @param int resourceId The `` parameter is an integer that represents the unique
+     * identifier of the lecture resource that you want to fetch.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
     public function lecture(int $courseId, int $resourceId): JsonResponse {
         $eligibilityCheck = $this->checkEligibility($courseId, $resourceId, ResourceTypes::LECTURE_TYPE);
         if ($eligibilityCheck !== true) return $eligibilityCheck;
@@ -97,6 +130,15 @@ class ResourceController extends ApiController {
         return $this->return(200, "Lecture fetched successfully", ['data' => $this->resource]);
     }
 
+    /**
+     * The function fetches a file resource for a given course and resource ID, after checking eligibility.
+     * 
+     * @param int courseId An integer representing the ID of the course that the file belongs to.
+     * @param int resourceId The `` parameter is an integer that represents the unique
+     * identifier of a resource. It is used to identify a specific resource within a course.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
     public function file(int $courseId, int $resourceId): JsonResponse {
         $eligibilityCheck = $this->checkEligibility($courseId, $resourceId, ResourceTypes::FILE_TYPE);
         if ($eligibilityCheck !== true) return $eligibilityCheck;
@@ -120,5 +162,32 @@ class ResourceController extends ApiController {
         if ($eligibilityCheck !== true) return $eligibilityCheck;
 
         return $this->return(200, "Exam fetched successfully", ['data' => $this->resource]);
+    }
+
+
+    /**
+     * The function returns a file as a response with appropriate headers.
+     * 
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class. It represents the HTTP request made to the server and contains information such as the
+     * request method, headers, and input data.
+     * 
+     * @return blob file content as a response with appropriate headers.
+     */
+    public function returnBlob(Request $request) {
+        // Get the file content
+        $fileContent = Storage::get($request->file_path);
+        // Check if the file exists
+        if (!Storage::exists($request->file_path)) {
+            return $this->return(400, "File not exists");
+        }
+        $fileMimeType = File::mimeType(storage_path("app/{$request->file_path}"));
+        // Set the appropriate content type header
+        $headers = [
+            'Content-Type' => $fileMimeType,
+            'Content-Disposition' => 'attachment; filename="' . $request->file_name . '"',
+        ];
+        // Return the file content as a response with headers
+        return response($fileContent, 200, $headers);
     }
 }

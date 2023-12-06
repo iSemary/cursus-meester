@@ -66,7 +66,10 @@ class CertificateController extends ApiController {
             $this->sendCertificateViaMail($preparedData);
             // Fire Sending new notification
             $this->pushCertificateClaimedNotification($preparedData);
-            return $this->return(200, 'Certificate claimed successfully', ['certificate_url' => $preparedData['certificate_link'], 'reference_code' => $preparedData['reference_code']]);
+            return $this->return(200, 'Certificate claimed successfully', [
+                'certificate_path' => 'public/certificates/' . $fileName,
+                'certificate_name' => $preparedData['reference_code'] . ".pdf",
+            ]);
         } catch (\Exception $e) {
             return $this->return(409, 'Something went wrong!', debug: $e->getFile());
         }
@@ -86,7 +89,10 @@ class CertificateController extends ApiController {
         if (!$certificate) {
             return $this->return(409, 'There\'s no certificate found');
         }
-        return $this->return(200, 'Certificate fetched successfully', ['certificate' => $certificate]);
+        return $this->return(200, 'Certificate fetched successfully', [
+            'certificate_path' => 'public/certificates/' . $certificate->file_name,
+            'certificate_name' => $certificate->reference_code . ".pdf",
+        ]);
     }
 
     /**

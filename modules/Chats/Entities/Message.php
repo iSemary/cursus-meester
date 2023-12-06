@@ -38,7 +38,7 @@ class Message extends Model {
 
     public static function handleMessageFile($file): JsonResponse {
         $data = [];
-        $mediaFileResponse = FileHandler::file($file, self::$filePath);
+        $mediaFileResponse = FileHandler::file($file, self::$filePath, null, 'protected');
         return $mediaFileResponse;
     }
 }

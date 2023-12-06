@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function ()
         Route::post("{lectureSlug}", [ExamController::class, "createOrUpdateExamByLecture"]);
         Route::delete("{examId}/questions/{questionId}", [ExamController::class, "deleteQuestion"]);
     });
+    Route::get("exam-results", [ExamController::class, "getResults"]);
+    Route::get("exam-results/{id}", [ExamController::class, "getExamResult"]);
 });
 
 /** Student Routes */
@@ -68,6 +70,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get("resources/course/{courseId}/lecture/{fileId}", [ResourceController::class, "lecture"]);
     Route::get("resources/course/{courseId}/file/{fileId}", [ResourceController::class, "file"]);
     Route::get("resources/course/{courseId}/exam/{fileId}", [ResourceController::class, "exam"]);
+    Route::get("resources/blob", [ResourceController::class, "returnBlob"]);
 
     // Get enrolled courses
     Route::get("my-courses", [ListController::class, "getEnrolledCourses"]);
@@ -77,6 +80,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post("cart/{courseId}/move-wishlist", [CartController::class, "moveToWishlist"]);
     // Submit Rate Route
     Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
+    // Mark lecture video as watched
+    Route::get("lectures/view/{id}", [LectureController::class, "markViewed"]);
 });
 
 /**  Public Routes */

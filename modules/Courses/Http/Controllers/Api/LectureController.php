@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Entities\LectureFile;
 use modules\Courses\Entities\LectureSection;
+use modules\Courses\Entities\LectureView;
 use modules\Courses\Http\Requests\Lecture\CreateLectureRequest;
 use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
 
@@ -78,6 +79,18 @@ class LectureController extends ApiController {
             return $this->return(400, 'Lecture not exists');
         }
         return $this->return(200, 'Lecture fetched Successfully', ['lecture' => $lecture]);
+    }
+
+
+    public function markViewed(int $lectureId): JsonResponse {
+        $user = auth()->guard('api')->user();
+        LectureView::create([
+            'lecture_id' => $lectureId,
+            'user_id' => $user->id,
+        ]);
+        // TODO check if this lecture is the last one of the course 
+        // then mark the student as finished the whole course to be able to claim certificate
+        return $this->return(200, 'Lecture marked as viewed');
     }
 
     /**

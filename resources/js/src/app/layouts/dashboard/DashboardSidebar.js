@@ -46,14 +46,9 @@ const DashboardSidebar = () => {
             icon: "pi pi-shopping-cart",
             items: [
                 {
-                    label: "All Exams",
-                    icon: "pi pi-list",
-                    url: "/dashboard/courses/all",
-                },
-                {
                     label: "Exam Results",
                     icon: "pi pi-list",
-                    url: "/dashboard/courses/all",
+                    url: "/dashboard/exam-results",
                 },
             ],
         },

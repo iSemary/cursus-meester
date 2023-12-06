@@ -9,6 +9,7 @@ import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import toastAlert from "../../utilities/Alert";
 import axiosConfig from "../../axiosConfig/axiosConfig";
 import ExamModal from "./ExamModal";
+import FileDownloader from "../../utilities/FileDownloader";
 
 export default function CourseResourcesTemplate({
     courseId,
@@ -98,10 +99,10 @@ export default function CourseResourcesTemplate({
         axiosConfig
             .get(`resources/course/${courseId}/file/${id}`)
             .then((response) => {
-                var link = document.createElement("a");
-                link.download = response.data.data.data.name;
-                link.href = response.data.data.data.path;
-                link.click();
+                FileDownloader(
+                    response.data.data.data.path,
+                    response.data.data.data.name
+                );
             })
             .catch((error) => {
                 console.error(error);
