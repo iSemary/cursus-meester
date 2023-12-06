@@ -84,6 +84,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get("lectures/view/{id}", [LectureController::class, "markViewed"]);
 });
 
+Route::get("resources/media/{fileName}/{token}", [ResourceController::class, "returnMedia"]);
+
 /**  Public Routes */
 
 /**

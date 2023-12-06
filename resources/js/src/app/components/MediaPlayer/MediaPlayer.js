@@ -1,15 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Player } from "video-react";
 import "node_modules/video-react/dist/video-react.css";
+import { Token } from "../utilities/Authentication/Token";
 
-export default function MediaPlayer() {
-    const playerProps = {
-        source: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-        options: undefined,
-    };
+export default function MediaPlayer({ media }) {
+    const [videoUrl, setVideoUrl] = useState(null);
+    const [key, setKey] = useState(0);
+
+    useEffect(() => {
+        if (media) {
+            console.log("FIRED media");
+            const url =
+                process.env.NEXT_PUBLIC_API_URL +
+                "/resources/media/" +
+                media +
+                "/" +
+                Token.get();
+            setVideoUrl(url);
+            setKey((prevKey) => prevKey + 1);
+        }
+    }, [media]);
+
     return (
-        <Player>
-            <source src={playerProps.source} />
-        </Player>
+        <div key={key}>
+            {videoUrl && (
+                <Player key={key}>
+                    <source key={key} src={videoUrl} />
+                </Player>
+            )}
+        </div>
     );
 }

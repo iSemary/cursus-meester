@@ -15,6 +15,7 @@ export default function CourseResourcesTemplate({
     courseId,
     purchased,
     resources,
+    setMedia
 }) {
     const LECTURE_TYPE = 1;
     const FILE_TYPE = 2;
@@ -88,7 +89,9 @@ export default function CourseResourcesTemplate({
     const loadLecture = (id) => {
         axiosConfig
             .get(`resources/course/${courseId}/lecture/${id}`)
-            .then((response) => {})
+            .then((response) => {
+                setMedia(response.data.data.data.path);
+            })
             .catch((error) => {
                 console.error(error);
             });

@@ -78,14 +78,14 @@ class ResourceController extends ApiController {
                 $file = LectureFile::where("id", $lecture->lecture_media_id)->first();
                 if (!$file) return false;
                 $resource = [
-                    'path' => 'public/' . Lecture::$mediaPath . '/' . $file->hash_name . '.' . $file->extension,
+                    'path' => $file->hash_name . '.' . $file->extension,
                 ];
                 break;
             case ResourceTypes::FILE_TYPE:
                 $file = LectureFile::where("id", $resourceId)->first();
                 if (!$file) return false;
                 $resource = [
-                    'path' => 'public/' . Lecture::$additionalFilePath . '/' . $file->hash_name . '.' . $file->extension,
+                    'path' => 'protected/' . Lecture::$additionalFilePath . '/' . $file->hash_name . '.' . $file->extension,
                     'name' => $file->original_name . '.' . $file->extension
                 ];
                 break;
@@ -175,6 +175,8 @@ class ResourceController extends ApiController {
      * @return blob file content as a response with appropriate headers.
      */
     public function returnBlob(Request $request) {
+        // TODO check enrolled 
+
         // Get the file content
         $fileContent = Storage::get($request->file_path);
         // Check if the file exists
@@ -189,5 +191,16 @@ class ResourceController extends ApiController {
         ];
         // Return the file content as a response with headers
         return response($fileContent, 200, $headers);
+    }
+
+    public function returnMedia($fileName) {
+        // Check auth token
+
+        // check enrolled 
+
+        // check file exists
+
+        $path = storage_path("app/protected/lectures/{$fileName}");
+        return response()->file($path);
     }
 }

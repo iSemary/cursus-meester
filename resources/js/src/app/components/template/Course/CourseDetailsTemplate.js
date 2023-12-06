@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StarsRate from "../../utilities/StarsRate";
 import Link from "next/link";
 import CourseResourcesTemplate from "./CourseResourcesTemplate";
@@ -18,6 +18,8 @@ export default function CourseDetailsTemplate({
     rates,
     containerClass,
 }) {
+    const [media, setMedia] = useState(null);
+
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
@@ -62,17 +64,20 @@ export default function CourseDetailsTemplate({
                         />
                     </div>
                     <hr className="home-hr" />
+                    {/* Lecture Preview */}
+                    <MediaPlayer media={media} />
+                    <hr className="home-hr" />
                     {/* Course Resources */}
                     <div className="resources">
                         <h3 className="font-weight-bold">
                             <BsBoxes /> Resources
                         </h3>
                         <div className="row">
-                            {/* <MediaPlayer /> */}
                             <CourseResourcesTemplate
                                 courseId={course.id}
                                 purchased={course?.actions?.purchased}
                                 resources={resources}
+                                setMedia={setMedia}
                             />
                         </div>
                     </div>
@@ -161,7 +166,8 @@ export default function CourseDetailsTemplate({
                                         course?.actions?.can_claim_certificate
                                     }
                                     canDownload={
-                                        course?.actions?.can_download_certificate
+                                        course?.actions
+                                            ?.can_download_certificate
                                     }
                                 />
                             ) : (

@@ -66,7 +66,7 @@ class LectureObserver {
              */
             foreach ($uploadedAdditionalFiles as $key => $uploadedAdditionalFile) {
                 // store new uploaded file video
-                $mediaFileResponse = FileHandler::file($uploadedAdditionalFile['file'], Lecture::$additionalFilePath, 'protected');
+                $mediaFileResponse = FileHandler::file($uploadedAdditionalFile['file'], Lecture::$additionalFilePath, null, 'protected');
                 // create lecture file row
                 if ($mediaFileResponse->getStatusCode() == 200) {
                     $mediaFileData = $mediaFileResponse->getData();
