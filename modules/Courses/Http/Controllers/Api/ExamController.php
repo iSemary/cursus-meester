@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use modules\Courses\Entities\Exam\Exam;
 use modules\Courses\Entities\Exam\ExamQuestion;
 use modules\Courses\Entities\Exam\ExamQuestionOption;
+use modules\Courses\Entities\Exam\ExamResult;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Http\Requests\Exam\CreateOrUpdateExamRequest;
 use stdClass;
@@ -38,8 +39,21 @@ class ExamController extends ApiController {
      * 
      * @return collection of ExamQuestion objects.
      */
-    private function getQuestions(int $examId) {
-        $questions = ExamQuestion::where("exam_id", $examId)->get();
+    private function getQuestions(int $examId, $fields = ['*'], $answerOfStudentId = null) {
+        $questions = ExamQuestion::select($fields)->where("exam_id", $examId)->get();
+        if ($answerOfStudentId) {
+            foreach ($questions as $question) {
+                $examResult = ExamResult::whereExamQuestionId($question->id)->whereUserId($answerOfStudentId);
+                if ($examResult->exists()) {
+                    if ($question->type == QuestionTypes::MULTIPLE_CHOICE->value) {
+                        $question->student_answer_id = $examResult->get()->pluck("answer_id")->toArray();
+                    } else {
+                        $question->student_answer_text = $examResult->first()->answer_text;
+                        $question->student_answer_id = $examResult->first()->answer_id;
+                    }
+                }
+            }
+        }
         return $questions;
     }
 
@@ -54,9 +68,9 @@ class ExamController extends ApiController {
      * or multiple choice, or it returns false if the exam question type is not single choice or multiple
      * choice.
      */
-    private function getOptions(ExamQuestion $examQuestion) {
+    private function getOptions(ExamQuestion $examQuestion, $fields = ['*']) {
         if ($examQuestion->type == QuestionTypes::SINGLE_CHOICE->value || $examQuestion->type == QuestionTypes::MULTIPLE_CHOICE->value) {
-            return ExamQuestionOption::where("exam_question_id", $examQuestion->id)->get();
+            return ExamQuestionOption::select($fields)->where("exam_question_id", $examQuestion->id)->get();
         }
         return false;
     }
@@ -75,6 +89,37 @@ class ExamController extends ApiController {
             $exam->questions = $questions;
             foreach ($questions as $question) {;
                 $choices = $this->getOptions($question);
+                if ($choices) {
+                    $question->options = $choices;
+                }
+            }
+        }
+        return $exam;
+    }
+
+
+    /**
+     * The function prepares an exam for a student by retrieving the questions and options for each
+     * question.
+     * 
+     * @param Exam exam An object of the Exam class, which represents an exam.
+     * 
+     * @return Exam object with the questions and options added to it.
+     */
+    public function prepareExamForStudent(Exam $exam) {
+        $user = auth()->guard("api")->user();
+        $examResults = ExamResult::whereExamId($exam->id)->whereUserId($user->id);
+        $optionFields = ['id', 'title'];
+        $exam->can_answer = true;
+        if ($examResults->exists()) {
+            $exam->can_answer = false;
+            $optionFields = ['id', 'title', 'valid_answer'];
+        }
+        $questions = $this->getQuestions($exam->id, ['id', 'title', 'type'], ($exam->can_answer ? null : $user->id));
+        if ($questions) {
+            $exam->questions = $questions;
+            foreach ($questions as $question) {
+                $choices = $this->getOptions($question, $optionFields);
                 if ($choices) {
                     $question->options = $choices;
                 }
@@ -208,5 +253,20 @@ class ExamController extends ApiController {
             return $this->return(409, "Exam not exists");
         }
         return $this->return(200, "Question deleted successfully");
+    }
+
+    public function getResults(): JsonResponse {
+        $examResults = ExamResult::leftJoin('exams', 'exams.id', 'exam_results.exam_id')->leftJoin('lectures', 'lectures.id', 'exams.lecture_id')
+            ->leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->where("courses.user_id", auth()->guard('api')->id())
+            ->select([
+                'exam_results.id'
+            ])
+            ->groupBy("exam_results.id", "exam_results.exam_id", "exam_results.user_id")
+            ->paginate(5);
+        return $this->return(200, "Exam results fetched successfully", ['results' => $examResults]);
+    }
+    public function getExamResult($examResult): JsonResponse {
+        return $this->return(200, "Exam result fetched successfully");
     }
 }

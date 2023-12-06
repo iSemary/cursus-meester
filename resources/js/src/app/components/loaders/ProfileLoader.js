@@ -1,7 +1,7 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
 
-export const ProfileLoader = ({className}) => {
+export const ProfileLoader = ({ className }) => {
     return (
         <div className={className}>
             <ContentLoader
@@ -19,7 +19,7 @@ export const ProfileLoader = ({className}) => {
                 <circle cx="20" cy="20" r="20" />
                 <rect x="48" y="98" rx="24" ry="24" width="423" height="230" />
             </ContentLoader>
-            <br/>
+            <br />
             <ContentLoader
                 width={"1000"}
                 height={540}

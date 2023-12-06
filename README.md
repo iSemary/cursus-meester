@@ -14,8 +14,32 @@ E-learning platform that brings together passionate instructors and curious lear
 
 ## Features
 
--   [x] List 0
--   [x] List 1
+- [x] Student Interface
+ - [x] Instructor Dashboard Interface
+ - [x] User Module
+	 - [x] Register and Login
+	 - [x] Verify Phone Number
+	 - [x] Verify Email Address
+	 - [x] Forget, Reset, and Change Password
+ - [x] Course Module
+ - [x] Lectures Module
+	 - [x] Resources Up-loader
+ - [x] Certificates
+	 - [x] Fully Customized Configuration
+   - [x] New Claim alert on email and notifications
+ - [x] Exam Module
+	 - [x] Fully Customized
+	 - [x] Question Answers
+		 - [x] Open Answer
+		 - [x] Single Choice
+		 - [x] Multiple Choices
+	 - [x] Exam Results
+ - [x] Translation Module
+	 - [x] CURD in database
+	 - [x] Generating translation JSON files
+ - [] Payment Module
+ - [] Built-in Real-time Chat System
+ - [] Real-time Notifications System
 
 ## Get Started
 

@@ -33,11 +33,11 @@ class LectureObserver {
             if ($lecture->lecture_media_id) {
                 $lectureFile = LectureFile::find($lecture->lecture_media_id);
                 if ($lectureFile) {
-                    FileHandler::delete([Lecture::$mediaPath . $lectureFile->hash_name]);
+                    FileHandler::delete([Lecture::$mediaPath . $lectureFile->hash_name], 'protected');
                 }
             }
             // store uploaded media video
-            $mediaFileResponse = FileHandler::file($uploadedMediaFile['file'], Lecture::$mediaPath, 2);
+            $mediaFileResponse = FileHandler::file($uploadedMediaFile['file'], Lecture::$mediaPath, 2, 'protected');
             // create lecture file row
             if ($mediaFileResponse->getStatusCode() == 200) {
                 $mediaFileData = $mediaFileResponse->getData();
@@ -66,7 +66,7 @@ class LectureObserver {
              */
             foreach ($uploadedAdditionalFiles as $key => $uploadedAdditionalFile) {
                 // store new uploaded file video
-                $mediaFileResponse = FileHandler::file($uploadedAdditionalFile['file'], Lecture::$additionalFilePath);
+                $mediaFileResponse = FileHandler::file($uploadedAdditionalFile['file'], Lecture::$additionalFilePath, null, 'protected');
                 // create lecture file row
                 if ($mediaFileResponse->getStatusCode() == 200) {
                     $mediaFileData = $mediaFileResponse->getData();

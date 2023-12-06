@@ -10,12 +10,15 @@ use App\Models\User;
 use App\Models\Utilities\Currency;
 use App\Models\Utilities\Language;
 use App\Services\Uploader\FileHandler;
+use Carbon\Carbon;
 use modules\Categories\Entities\Category;
 use modules\Organizations\Entities\Organization;
+use modules\Payments\Entities\Cart;
 use modules\Payments\Entities\EnrolledCourse;
 
 class Course extends Model {
     use HasFactory, SoftDeletes;
+    const SHORT_COURSES_DURATION = 7 * 60 * 60; // 7 Hours in seconds
 
     protected $filePath = "courses/thumbnails";
 
@@ -57,7 +60,37 @@ class Course extends Model {
         'total_lectures',
         'final_price',
         'rates',
+        'actions',
+        'updated_at_diff',
     ];
+
+    public function getActionsAttribute() {
+        $user = auth()->guard('api')->user();
+        if (!$user) {
+            return [
+                'cart' => false,
+                'wishlist' => false,
+                'purchased' => false,
+                'can_rate' => false,
+                'can_claim_certificate' => false,
+                'can_download_certificate' => false,
+            ];
+        }
+        $courseEnrolled = EnrolledCourse::whereUserId($user->id)->whereCourseId($this->attributes['id'])->first();
+        $userCertificate = UserCertificate::whereCourseId($this->attributes['id'])->whereUserId($user->id)->exists();
+        return [
+            'cart' => Cart::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'wishlist' => Wishlist::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'purchased' => $courseEnrolled ? true : false,
+            'can_rate' => $courseEnrolled && !Rate::whereUserId($user->id)->whereCourseId($this->attributes['id'])->exists(),
+            'can_claim_certificate' => $courseEnrolled && ($courseEnrolled->finished_at != null) && (!$userCertificate),
+            'can_download_certificate' => $userCertificate,
+        ];
+    }
+
+    public function getUpdatedAtDiffAttribute() {
+        return (isset($this->attributes['updated_at']) && $this->attributes['updated_at'] ? Carbon::parse($this->attributes['updated_at'])->diffForHumans()  : "");
+    }
 
     public function lectures() {
         return $this->hasMany(Lecture::class);
@@ -173,5 +206,22 @@ class Course extends Model {
             ->where("lecture_files.main_file", 1)
             ->where("lectures.course_id", $this->id)
             ->sum("lecture_files.duration");
+    }
+
+    public static function scopeTopRated($query) {
+        return $query->join('rates', 'rates.course_id', 'courses.id')
+            ->selectRaw('MAX(rates.rate) AS max_rate')
+            ->groupBy('courses.id')
+            ->orderBy("max_rate", "DESC");
+    }
+
+    public static function scopeShorts($query) {
+        return $query->join('lectures', 'lectures.course_id', 'lectures.id')
+            ->join('lecture_files', 'lecture_files.lecture_id', 'lectures.id')
+            ->selectRaw('SUM(lecture_files.duration) AS total_lectures_duration')
+            ->where("lecture_files.main_file", 1)
+            ->havingRaw("SUM(lecture_files.duration) < " . self::SHORT_COURSES_DURATION)
+            ->groupBy('lectures.id', 'courses.id')
+            ->orderBy("total_lectures_duration", "DESC");
     }
 }

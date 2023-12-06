@@ -294,11 +294,12 @@
   .lecture-viewer .preview-image img {
     width: 100%; }
   .lecture-viewer .preview-image h5 {
-    bottom: 0;
-    position: absolute;
+    text-align: center;
+    background-color: #e5e5e5;
+    font-size: 20px;
+    color: #343a40;
     right: 50%;
-    width: 100%;
-    transform: translateX(75%); }
+    width: 100%; }
 
 .resource {
   border: 1px solid #21252961;
@@ -467,16 +468,24 @@
 .text-primary {
   color: #556cd6 !important; }
 
-.course-actions button:first-child {
-  padding-left: 0; }
-.course-actions .remove-wishlist-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 0; }
-.course-actions .move-to-cart-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 30px; }
+.course-actions {
+  height: 25px; }
+  .course-actions button:first-child {
+    padding-left: 0; }
+  .course-actions .remove-wishlist-btn,
+  .course-actions .add-wishlist-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 0; }
+  .course-actions .move-to-cart-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 30px; }
+  .course-actions .add-cart-btn,
+  .course-actions .remove-cart-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 0; }
 
 .social-links-container {
   align-items: center;
@@ -528,5 +537,43 @@
     background-color: #556cd61f; }
   .notification-item .notification-body {
     font-size: 14px; }
+
+.star-button {
+  background-color: transparent;
+  border: transparent;
+  font-size: 25px;
+  color: #ffc107; }
+
+.disable-content {
+  opacity: 0.5; }
+  .disable-content * {
+    user-select: none;
+    pointer-events: none; }
+
+.transparent-button {
+  background-color: transparent;
+  border: transparent; }
+
+.border-radius-bottom-0 {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0; }
+
+.border-radius-top-0 {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
+
+.primary-hover:hover {
+  color: #556cd6; }
+
+.loader-icon {
+  margin-right: 7px;
+  top: 2px;
+  animation: spinner 1s infinite linear; }
+
+@keyframes spinner {
+  from {
+    transform: scale(1) rotate(0deg); }
+  to {
+    transform: scale(1) rotate(360deg); } }
 
 /*# sourceMappingURL=style.css.map */

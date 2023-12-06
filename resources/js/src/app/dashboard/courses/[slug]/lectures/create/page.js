@@ -5,13 +5,15 @@ import DashboardTitle from "../../../../../layouts/dashboard/DashboardTitle";
 import FormEditor from "../components/FormEditor";
 import axiosConfig from "../../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../../components/utilities/Alert";
+
 export default function createLecture({ params }) {
     const initialLecture = {
         course_id: "",
-        title: "Lecture 1",
-        slug: "lecture-1",
-        description: "lecture descr",
+        title: "",
+        slug: "",
+        description: "",
         order_number: "",
+        lecture_section_id: "",
     };
 
     const [course, setCourse] = useState({});
@@ -25,7 +27,7 @@ export default function createLecture({ params }) {
     useEffect(() => {
         // Get Course Details
         axiosConfig
-            .get(`courses/${params.slug}`)
+            .get(`courses/modify/${params.slug}`)
             .then((response) => {
                 setLecture({
                     ...lecture,
@@ -34,8 +36,8 @@ export default function createLecture({ params }) {
                 });
                 setCourse(response.data.data.course);
             })
-            .catch(({ response }) => {
-                toastAlert(response.data.message, "error");
+            .catch((error) => {
+                console.log(error);
             });
     }, [params.slug]);
 
@@ -80,19 +82,21 @@ export default function createLecture({ params }) {
                     { label: "Create" },
                 ]}
             />
-            <FormEditor
-                course={course}
-                lecture={lecture}
-                lectureVideo={lectureVideo}
-                setLectureVideo={setLectureVideo}
-                lectureFiles={lectureFiles}
-                setLectureFiles={setLectureFiles}
-                setLecture={setLecture}
-                formLoading={formLoading}
-                setFormLoading={setFormLoading}
-                handleSubmitLecture={handleSubmitLecture}
-                btnLabel="Create"
-            />
+            {course && (
+                <FormEditor
+                    course={course}
+                    lecture={lecture}
+                    lectureVideo={lectureVideo}
+                    setLectureVideo={setLectureVideo}
+                    lectureFiles={lectureFiles}
+                    setLectureFiles={setLectureFiles}
+                    setLecture={setLecture}
+                    formLoading={formLoading}
+                    setFormLoading={setFormLoading}
+                    handleSubmitLecture={handleSubmitLecture}
+                    btnLabel="Create"
+                />
+            )}
         </DashboardTemplate>
     );
 }

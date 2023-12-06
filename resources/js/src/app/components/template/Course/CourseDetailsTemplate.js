@@ -1,53 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import StarsRate from "../../utilities/StarsRate";
 import Link from "next/link";
 import CourseResourcesTemplate from "./CourseResourcesTemplate";
 import { BsBoxes, BsDownload } from "react-icons/bs";
 import { FaChalkboardTeacher } from "react-icons/fa";
-import { MdOndemandVideo } from "react-icons/md";
+import { MdOndemandVideo, MdOutlineReviews } from "react-icons/md";
 import { GoDeviceDesktop } from "react-icons/go";
-import { PiExam, PiTarget, PiCertificateDuotone } from "react-icons/pi";
-import Image from "next/image";
+import { PiExam, PiCertificateDuotone } from "react-icons/pi";
+import CourseReviews from "./CourseReviews";
+import MediaPlayer from "../../MediaPlayer/MediaPlayer";
+import PurchaseCourseButtons from "./PurchaseCourseButtons";
+import CertificateClaim from "./CertificateClaim";
 
-export default function CourseDetailsTemplate({ course, containerClass }) {
+export default function CourseDetailsTemplate({
+    course,
+    resources,
+    rates,
+    containerClass,
+}) {
+    const [media, setMedia] = useState(null);
+
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
                 <div className="col-8">
-                    <h1 className="font-weight-bold">{course.name}</h1>
+                    <h1 className="font-weight-bold">{course.title}</h1>
                     <p>{course.description}</p>
 
-                    <StarsRate rate={course.rate} />
-
+                    {course.rates && (
+                        <StarsRate
+                            rate={course.rates}
+                            totalStudents={course.total_students}
+                        />
+                    )}
+                    <br />
                     <h6>
-                        Instructor{" "}
+                        Instructor:{" "}
                         <b>
                             <Link
-                                href={`/instructors/${course.instructor.username}`}
+                                className="text-primary"
+                                href={`/instructors/${course?.instructor?.username}`}
                             >
-                                {course.instructor.name}
+                                {course?.instructor?.full_name}
                             </Link>
                         </b>
                     </h6>
 
-                    <h6>Last updated {course.last_updated}</h6>
+                    <h6>Last updated: {course.updated_at_diff}</h6>
                 </div>
             </div>
             <hr className="home-hr" />
             <div className="row">
                 <div className="col-8">
-                    {/* Requirements */}
-                    <div className="requirements">
-                        <h3 className="font-weight-bold">
-                            <PiTarget /> Requirements
-                        </h3>
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: course.requirements,
-                            }}
-                        />
-                    </div>
-                    <hr className="home-hr" />
                     {/* Requirements */}
                     <div className="content">
                         <h3 className="font-weight-bold">
@@ -60,6 +64,9 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                         />
                     </div>
                     <hr className="home-hr" />
+                    {/* Lecture Preview */}
+                    <MediaPlayer media={media} />
+                    <hr className="home-hr" />
                     {/* Course Resources */}
                     <div className="resources">
                         <h3 className="font-weight-bold">
@@ -67,59 +74,105 @@ export default function CourseDetailsTemplate({ course, containerClass }) {
                         </h3>
                         <div className="row">
                             <CourseResourcesTemplate
-                                resources={course.resources}
+                                courseId={course.id}
+                                purchased={course?.actions?.purchased}
+                                resources={resources}
+                                setMedia={setMedia}
                             />
                         </div>
+                    </div>
+                    <hr className="home-hr" />
+                    {/* Rate and reviews */}
+                    <div className="reviews">
+                        <h3 className="font-weight-bold">
+                            <MdOutlineReviews /> Rate & Reviews
+                        </h3>
+                        {rates && rates.length ? (
+                            <CourseReviews
+                                rates={rates}
+                                courseSlug={course?.slug}
+                                canRate={course?.actions?.can_rate}
+                            />
+                        ) : (
+                            <p className="text-center text-muted">
+                                There's no review on this course yet.
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="col-4">
                     <div className="lecture-viewer">
                         <div className="preview-image">
-                            <Image
-                                src="https://placehold.co/250x150.png"
+                            <img
+                                src={course.thumbnail}
                                 alt="course preview"
                                 width={250}
                                 height={150}
                             />
                             <h5>Preview the course</h5>
                         </div>
-                        <h4 className="font-weight-bold mt-2">
-                            {course.currency + course.total_price}
-                        </h4>
-                        <div className="row m-auto">
-                            <button className="w-100 btn btn-primary">
-                                Add to cart
-                            </button>
-                            <button className="w-100 mt-2 btn btn-outline-primary">
-                                Purchase Now
-                            </button>
-                        </div>
-
+                        {/* Purchase Course Buttons */}
+                        {course && !course?.actions?.purchased && (
+                            <>
+                                <h4 className="font-weight-bold mt-2">
+                                    {course.currency + course.final_price}
+                                </h4>
+                                <PurchaseCourseButtons
+                                    id={course.id}
+                                    inCart={course?.actions?.cart}
+                                />
+                            </>
+                        )}
+                        {/* Course Includes Information */}
                         <div className="course-includes mt-3">
                             <h6 className="font-weight-bold">
                                 This course includes:
                             </h6>
                             <div className="includes">
                                 <p>
-                                    <MdOndemandVideo /> {course.total_hours}{" "}
+                                    <MdOndemandVideo /> {course.total_lectures}{" "}
                                     on-demand video
                                 </p>
                                 <p>
-                                    <PiExam /> {course.total_assignments}{" "}
+                                    <PiExam /> {course?.counters?.total_exams}{" "}
                                     Assignments
                                 </p>
                                 <p>
-                                    <BsDownload /> {course.total_files}{" "}
-                                    downloadable file resources
+                                    <BsDownload />{" "}
+                                    {course?.counters?.total_files} downloadable
+                                    file resources
                                 </p>
                                 <p>
                                     <GoDeviceDesktop /> Access on mobile and TV
                                 </p>
-                                <p>
-                                    <PiCertificateDuotone /> Certificate after
-                                    completing the course
-                                </p>
+                                {course.has_certificate &&
+                                course.has_certificate === 1 ? (
+                                    <p>
+                                        <PiCertificateDuotone /> Certificate
+                                        after completing the course
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
                             </div>
+                        </div>
+
+                        {/* Claim or Download certificate */}
+                        <div className="course-certificate">
+                            {course.has_certificate ? (
+                                <CertificateClaim
+                                    courseId={course.id}
+                                    canClaim={
+                                        course?.actions?.can_claim_certificate
+                                    }
+                                    canDownload={
+                                        course?.actions
+                                            ?.can_download_certificate
+                                    }
+                                />
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 </div>

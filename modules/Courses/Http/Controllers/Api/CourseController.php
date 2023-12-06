@@ -10,9 +10,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Categories\Entities\Category;
 use modules\Courses\Entities\Course;
+use modules\Courses\Entities\Exam\Exam;
+use modules\Courses\Entities\Lecture;
+use modules\Courses\Entities\LectureFile;
+use modules\Courses\Entities\LectureSection;
+use modules\Courses\Entities\Rate;
 use modules\Courses\Http\Requests\Course\CreateCourseRequest;
 use modules\Courses\Http\Requests\Course\UpdateCourseRequest;
 use modules\Instructors\Entities\InstructorProfile;
+use stdClass;
 
 class CourseController extends ApiController {
     protected array $courseLevels;
@@ -90,13 +96,71 @@ class CourseController extends ApiController {
      * @return JsonResponse A JsonResponse is being returned.
      */
     public function show(string $slug): JsonResponse {
-        $course = Course::where('slug', $slug)->withTrashed()->first();
+        $course = Course::where('slug', $slug)->with(['instructor' => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->first();
         if (!$course) {
             return $this->return(400, 'Course not exists');
         }
+        $response = new stdClass();
+        $response->course = $course;
+        $response->course->counters = $this->courseCounters($course->id);
+        $response->resources = Lecture::getByCourseId($course->id);
+        $response->rates = Rate::getByCourseId($course->id);
+        return $this->return(200, 'Course fetched Successfully', ['data' => $response]);
+    }
+
+
+    /**
+     * The function "courseCounters" returns an array with the total number of files and exams associated
+     * with a given course ID.
+     * 
+     * @param int courseId The `courseId` parameter is an integer that represents the ID of a course.
+     * 
+     * @return array The function `courseCounters` returns an array with two keys: 'total_files' and
+     * 'total_exams'. The value of 'total_files' is the count of LectureFile records that are associated
+     * with a specific course, and the value of 'total_exams' is the count of Exam records that are
+     * associated with the same course.
+     */
+    public function courseCounters(int $courseId): array {
+        return [
+            'total_files' => LectureFile::join('lectures', 'lectures.id', 'lecture_files.lecture_id')
+                ->join('courses', 'courses.id', 'lectures.course_id')
+                ->where("courses.id", $courseId)->count(),
+            'total_exams' => Exam::join('lectures', 'lectures.id', 'exams.lecture_id')
+                ->join('courses', 'courses.id', 'lectures.course_id')
+                ->where("courses.id", $courseId)->count()
+        ];
+    }
+
+    /**
+     * The function retrieves a course and its associated instructor and lecture sections based on a given
+     * slug.
+     * 
+     * @param string slug The "slug" parameter is a string that represents a unique identifier for a
+     * course. It is used to retrieve a specific course from the database.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function getForModify(string $slug): JsonResponse {
+        $course = Course::where('slug', $slug)->with(['instructor' => function ($query) {
+            $query->select(['id', 'full_name', 'username']);
+        }])->first();
+        if (!$course) {
+            return $this->return(400, 'Course not exists');
+        }
+        $response = new stdClass();
+        $response->course = $course;
+        $response->course->sections = LectureSection::select('id', 'title')->whereCourseId($course->id)->get();
         return $this->return(200, 'Course fetched Successfully', ['course' => $course]);
     }
 
+    /**
+     * The function creates a JSON response with essential data including categories, languages, and
+     * levels.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
     public function create(): JsonResponse {
         $data['categories'] = Category::select(['id', 'title'])->where("status", 1)->orderBy("order_number")->get();
         $data['languages'] = Language::select(['id', 'name'])->get();
@@ -119,7 +183,8 @@ class CourseController extends ApiController {
         $courseData = $createCourseRequest->validated();
         $courseData['user_id'] = auth()->guard('api')->id();
         $courseData['slug'] = Slug::returnFormatted($courseData['slug']);
-        $courseData['offer_price'] = (bool) isset($courseData['offer_price']) && $courseData['offer_price'] ? 1 : 0;
+        $courseData['offer_price'] = isset($courseData['offer_price']) && in_array($courseData['offer_price'], ["true", 1]) ? 1 : 0;
+        $courseData['has_certificate'] = isset($courseData['has_certificate']) && in_array($courseData['has_certificate'], ["true", 1]) ? 1 : 0;
         $courseData['currency_id'] = 1;
         $isOrganization = isset($courseData['organization_id']) && $courseData['organization_id'] == "false" ? 0 : 1;
         $courseData['organization_id'] = null;

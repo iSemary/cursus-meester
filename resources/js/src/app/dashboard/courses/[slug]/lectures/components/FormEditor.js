@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineLink, AiOutlineVideoCamera } from "react-icons/ai";
 import { BsSortNumericDown } from "react-icons/bs";
 import { ImFileText2 } from "react-icons/im";
@@ -9,6 +9,8 @@ import { MdOutlineTitle } from "react-icons/md";
 import { Dropzone, FileMosaic } from "@files-ui/react";
 import { LuFileStack } from "react-icons/lu";
 import axiosConfig from "../../../../../components/axiosConfig/axiosConfig";
+import { Dropdown } from "primereact/dropdown";
+import { VscTypeHierarchySub } from "react-icons/vsc";
 
 export default function FormEditor({
     course,
@@ -23,6 +25,8 @@ export default function FormEditor({
     handleSubmitLecture,
     btnLabel,
 }) {
+    const [sections, setSections] = useState([]);
+
     const handleChangeLecture = (e) => {
         const { name, value } = e.target;
         setLecture({
@@ -35,6 +39,7 @@ export default function FormEditor({
         const file = files[0];
         setLectureVideo(file);
     };
+    
     const handleChangeLectureFiles = (files) => {
         setLectureFiles(files);
     };
@@ -48,7 +53,9 @@ export default function FormEditor({
         axiosConfig
             .delete(`lecture-file/${lecture.slug}/${id}`)
             .then((response) => {})
-            .catch(({ response }) => {console.log(response);});
+            .catch(({ response }) => {
+                console.log(response);
+            });
     };
 
     const removeLectureFiles = (id) => {
@@ -56,6 +63,24 @@ export default function FormEditor({
         handleRemoveLectureFile(id);
     };
 
+    useEffect(() => {
+        if (lecture.id) {
+            axiosConfig
+                .get(
+                    process.env.NEXT_PUBLIC_API_URL +
+                        "/lectures/" +
+                        lecture.id +
+                        "/sections"
+                )
+                .then((response) => {
+                    setSections(response.data.data.sections);
+                });
+        }
+    }, [lecture.id]);
+
+    useEffect(() => {
+        setSections(course.sections);
+    }, [course.sections]);
     return (
         <form
             method="POST"
@@ -114,6 +139,22 @@ export default function FormEditor({
                         onChange={handleChangeLecture}
                         value={lecture.order_number}
                         required
+                    />
+                </div>
+                <div className="col-md-6 p-inputgroup flex-1">
+                    <span className="p-inputgroup-addon">
+                        <VscTypeHierarchySub />
+                    </span>
+                    <Dropdown
+                        options={sections}
+                        optionLabel="title"
+                        optionValue="id"
+                        placeholder="Section"
+                        className="w-full md:w-14rem"
+                        editable
+                        name="lecture_section_id"
+                        onChange={handleChangeLecture}
+                        value={lecture.lecture_section_id}
                     />
                 </div>
             </div>

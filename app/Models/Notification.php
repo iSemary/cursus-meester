@@ -32,7 +32,9 @@ class Notification extends Model {
             case NotificationTypes::NEW_COURSE_APPROVED:
             case NotificationTypes::NEW_COURSE_REJECTED:
                 $course = DB::table("courses")->where("id", $this->attributes['object_id'])->first();
-                return "/courses/" . $course->slug;
+                if ($course) {
+                    return "/courses/" . $course->slug;
+                }
                 break;
             default:
                 return "#";
