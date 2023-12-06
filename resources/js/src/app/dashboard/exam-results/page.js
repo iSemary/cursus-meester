@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
@@ -6,14 +7,22 @@ import { _ } from "gridjs-react";
 import { Token } from "../../components/utilities/Authentication/Token";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import { Button } from "primereact/button";
+import ExamResultPreview from "./ExamResultPreview";
+
 export default function examResults() {
+    const [showExamModal, setShowExamModal] = useState(false);
+    const [exam, setExam] = useState({});
+
     /** Get full results of student exam */
     const handleGetResults = (id) => {
         axiosConfig
             .get("/exam/results/" + id)
-            .then((response) => {})
+            .then((response) => {
+                setShowExamModal(true);
+                setExam(response.data.data.results);
+            })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     };
 
@@ -23,6 +32,13 @@ export default function examResults() {
                 title="Exam Results"
                 path={[{ label: "Exam Results", url: "" }]}
             />
+
+            <ExamResultPreview
+                exam={exam}
+                isShow={showExamModal}
+                setShowExamModal={setShowExamModal}
+            />
+
             <Grid
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/exam/results/`,
@@ -31,9 +47,8 @@ export default function examResults() {
                     },
                     then: (data) =>
                         data.data.results.data.map((result) => [
-                            result.exam_title,
-                            result.student_name,
-                            result.steps,
+                            result.title,
+                            result.full_name,
                             result.updated_diff,
                             result.id,
                         ]),
@@ -48,7 +63,6 @@ export default function examResults() {
                 columns={[
                     "Exam Title",
                     "Student Name",
-                    "Steps",
                     "Last Updated",
                     {
                         name: "Actions",
@@ -57,7 +71,7 @@ export default function examResults() {
                                 <Button
                                     label="View Results"
                                     onClick={() =>
-                                        handleGetResults(row.cells[4].data)
+                                        handleGetResults(row.cells[3].data)
                                     }
                                 />
                             );

@@ -14,16 +14,18 @@ use modules\Courses\Http\Controllers\Api\{
 };
 
 // Administration Routes 
-Route::group(['middleware' => ['auth:api', 'checkRole:super_admin']], function () {
-    Route::get('courses/all', [CourseController::class, "all"]);
-    Route::post('courses/change-status', [CourseController::class, "changeStatus"]);
+Route::group(["middleware" => ["auth:api", "checkRole:super_admin"]], function () {
+    Route::get("courses/all", [CourseController::class, "all"]);
+    Route::post("courses/change-status", [CourseController::class, "changeStatus"]);
 });
 
 // Builder Routes [For Instructors]
-Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function () {
+Route::group(["middleware" => ["auth:api", "checkRole:instructor"]], function () {
     // Courses Routes
-    Route::resource('courses', CourseController::class)->except(['edit']);
+    Route::resource("courses", CourseController::class)->except(["edit"]);
     Route::get("courses/modify/{courseSlug}", [CourseController::class, "getForModify"]);
+    // Course Sections
+    Route::get("courses/{courseId}/sections", [CourseController::class, "sections"]);
     // Course Lectures
     Route::get("courses/{courseSlug}/lectures", [LectureController::class, "getCourseLectures"]);
     // Lecture By Slug
@@ -31,21 +33,22 @@ Route::group(['middleware' => ['auth:api', 'checkRole:instructor']], function ()
     // Lectures Routes
     Route::delete("lecture-file/{lectureSlug}/{lectureFileId}", [LectureController::class, "deleteFile"]);
     Route::post("lectures/restore/{lectureSlug}", [LectureController::class, "restore"]);
-    Route::apiResource('lectures', LectureController::class)->except(['edit', 'create']);
+    Route::apiResource("lectures", LectureController::class)->except(["edit", "create"]);
     // Exam Routes
-    Route::group(['prefix' => 'exams'], function () {
+    Route::group(["prefix" => "exams"], function () {
         Route::get("{lectureSlug}", [ExamController::class, "getExamByLecture"]);
         Route::post("{lectureSlug}", [ExamController::class, "createOrUpdateExamByLecture"]);
         Route::delete("{examId}/questions/{questionId}", [ExamController::class, "deleteQuestion"]);
     });
-    Route::get("exam-results", [ExamController::class, "getResults"]);
-    Route::get("exam-results/{id}", [ExamController::class, "getExamResult"]);
+    // Get Exam Results and Details
+    Route::get("exam/results", [ExamController::class, "getResults"]);
+    Route::get("exam/results/{id}", [ExamController::class, "getExamResult"]);
 });
 
 /** Student Routes */
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(["middleware" => "auth:api"], function () {
     /** Certificate routes */
-    Route::group(['prefix' => 'certificates'], function () {
+    Route::group(["prefix" => "certificates"], function () {
         // Claim certificate [Generates new one if finished course]
         Route::post("{courseId}/claim", [CertificateController::class, "claimCertificate"]);
         // Get claimed certificate [Fetch exists one]
@@ -53,7 +56,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     /** Wishlist */
-    Route::group(['prefix' => 'wishlist'], function () {
+    Route::group(["prefix" => "wishlist"], function () {
         // Get wishlist
         Route::get("/", [ListController::class, "getWishlist"]);
         // Add course into wishlist
@@ -75,13 +78,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Get enrolled courses
     Route::get("my-courses", [ListController::class, "getEnrolledCourses"]);
     // Cart Routes
-    Route::apiResource('cart', CartController::class)->except(['edit', 'create']);
+    Route::apiResource("cart", CartController::class)->except(["edit", "create"]);
     // Move course from cart to wishlist
     Route::post("cart/{courseId}/move-wishlist", [CartController::class, "moveToWishlist"]);
     // Submit Rate Route
-    Route::post("courses/{courseSlug}/rate", [RateController::class, 'submitRate']);
+    Route::post("courses/{courseSlug}/rate", [RateController::class, "submitRate"]);
     // Mark lecture video as watched
     Route::get("lectures/view/{id}", [LectureController::class, "markViewed"]);
+    // Submit Exam Results
+    Route::post("exams/{examId}/submit", [ExamController::class, "submitResults"]);
 });
 
 Route::get("resources/media/{fileName}/{token}", [ResourceController::class, "returnMedia"]);
@@ -94,7 +99,7 @@ Route::get("resources/media/{fileName}/{token}", [ResourceController::class, "re
 Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
 
 // Rate Course
-Route::get("courses/{courseSlug}/rates", [RateController::class, 'getRates']);
+Route::get("courses/{courseSlug}/rates", [RateController::class, "getRates"]);
 // Get certificate by reference code [Provide an existing certificate]
 Route::get("certificates/{referenceCode}/provide", [CertificateController::class, "getCertificateByReferenceCode"]);
 /** Search APIs */

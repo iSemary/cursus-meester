@@ -39,7 +39,7 @@ export default function FormEditor({
         const file = files[0];
         setLectureVideo(file);
     };
-    
+
     const handleChangeLectureFiles = (files) => {
         setLectureFiles(files);
     };
@@ -66,12 +66,7 @@ export default function FormEditor({
     useEffect(() => {
         if (lecture.id) {
             axiosConfig
-                .get(
-                    process.env.NEXT_PUBLIC_API_URL +
-                        "/lectures/" +
-                        lecture.id +
-                        "/sections"
-                )
+                .get("/courses/" + lecture.course_id + "/sections")
                 .then((response) => {
                     setSections(response.data.data.sections);
                 });
@@ -79,8 +74,10 @@ export default function FormEditor({
     }, [lecture.id]);
 
     useEffect(() => {
-        setSections(course.sections);
-    }, [course.sections]);
+        if (course?.sections) {
+            setSections(course.sections);
+        }
+    }, [course?.sections]);
     return (
         <form
             method="POST"

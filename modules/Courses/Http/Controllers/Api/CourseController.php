@@ -43,6 +43,13 @@ class CourseController extends ApiController {
         return $this->return(200, 'Courses fetched successfully', ['courses' => $courses]);
     }
 
+
+
+    public function sections($courseId) {
+        $sections = LectureSection::select('id', 'title')->whereCourseId($courseId)->get();
+        return $this->return(200, 'Courses fetched successfully', ['sections' => $sections]);
+    }
+
     /**
      * The function retrieves all courses with their associated instructors and returns them as a JSON
      * response.
