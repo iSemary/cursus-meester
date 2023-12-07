@@ -1,4 +1,7 @@
 # Cursus Meester
+E-learning platform that brings together passionate instructors and curious learners from all around the world. With an extensive library of high-quality courses, ranging from programming and design to business and personal development.
+
+<p align="center"><img src="https://skillicons.dev/icons?i=laravel,next,react,&perline=3"/></p>
 
 -   [About](#about)
 -   [Features](#features)
@@ -37,9 +40,9 @@ E-learning platform that brings together passionate instructors and curious lear
  - [x] Translation Module
 	 - [x] CURD in database
 	 - [x] Generating translation JSON files
- - [] Payment Module
- - [] Built-in Real-time Chat System
- - [] Real-time Notifications System
+ - [ ] Payment Module
+ - [ ] Built-in Real-time Chat System
+ - [ ] Real-time Notifications System
 
 ## Get Started
 
