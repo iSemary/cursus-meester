@@ -7,8 +7,6 @@ use Illuminate\Http\JsonResponse;
 use stdClass;
 
 class ApiController extends Controller {
-
-
     /**
      * The function returns a JSON response with a status code, message, data, errors, and timestamp.
      * 
@@ -35,5 +33,23 @@ class ApiController extends Controller {
         $response->timestamp = time();
         if (env("APP_DEBUG")) $response->debug = $debug;
         return response()->json($response, $status);
+    }
+
+    /**
+     * The function returns a JSON response with a status code of 403 and a message of "Unauthenticated".
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function returnUnAuthenticated(): JsonResponse {
+        return $this->return(403, "Unauthenticated");
+    }
+
+    /**
+     * The function returns a JSON response with a status code of 401 and a message of "Unauthorized".
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function returnUnAuthorized(): JsonResponse {
+        return $this->return(401, "Unauthorized");
     }
 }

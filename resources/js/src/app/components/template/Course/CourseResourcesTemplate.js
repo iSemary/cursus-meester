@@ -15,7 +15,8 @@ export default function CourseResourcesTemplate({
     courseId,
     purchased,
     resources,
-    setMedia
+    setMedia,
+    setActiveLectureId
 }) {
     const LECTURE_TYPE = 1;
     const FILE_TYPE = 2;
@@ -91,6 +92,7 @@ export default function CourseResourcesTemplate({
             .get(`resources/course/${courseId}/lecture/${id}`)
             .then((response) => {
                 setMedia(response.data.data.data.path);
+                setActiveLectureId(id);
             })
             .catch((error) => {
                 console.error(error);

@@ -19,7 +19,8 @@ export default function CourseDetailsTemplate({
     containerClass,
 }) {
     const [media, setMedia] = useState(null);
-
+    const [activeLectureId, setActiveLectureId] = useState(null);
+    const [courseFinished, setCourseFinished] = useState(false);
     return (
         <div className={"course-details " + containerClass}>
             <div className="row">
@@ -65,7 +66,7 @@ export default function CourseDetailsTemplate({
                     </div>
                     <hr className="home-hr" />
                     {/* Lecture Preview */}
-                    <MediaPlayer media={media} />
+                    <MediaPlayer lectureId={activeLectureId} media={media} setCourseFinished={setCourseFinished} />
                     <hr className="home-hr" />
                     {/* Course Resources */}
                     <div className="resources">
@@ -78,6 +79,7 @@ export default function CourseDetailsTemplate({
                                 purchased={course?.actions?.purchased}
                                 resources={resources}
                                 setMedia={setMedia}
+                                setActiveLectureId={setActiveLectureId}
                             />
                         </div>
                     </div>
@@ -163,7 +165,7 @@ export default function CourseDetailsTemplate({
                                 <CertificateClaim
                                     courseId={course.id}
                                     canClaim={
-                                        course?.actions?.can_claim_certificate
+                                        course?.actions?.can_claim_certificate || courseFinished
                                     }
                                     canDownload={
                                         course?.actions

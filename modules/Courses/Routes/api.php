@@ -89,6 +89,7 @@ Route::group(["middleware" => "auth:api"], function () {
     Route::post("exams/{examId}/submit", [ExamController::class, "submitResults"]);
 });
 
+/** Protected files */
 Route::get("resources/media/{fileName}/{token}", [ResourceController::class, "returnMedia"]);
 
 /**  Public Routes */

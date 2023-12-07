@@ -15,6 +15,7 @@ class Lecture extends Model {
 
     public static $mediaPath = "lectures";
     public static $additionalFilePath = "lectures/additional";
+    public static $finishedTime = 5; // 5seconds of minimum seconds before lecture ends [to mark the student as finished it]
 
     protected $fillable = ['course_id', 'title', 'slug', 'description', 'lecture_media_id', 'order_number', 'lecture_section_id'];
 
@@ -28,7 +29,7 @@ class Lecture extends Model {
 
     public function getStatusAttribute() {
         $status = "Active";
-        if ($this->deleted_at) {
+        if ($this->attributes['deleted_at']) {
             $status = "Deleted";
         }
         return $status;

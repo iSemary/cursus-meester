@@ -6,12 +6,15 @@ use App\Http\Controllers\Api\ApiController;
 use App\Services\Formatter\Slug;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Entities\LectureFile;
 use modules\Courses\Entities\LectureSection;
 use modules\Courses\Entities\LectureView;
 use modules\Courses\Http\Requests\Lecture\CreateLectureRequest;
 use modules\Courses\Http\Requests\Lecture\UpdateLectureRequest;
+use modules\Payments\Entities\EnrolledCourse;
 
 class LectureController extends ApiController {
     /**
@@ -82,15 +85,51 @@ class LectureController extends ApiController {
     }
 
 
-    public function markViewed(int $lectureId): JsonResponse {
+    public function markViewed(int $lectureId, Request $request): JsonResponse {
         $user = auth()->guard('api')->user();
-        LectureView::create([
+        // get course id by lecture id
+        $course = DB::table('courses')->leftJoin("lectures", "lectures.course_id", "courses.id")
+            ->select("courses.id")
+            ->where("lectures.id", $lectureId)->first();
+
+        $lectureFinished = LectureView::where("lecture_id", $lectureId)->where("user_id", $user->id)->where("finished", 1)->exists();
+        $isLectureFinished =  $lectureFinished ? 1 : $this->checkLectureFinished($lectureId, $request->playtime);
+        // update or create lecture view
+        LectureView::updateOrCreate([
             'lecture_id' => $lectureId,
             'user_id' => $user->id,
+        ], [
+            'lecture_id' => $lectureId,
+            'user_id' => $user->id,
+            'view_time' => $request->playtime ? round($request->playtime) : 0,
+            'finished' => $isLectureFinished
         ]);
-        // TODO check if this lecture is the last one of the course 
+        // check if this lecture is the last one of the course 
         // then mark the student as finished the whole course to be able to claim certificate
-        return $this->return(200, 'Lecture marked as viewed');
+        $courseFinished = false;
+        $latestLecture = Lecture::select(['lectures.id'])->where("course_id", $course->id)->orderBy("order_number", "DESC")->first();
+        if ($lectureId == $latestLecture->id && $isLectureFinished) {
+            EnrolledCourse::where('user_id', $user->id)->where("course_id", $course->id)->update([
+                'finished_at' => now()
+            ]);
+            $courseFinished = true;
+        }
+        return $this->return(200, 'Lecture marked as viewed', ['course_finished' => $courseFinished]);
+    }
+
+
+    private function checkLectureFinished($lectureId, $playTime): bool {
+        $lectureFile = LectureFile::where("lecture_id", $lectureId)->where("main_file", 1)->first();
+        if (!$lectureFile) return false;
+        $duration = $lectureFile->duration;
+        if (!$lectureFile->duration) return false;
+        if (!$playTime) return false;
+        $playTime = round($playTime);
+        $interval = $duration - Lecture::$finishedTime;
+        if ($playTime >= $interval) {
+            return true;
+        }
+        return false;
     }
 
     /**
