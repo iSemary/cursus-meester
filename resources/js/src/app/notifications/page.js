@@ -88,7 +88,7 @@ export default function notifications() {
                                     <div className="d-block">
                                         <button
                                             type="button"
-                                            class="btn text-primary d-flex align-items-centner text-center m-auto"
+                                            className="btn text-primary d-flex align-items-centner text-center m-auto"
                                             onClick={() =>
                                                 setCurrentPage(currentPage + 1)
                                             }

@@ -3,10 +3,12 @@
 namespace modules\Courses\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use modules\Courses\Entities\Course;
 use modules\Courses\Entities\Exam\Exam;
 use modules\Courses\Entities\Lecture;
 use modules\Courses\Entities\LectureFile;
@@ -175,8 +177,6 @@ class ResourceController extends ApiController {
      * @return blob file content as a response with appropriate headers.
      */
     public function returnBlob(Request $request) {
-        // TODO check enrolled 
-
         // Get the file content
         $fileContent = Storage::get($request->file_path);
         // Check if the file exists
@@ -193,14 +193,45 @@ class ResourceController extends ApiController {
         return response($fileContent, 200, $headers);
     }
 
-    public function returnMedia($fileName) {
-        // Check auth token
-
-        // check enrolled 
-
-        // check file exists
-
+    /**
+     * The function `returnMedia` checks if a file exists, verifies the user's authentication token,
+     * checks if the file is associated with a valid course, checks if the user is enrolled in the course,
+     * and returns the file if all conditions are met.
+     * 
+     * @param string fileName The fileName parameter is a string that represents the name of the file that
+     * you want to return. It should include the file extension as well (e.g., "example.pdf").
+     * @param string accessToken The `accessToken` parameter is a string that represents the access token
+     * of the user. It is used to authenticate the user and verify their identity before allowing them to
+     * access the media file.
+     * 
+     * @return response object that contains the file specified by the `path` variable.
+     */
+    public function returnMedia(string $fileName, string $accessToken) {
+        $this->user = User::manualCheckToken($accessToken);
         $path = storage_path("app/protected/lectures/{$fileName}");
+        // check file exists
+        if (!file_exists($path)) {
+            return $this->return(400, "File not exists");
+        }
+        // Check auth token
+        if (!$this->user) {
+            return $this->returnUnAuthenticated();
+        }
+        $hashName = explode('.', $fileName);
+        $hashName = $hashName[0];
+        $course = Course::leftJoin("lectures", "lectures.course_id", "courses.id")
+            ->leftJoin("lecture_files", "lecture_files.lecture_id", "lectures.id")
+            ->select("courses.id")
+            ->where("lecture_files.hash_name", $hashName)
+            ->first();
+        if (!$course) {
+            return $this->return(400, "Course not exists");
+        }
+        // check enrolled 
+        $isEnrolled = $this->checkEnrolled($course->id);
+        if (!$isEnrolled) {
+            return $this->returnUnAuthorized();
+        }
         return response()->file($path);
     }
 }

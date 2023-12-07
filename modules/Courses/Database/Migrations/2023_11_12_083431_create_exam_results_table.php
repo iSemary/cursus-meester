@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('exam_question_id');
             $table->integer('user_id');
             $table->integer('answer_id')->nullable();
-            $table->text('answer_text');
+            $table->text('answer_text')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

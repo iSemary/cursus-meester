@@ -22,19 +22,48 @@ export default function ExamModal({
         setExam({});
     };
 
-    const handleChangeExam = (e) => {
+    const handleChangeExam = (e, questionId) => {
         const { name, value } = e.target;
         setExamResults({
             ...examResults,
-            [name]: value,
+            [questionId]: value,
         });
     };
 
-    const handleChangeSingleOption = (e) => {
+    const handleChangeSingleOption = (e, questionId) => {
         const { name, value } = e.target;
         setExamResults({
             ...examResults,
-            [name]: value,
+            [questionId]: value,
+        });
+    };
+
+    const handleChangeMultipleOption = (e, questionId, optionId) => {
+        const isChecked = e.target.checked;
+        setExamResults((prevResults) => {
+            const updatedAnswers = { ...prevResults };
+
+            if (!updatedAnswers[questionId]) {
+                updatedAnswers[questionId] = [];
+            }
+
+            if (isChecked && !updatedAnswers[questionId].includes(optionId)) {
+                // Add the selected option to the answers array
+                updatedAnswers[questionId] = [
+                    ...updatedAnswers[questionId],
+                    optionId,
+                ];
+            } else if (!isChecked) {
+                // Remove the deselected option from the answers array
+                updatedAnswers[questionId] = updatedAnswers[questionId].filter(
+                    (id) => id !== optionId
+                );
+            }
+
+            return {
+                ...prevResults,
+                ...updatedAnswers,
+            };
         });
     };
 
@@ -53,7 +82,17 @@ export default function ExamModal({
 
     const handleSubmitExam = (e) => {
         e.preventDefault();
-        console.log(examResults);
+        axiosConfig
+            .post(`exams/${examId}/submit`, {
+                answers: { ...examResults },
+                exam_id: exam.id,
+            })
+            .then((response) => {
+                setExam(response.data.data.results);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     useEffect(() => {
@@ -70,7 +109,7 @@ export default function ExamModal({
         >
             {exam.id ? (
                 <>
-                    <form method="POST" onSubmit={(e) => handleSubmitExam()}>
+                    <form method="POST" onSubmit={(e) => handleSubmitExam(e)}>
                         <Modal.Header>
                             <Modal.Title>{exam.title}</Modal.Title>
                         </Modal.Header>
@@ -105,7 +144,7 @@ export default function ExamModal({
                                                                   className="form-control"
                                                                   placeholder="Write your answer..."
                                                                   type="text"
-                                                                  name={`answers[${question.id}]`}
+                                                                  name={`answers`}
                                                                   disabled={
                                                                       exam.can_answer
                                                                           ? ""
@@ -123,7 +162,8 @@ export default function ExamModal({
                                                                       e
                                                                   ) =>
                                                                       handleChangeExam(
-                                                                          e
+                                                                          e,
+                                                                          question.id
                                                                       )
                                                                   }
                                                                   required
@@ -155,7 +195,7 @@ export default function ExamModal({
                                                                                   }
                                                                               >
                                                                                   <input
-                                                                                      name={`answers[${question.id}]`}
+                                                                                      name={`answers`}
                                                                                       value={
                                                                                           option.id
                                                                                       }
@@ -180,7 +220,10 @@ export default function ExamModal({
                                                                                       onChange={(
                                                                                           e
                                                                                       ) =>
-                                                                                          handleChangeSingleOption()
+                                                                                          handleChangeSingleOption(
+                                                                                              e,
+                                                                                              question.id
+                                                                                          )
                                                                                       }
                                                                                       required
                                                                                   />
@@ -234,6 +277,15 @@ export default function ExamModal({
                                                                                               ? "checked"
                                                                                               : ""
                                                                                       }
+                                                                                      onChange={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          handleChangeMultipleOption(
+                                                                                              e,
+                                                                                              question.id,
+                                                                                              option.id
+                                                                                          )
+                                                                                      }
                                                                                       className="me-1"
                                                                                       type="checkbox"
                                                                                       disabled={
@@ -241,7 +293,6 @@ export default function ExamModal({
                                                                                               ? ""
                                                                                               : "disabled"
                                                                                       }
-                                                                                      required
                                                                                   />
                                                                                   {
                                                                                       option.title

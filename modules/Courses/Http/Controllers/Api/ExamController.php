@@ -5,6 +5,7 @@ namespace modules\Courses\Http\Controllers\Api;
 use App\Enums\QuestionTypes;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use modules\Courses\Entities\Exam\Exam;
 use modules\Courses\Entities\Exam\ExamQuestion;
 use modules\Courses\Entities\Exam\ExamQuestionOption;
@@ -106,16 +107,17 @@ class ExamController extends ApiController {
      * 
      * @return Exam object with the questions and options added to it.
      */
-    public function prepareExamForStudent(Exam $exam) {
-        $user = auth()->guard("api")->user();
-        $examResults = ExamResult::whereExamId($exam->id)->whereUserId($user->id);
+    public function prepareExamForStudent(Exam $exam, int $studentId = null) {
+        $userId = $studentId ?? auth()->guard("api")->id();
+        
+        $examResults = ExamResult::whereExamId($exam->id)->whereUserId($userId);
         $optionFields = ['id', 'title'];
         $exam->can_answer = true;
         if ($examResults->exists()) {
             $exam->can_answer = false;
             $optionFields = ['id', 'title', 'valid_answer'];
         }
-        $questions = $this->getQuestions($exam->id, ['id', 'title', 'type'], ($exam->can_answer ? null : $user->id));
+        $questions = $this->getQuestions($exam->id, ['id', 'title', 'type'], ($exam->can_answer ? null : $userId));
         if ($questions) {
             $exam->questions = $questions;
             foreach ($questions as $question) {
@@ -258,15 +260,75 @@ class ExamController extends ApiController {
     public function getResults(): JsonResponse {
         $examResults = ExamResult::leftJoin('exams', 'exams.id', 'exam_results.exam_id')->leftJoin('lectures', 'lectures.id', 'exams.lecture_id')
             ->leftJoin('courses', 'courses.id', 'lectures.course_id')
+            ->leftJoin('users', 'users.id', 'exam_results.user_id')
             ->where("courses.user_id", auth()->guard('api')->id())
             ->select([
-                'exam_results.id'
+                'exam_results.id',
+                'exams.title',
+                'exam_results.updated_at',
+                'users.full_name',
             ])
-            ->groupBy("exam_results.id", "exam_results.exam_id", "exam_results.user_id")
+            ->groupBy("exam_results.user_id", "exam_results.exam_id")
+            ->orderBy("exam_results.id", "DESC")
             ->paginate(5);
+
+        foreach ($examResults as $key => $examResult) {
+            $examResult->updated_diff =  $examResult->updated_at ? ($examResult->updated_at->diffForHumans()) : "";
+        }
+
         return $this->return(200, "Exam results fetched successfully", ['results' => $examResults]);
     }
-    public function getExamResult($examResult): JsonResponse {
-        return $this->return(200, "Exam result fetched successfully");
+
+    public function getExamResult(int $examResultId): JsonResponse {
+        $examResult = ExamResult::whereId($examResultId)->first();
+        $exam = Exam::whereId($examResult->exam_id)->first();
+        $results = $this->prepareExamForStudent($exam, $examResult->user_id);
+
+        return $this->return(200, "Exam result fetched successfully", ['results' => $results]);
+    }
+
+    public function submitResults(int $examId, Request $request): JsonResponse {
+        // Check if student already submitted this exam
+        $user = auth()->guard('api')->user();
+        $exam = Exam::where("id", $examId)->first();
+
+        $checkSubmitted = ExamResult::where("exam_id", $examId)->where("user_id", $user->id)->first();
+        if ($checkSubmitted) {
+            return $this->return(400, "Exam already submitted before");
+        }
+        $answers = $request->answers;
+        $examId = $request->exam_id;
+        foreach ($answers as $key => $answer) {
+            $question = ExamQuestion::where("id", $key)->first();
+            if ($question) {
+                if ($question->type == QuestionTypes::MULTIPLE_CHOICE->value) {
+                    foreach ($answer as  $singleAnswer) {
+                        ExamResult::create([
+                            'exam_id' => $examId,
+                            'exam_question_id' => $question->id,
+                            'user_id' => $user->id,
+                            'answer_id' => $singleAnswer,
+                        ]);
+                    }
+                } elseif ($question->type == QuestionTypes::SINGLE_CHOICE->value) {
+                    ExamResult::create([
+                        'exam_id' => $examId,
+                        'exam_question_id' => $question->id,
+                        'user_id' => $user->id,
+                        'answer_id' => $answer,
+                    ]);
+                } else {
+                    ExamResult::create([
+                        'exam_id' => $examId,
+                        'exam_question_id' => $question->id,
+                        'user_id' => $user->id,
+                        'answer_text' => $answer,
+                    ]);
+                }
+            }
+        }
+
+        $results = $this->prepareExamForStudent($exam);
+        return $this->return(200, "Exam submitted successfully", ['results' => $results]);
     }
 }

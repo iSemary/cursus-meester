@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
+use Laravel\Passport\Token;
 use modules\Instructors\Entities\InstructorProfile;
 use modules\Students\Entities\StudentProfile;
 use Spatie\Permission\Traits\HasRoles;
@@ -138,11 +139,19 @@ class User extends Authenticatable {
         $this->attributes['phone_verified_at'] = $this->phone == $value ? $this->phone_verified_at : null;
     }
 
-
     public function rate() {
         $this->hasMany(User::class, 'user_id');
     }
 
+    /**
+     * The function `getBaseAvatarAttribute` returns the avatar image URL for a user based on their role
+     * (instructor or student), or a default image URL if no avatar is found.
+     * 
+     * @return the avatar image URL for the user. If the user has the role of "instructor", it will
+     * retrieve the avatar from the instructor profile. If the user has the role of "student", it will
+     * retrieve the avatar from the student profile. If neither profile is found, it will return the URL
+     * for the default avatar image.
+     */
     public function getBaseAvatarAttribute() {
         if ($this->hasRole('instructor')) {
             $instructorProfile = InstructorProfile::where("user_id", $this->attributes['id'])->first();
@@ -156,5 +165,32 @@ class User extends Authenticatable {
             }
         }
         return asset("storage/users/avatar/default.png");
+    }
+
+    /**
+     * The function `manualCheckToken` checks the validity of an access token by decoding its header,
+     * retrieving the token ID, and then searching for the token in a database. If the token is found, it
+     * returns the associated user; otherwise, it returns false.
+     * 
+     * @param accessToken The `accessToken` parameter is a string that represents a token used for
+     * authentication or authorization purposes.
+     * 
+     * @return either the user associated with the token if the token is found in the database, or false if
+     * the token is not found or if the 'jti' field is not present in the token header.
+     */
+    public static function manualCheckToken($accessToken) {
+        $tokenParts = explode('.', $accessToken);
+        $tokenHeader = $tokenParts[1];
+        $tokenHeaderJson = base64_decode($tokenHeader);
+        $tokenHeaderArray = json_decode($tokenHeaderJson, true);
+        $tokenId = isset($tokenHeaderArray['jti']) ? $tokenHeaderArray['jti'] : null;
+        if (!$tokenId) {
+            return false;
+        }
+        $token = Token::find($tokenId);
+        if ($token) {
+            return $token->user;
+        }
+        return false;
     }
 }

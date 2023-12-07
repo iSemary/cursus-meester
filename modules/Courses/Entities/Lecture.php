@@ -2,6 +2,8 @@
 
 namespace modules\Courses\Entities;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,6 +15,7 @@ class Lecture extends Model {
 
     public static $mediaPath = "lectures";
     public static $additionalFilePath = "lectures/additional";
+    public static $finishedTime = 5; // 5seconds of minimum seconds before lecture ends [to mark the student as finished it]
 
     protected $fillable = ['course_id', 'title', 'slug', 'description', 'lecture_media_id', 'order_number', 'lecture_section_id'];
 
@@ -26,7 +29,7 @@ class Lecture extends Model {
 
     public function getStatusAttribute() {
         $status = "Active";
-        if ($this->deleted_at) {
+        if ($this->attributes['deleted_at']) {
             $status = "Deleted";
         }
         return $status;
@@ -60,6 +63,8 @@ class Lecture extends Model {
 
                 $preparedResources = [];
                 foreach ($lectures as $i => $lecture) {
+                    $lectureFile = LectureFile::where("id", $lecture->lecture_media_id)->first();
+                    $lecture->duration = $lectureFile ? $lectureFile->duration : "";
                     $preparedResources = self::prepareLectureResources($lecture);
                     /** Lecture Files */
                     if ($lecture->additional_files && count($lecture->additional_files)) {
@@ -95,23 +100,28 @@ class Lecture extends Model {
                 $formattedResource['id'] = $resource['id'];
                 $formattedResource['title'] = $resource['title'];
                 $formattedResource['slug'] = $resource['slug'];
-                $formattedResource['duration'] = $resource['duration'];
+                $duration = "";
+                if ($resource['duration']) {
+                    $duration = CarbonInterval::seconds($resource['duration'])->format('%H:%I:%S');
+                }
+                $formattedResource['duration'] = $duration;
                 $formattedResource['type_id'] = ResourceTypes::LECTURE_TYPE;
                 $formattedResource['type'] = "lecture";
+                break;
+
+            case ResourceTypes::EXAM_TYPE:
+                $formattedResource['id'] = $resource['id'];
+                $formattedResource['title'] = $resource['title'];
+                $formattedResource['duration'] = $resource['total_questions'] . " Questions";
+                $formattedResource['type_id'] = ResourceTypes::EXAM_TYPE;
+                $formattedResource['type'] = "exam";
                 break;
             case ResourceTypes::FILE_TYPE:
                 $formattedResource['id'] = $resource['id'];
                 $formattedResource['title'] = $resource['original_name'] . '.' . $resource['extension'];
-                $formattedResource['size'] = $resource['size'];
+                $formattedResource['duration'] = $resource['size'] ? (round($resource['size'] / (1024 * 1024)) . " MB") : "";
                 $formattedResource['type_id'] = ResourceTypes::FILE_TYPE;
                 $formattedResource['type'] = "file";
-                break;
-            case ResourceTypes::EXAM_TYPE:
-                $formattedResource['id'] = $resource['id'];
-                $formattedResource['title'] = $resource['title'];
-                $formattedResource['total_questions'] = $resource['total_questions'];
-                $formattedResource['type_id'] = ResourceTypes::EXAM_TYPE;
-                $formattedResource['type'] = "exam";
                 break;
             default:
                 break;

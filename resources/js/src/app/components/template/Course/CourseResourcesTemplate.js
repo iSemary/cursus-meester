@@ -15,7 +15,8 @@ export default function CourseResourcesTemplate({
     courseId,
     purchased,
     resources,
-    setMedia
+    setMedia,
+    setActiveLectureId
 }) {
     const LECTURE_TYPE = 1;
     const FILE_TYPE = 2;
@@ -91,6 +92,7 @@ export default function CourseResourcesTemplate({
             .get(`resources/course/${courseId}/lecture/${id}`)
             .then((response) => {
                 setMedia(response.data.data.data.path);
+                setActiveLectureId(id);
             })
             .catch((error) => {
                 console.error(error);
@@ -133,7 +135,7 @@ export default function CourseResourcesTemplate({
                         resources.length > 0 &&
                         resources.map((resource, index) => (
                             <div
-                                class={
+                                className={
                                     "card " +
                                     (index !== resources.length - 1 &&
                                         " border-radius-bottom-0 ") +
@@ -141,7 +143,7 @@ export default function CourseResourcesTemplate({
                                 }
                                 key={index}
                             >
-                                <div class="card-header">
+                                <div className="card-header">
                                     <ContextAwareToggle eventKey={index}>
                                         <div className="col-11 text-left">
                                             <h6 className="font-weight-bold">
@@ -151,7 +153,7 @@ export default function CourseResourcesTemplate({
                                     </ContextAwareToggle>
                                 </div>
                                 <Accordion.Collapse eventKey={index}>
-                                    <div class="card-body">
+                                    <div className="card-body">
                                         <div className="resources">
                                             {resource.section.resources &&
                                                 resource.section.resources
@@ -187,15 +189,7 @@ export default function CourseResourcesTemplate({
                                                                 </div>
                                                                 <div className="col-2 lecture-length text-right text-muted">
                                                                     <h6 className="text-14">
-                                                                        {item.type_id ===
-                                                                            LECTURE_TYPE &&
-                                                                            item.duration}
-                                                                        {item.type_id ===
-                                                                            FILE_TYPE &&
-                                                                            item.duration}
-                                                                        {item.type_id ===
-                                                                            EXAM_TYPE &&
-                                                                            item.duration}
+                                                                        {item.duration}
                                                                     </h6>
                                                                 </div>
                                                             </div>

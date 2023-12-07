@@ -59,8 +59,6 @@ class LectureObserver {
     private function syncLectureAdditionalFiles(Lecture $lecture) {
         $uploadedAdditionalFiles = request()->file('files');
         if ($uploadedAdditionalFiles && is_array($uploadedAdditionalFiles) && count($uploadedAdditionalFiles)) {
-            // Soft delete old additional files if exists
-            LectureFile::where("lecture_id", $lecture->id)->where("id", "!=", $lecture->lecture_media_id)->delete();
             /** 
              * If new file then store it and create new lecture_files row
              */
