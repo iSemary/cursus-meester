@@ -19,7 +19,7 @@ export default function LoggedInUserList({ user }) {
     return (
         <>
             <li>
-                <Link href="/notifications" className="nav-link">
+                <Link href="/messages" className="nav-link">
                     <IoChatbubblesOutline className="messages-icon" size={23} />
                 </Link>
             </li>
