@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->decimal('offer_price', 10, 2)->nullable();
             $table->decimal('total_price', 10, 2);
-            $table->tinyInteger('status');
             $table->timestamps();
         });
     }

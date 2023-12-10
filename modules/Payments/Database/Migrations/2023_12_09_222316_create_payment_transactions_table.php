@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->tinyInteger('status');
             $table->tinyInteger('payment_method');
             $table->char('reference_number', 15);
+            $table->string('transaction_number', 255)->nullable();
             $table->string('description', 255)->nullable();
             $table->decimal('total_price', 10, 2);
             $table->dateTime('expire_at');

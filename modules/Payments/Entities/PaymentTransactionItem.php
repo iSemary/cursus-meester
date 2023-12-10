@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PaymentTransactionItem extends Model {
     use HasFactory;
 
-    protected $fillable = ['payment_transaction_id', 'course_id', 'price', 'offer_price', 'total_price', 'status'];
+    protected $fillable = ['payment_transaction_id', 'course_id', 'price', 'offer_price', 'total_price'];
 }
