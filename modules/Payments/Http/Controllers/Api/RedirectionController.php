@@ -8,14 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class RedirectionController extends ApiController {
-    
-    public function callback(Request $request): void {
-        $stripeTransactionNumber = $request['data']['object']['id'];
-        if ($stripeTransactionNumber) {
-            $notification = $request->all();
-            (new StripeController)->callback($notification);
-        }
-    }
+
 
     public function success(): View {
         return view("callback.payments.stripe.success");

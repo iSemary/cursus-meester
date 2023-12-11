@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Course;
 use modules\Payments\Entities\Cart;
+use modules\Payments\Entities\EnrolledCourse;
 use modules\Payments\Entities\PaymentTransaction;
 use modules\Payments\Entities\PaymentTransactionItem;
 use modules\Payments\Interfaces\Payment;
@@ -207,8 +208,15 @@ class PaymentController extends ApiController {
 
 
     public function changeStatus(string $transactionNumber, int $status) {
-        PaymentTransaction::where("transaction_number", $transactionNumber)->update([
-            'status' => $status
-        ]);
+        PaymentTransaction::where("transaction_number", $transactionNumber)->update(['status' => $status]);
+    }
+
+    public function enrollCourses(array $courseIds, int $userId): void {
+        foreach ($courseIds as $courseId) {
+            EnrolledCourse::create([
+                "course_id" => $courseId,
+                "user_id" => $userId,
+            ]);
+        }
     }
 }

@@ -28,12 +28,6 @@ export default function Home() {
     const [topSoftSkillsCourses, setTopSoftSkillsCourses] = useState([]);
 
     useEffect(() => {
-        if (user) {
-            console.log(user);
-        }
-    }, [user]);
-
-    useEffect(() => {
         axiosConfig
             .get("/")
             .then((response) => {

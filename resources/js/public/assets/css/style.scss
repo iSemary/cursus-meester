@@ -788,3 +788,15 @@ $headerHeight: 80px;
         transform: scale(1) rotate(360deg);
     }
 }
+
+.payment-methods-container {
+    display: grid;
+    .payment-method-input {
+        cursor: pointer;
+        padding: 15px 0;
+        border-bottom: 1px solid #6a5c5c61;
+        &:last-of-type {
+            border-bottom: 0;
+        }
+    }
+}

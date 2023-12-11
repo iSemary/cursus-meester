@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Payments\Entities\PaymentTransaction;
+use modules\Payments\Entities\PaymentTransactionItem;
 use modules\Payments\Entities\StripeLog;
 use modules\Payments\Interfaces\PaymentStatues;
 use Stripe\Stripe;
@@ -32,7 +33,7 @@ class StripeController extends ApiController {
 
         $this->successURL = env("APP_URL") . '/api/v1.0/payments/success';
         $this->cancelURL = env("APP_URL") . '/api/v1.0/payments/cancel';
-        $this->webhookURL = 'https://fd63-196-158-195-231.ngrok-free.app/api/v1.0/payments/callback';
+        $this->webhookURL = 'https://fd63-196-158-195-231.ngrok-free.app/api/v1.0/payments/stripe/callback';
     }
 
     /**
@@ -124,15 +125,23 @@ class StripeController extends ApiController {
         ]);
     }
 
-    public function callback(array $notification): void {
+    public function callback(Request $request): void {
+        $notification = $request->all();
         $transactionNumber = $notification['data']['object']['id'];
 
         $status = PaymentStatues::EXPIRED;
         if ($notification['data']['object']['payment_status'] == $this->successStatus) {
             $status = PaymentStatues::SUCCESS;
         }
-
+        // Change payment transaction status to success or fail based on callback 
         (new PaymentController)->changeStatus($transactionNumber, $status);
+        // if the callback returned success status, then add the payment transaction items into enrolled course
+        if ($status == PaymentStatues::SUCCESS) {
+            $paymentTransaction = PaymentTransaction::where("transaction_number", $transactionNumber)->first();
+            $coursesId = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->pluck("course_id")->toArray();
+            $userId = $paymentTransaction->user_id;
+            (new PaymentController)->enrollCourses($coursesId, $userId);
+        }
 
         $this->logNotification($transactionNumber, $notification, $status);
     }
