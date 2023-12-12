@@ -12,6 +12,7 @@
     "@ckeditor/ckeditor5-build-classic": "^40.0.0",
     "@ckeditor/ckeditor5-react": "^6.1.0",
     "@files-ui/react": "^1.0.8",
+    "@lottiefiles/lottie-player": "^2.0.2",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.7",
     "@splidejs/react-splide": "^0.7.12",

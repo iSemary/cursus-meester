@@ -48,13 +48,13 @@ class PaypalController extends ApiController {
      * following keys:
      * 
      */
-    public function init(int $paymentTransactionId, array $orders) {
+    public function init(int $paymentTransactionId, string $referenceNumber, array $orders) {
         $this->paymentTransactionId = $paymentTransactionId;
 
         $this->generateAccessToken();
 
         $this->prepareOrderPayload($orders);
-        return $this->createOrder();
+        return $this->createOrder($referenceNumber);
     }
 
     public function generateAccessToken() {
@@ -155,7 +155,7 @@ class PaypalController extends ApiController {
         ]);
     }
 
-    public function createOrder(): JsonResponse {
+    public function createOrder(string $referenceNumber): JsonResponse {
         try {
             $body = $this->payload;
             $headers = [
@@ -182,7 +182,7 @@ class PaypalController extends ApiController {
                 if (isset($response->id)) {
                     $paymentLink = $response->links[1]->href;
 
-                    return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink]);
+                    return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink, 'reference_number', $referenceNumber]);
                 }
             } else {
                 return $this->return(400, "Something went wrong!");

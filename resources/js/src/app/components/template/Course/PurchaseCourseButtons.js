@@ -45,6 +45,8 @@ export default function PurchaseCourseButtons({ id, inCart }) {
             <PaymentSelectorModal
                 isShow={showModal}
                 setShowModal={setShowModal}
+                paymentTypeId={id}
+                paymentType={1}
             />
             <div className="row m-auto">
                 <button

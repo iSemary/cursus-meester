@@ -47,11 +47,11 @@ class StripeController extends ApiController {
      * following keys:
      * 
      */
-    public function init(int $paymentTransactionId, array $orders) {
+    public function init(int $paymentTransactionId, string $referenceNumber, array $orders) {
         $this->paymentTransactionId = $paymentTransactionId;
 
         $this->prepareOrderPayload($orders);
-        return $this->createOrder();
+        return $this->createOrder($referenceNumber);
     }
 
     /**
@@ -160,7 +160,7 @@ class StripeController extends ApiController {
      * 
      * @return JsonResponse The `createOrder()` function returns a `JsonResponse` object.
      */
-    public function createOrder(): JsonResponse {
+    public function createOrder(string $referenceNumber): JsonResponse {
         try {
             WebhookEndpoint::create([
                 'url' => $this->webhookURL,
@@ -176,7 +176,7 @@ class StripeController extends ApiController {
 
             $paymentLink = $session['url'];
 
-            return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink]);
+            return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink, 'reference_number' => $referenceNumber]);
         } catch (ApiErrorException $e) {
             return $this->return(500, "Something went wrong!", debug: $e->getMessage());
         }

@@ -5,6 +5,7 @@ namespace modules\Payments\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Course;
 use modules\Payments\Entities\Cart;
@@ -18,7 +19,7 @@ use modules\Payments\Interfaces\PaymentTypes;
 class PaymentController extends ApiController {
     private User|null $user;
     private Course $course;
-    private array $courses;
+    private Collection $courses;
     private float $totalPrice;
     private array $orders;
     private int $paymentMethod;
@@ -64,7 +65,7 @@ class PaymentController extends ApiController {
         $this->paymentMethod = $request->payment_method;
         $description = "Cart";
 
-        $cartCourseIds = Cart::whereUserId($this->user->id)->pluck("course_id");
+        $cartCourseIds = Cart::whereUserId($this->user->id)->pluck("course_id")->toArray();
         $this->courses = Course::selectPreview()->whereIn("id", $cartCourseIds)->get();
         $cartPrices = CartController::calculateCartPrice($this->courses);
         $this->totalPrice = $cartPrices['total_price'];
@@ -112,7 +113,7 @@ class PaymentController extends ApiController {
      * 
      * @return the result of calling the `createOrder()` method.
      */
-    private function prepareOrders(array $items) {
+    private function prepareOrders(array|Collection $items) {
         $orders = [];
         foreach ($items as $item) {
             $preparedItem['name'] = $item->title;
@@ -136,10 +137,10 @@ class PaymentController extends ApiController {
     private function createOrder() {
         switch ($this->paymentMethod) {
             case 1:
-                return (new StripeController)->init($this->paymentTransactionId, $this->orders);
+                return (new StripeController)->init($this->paymentTransactionId, $this->referenceNumber, $this->orders);
                 break;
             case 2:
-                return (new PaypalController)->init($this->paymentTransactionId, $this->orders);
+                return (new PaypalController)->init($this->paymentTransactionId, $this->referenceNumber, $this->orders);
                 break;
             default:
                 break;
@@ -213,10 +214,19 @@ class PaymentController extends ApiController {
 
     public function enrollCourses(array $courseIds, int $userId): void {
         foreach ($courseIds as $courseId) {
-            EnrolledCourse::create([
-                "course_id" => $courseId,
-                "user_id" => $userId,
-            ]);
+            EnrolledCourse::create(["course_id" => $courseId, "user_id" => $userId]);
+            Cart::where("user_id", $userId)->where("course_id", $courseId)->delete();
         }
+    }
+
+    public function checkPayment($referenceNumber) {
+        $paymentTransaction = PaymentTransaction::select('status')->where("reference_number", $referenceNumber)->first();
+        if ($paymentTransaction) {
+            if ($paymentTransaction->status == PaymentStatues::SUCCESS) {
+                return $this->return(400, "Payment purchased successfully", ['status' => true]);
+            }
+            return $this->return(400, "Payment not purchased yet", ['status' => false]);
+        }
+        return $this->return(400, "Payment not exists", ['status' => false]);
     }
 }

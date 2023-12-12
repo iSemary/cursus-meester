@@ -8,6 +8,7 @@ use modules\Payments\Http\Controllers\Api\StripeController;
 Route::middleware(["auth:api", "checkRole:student"])->prefix('payments')->group(function () {
     Route::post("purchase/course/{courseId}", [PaymentController::class, "purchaseCourse"]);
     Route::post("purchase/cart", [PaymentController::class, "purchaseCart"]);
+    Route::any("check/{referenceNumber}", [PaymentController::class, "checkPayment"]);
 });
 
 Route::get("payments/success", [RedirectionController::class, "success"]);
