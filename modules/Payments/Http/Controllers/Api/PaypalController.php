@@ -19,6 +19,7 @@ class PaypalController extends ApiController {
     private string $clientID;
     private string $clientSecret;
 
+    private string $referenceNumber;
     private string $accessToken;
 
     private string $cancelURL;
@@ -33,8 +34,7 @@ class PaypalController extends ApiController {
         $this->clientSecret = env("PAYPAL_CLIENT_SECRET");
 
 
-        $this->cancelURL = env("APP_URL") . '/api/v1.0/payments/cancel';
-        $this->webhookURL = 'https://fd63-196-158-195-231.ngrok-free.app/api/v1.0/payments/callback';
+        $this->webhookURL = 'https://fa66-196-158-195-231.ngrok-free.app/api/v1.0/payments/paypal/return';
     }
 
     /**
@@ -50,6 +50,9 @@ class PaypalController extends ApiController {
      */
     public function init(int $paymentTransactionId, string $referenceNumber, array $orders) {
         $this->paymentTransactionId = $paymentTransactionId;
+        $this->referenceNumber = $referenceNumber;
+
+        $this->cancelURL = env("APP_URL") . '/api/v1.0/payments/cancel?reference_number=' . $this->referenceNumber;
 
         $this->generateAccessToken();
 
@@ -135,17 +138,12 @@ class PaypalController extends ApiController {
         ]);
     }
 
-    public function callback(array $notification): void {
-        $transactionNumber = $notification['data']['object']['id'];
-
-        $status = PaymentStatues::EXPIRED;
-        if ($notification['data']['object']['payment_status'] == $this->successStatus) {
-            $status = PaymentStatues::SUCCESS;
-        }
-
-        (new PaymentController)->changeStatus($transactionNumber, $status);
-
-        $this->logNotification($transactionNumber, $notification, $status);
+    public function returnResponse() {
+        $transactionNumber = request()->token;
+        $referenceNumber = "";
+        $paymentTransaction = PaymentTransaction::where("transaction_number", $transactionNumber)->first();
+        if ($paymentTransaction) $referenceNumber = $paymentTransaction->reference_number;
+        return view("callback.payments.paypal.success", compact("referenceNumber"));
     }
 
     private function logNotification(string $transactionNumber, array $notification, int $status): void {

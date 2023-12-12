@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use modules\Payments\Http\Controllers\Api\PaymentController;
+use modules\Payments\Http\Controllers\Api\PaypalController;
 use modules\Payments\Http\Controllers\Api\RedirectionController;
 use modules\Payments\Http\Controllers\Api\StripeController;
 
@@ -13,4 +14,6 @@ Route::middleware(["auth:api", "checkRole:student"])->prefix('payments')->group(
 
 Route::get("payments/success", [RedirectionController::class, "success"]);
 Route::get("payments/cancel", [RedirectionController::class, "cancel"]);
+
 Route::post("payments/stripe/callback", [StripeController::class, "callback"]);
+Route::get("payments/paypal/return", [PaypalController::class, "returnResponse"]);

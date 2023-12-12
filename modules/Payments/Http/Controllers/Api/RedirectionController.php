@@ -11,7 +11,8 @@ class RedirectionController extends ApiController {
 
 
     public function success(): View {
-        return view("callback.payments.stripe.success");
+        $referenceNumber = request()->reference_number ?? "";
+        return view("callback.payments.stripe.success", compact("referenceNumber"));
     }
 
     /**
@@ -20,6 +21,7 @@ class RedirectionController extends ApiController {
      * @return View A view named "callback.payments.stripe.cancel" is being returned.
      */
     public function cancel(): View {
-        return view("callback.payments.stripe.cancel");
+        $referenceNumber = request()->reference_number ?? "";
+        return view("callback.payments.stripe.cancel", compact("referenceNumber"));
     }
 }

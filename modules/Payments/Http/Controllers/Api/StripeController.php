@@ -19,6 +19,8 @@ class StripeController extends ApiController {
     private array $payload;
     private int $paymentTransactionId;
 
+    private string $referenceNumber;
+
     private string $successURL;
     private string $cancelURL;
     private string $webhookURL;
@@ -30,9 +32,6 @@ class StripeController extends ApiController {
     public function __construct() {
         Stripe::setApiKey(env("STRIPE_SECRET_KEY"));
         $this->stripe = new \Stripe\StripeClient(env("STRIPE_SECRET_KEY"));
-
-        $this->successURL = env("APP_URL") . '/api/v1.0/payments/success';
-        $this->cancelURL = env("APP_URL") . '/api/v1.0/payments/cancel';
         $this->webhookURL = 'https://fd63-196-158-195-231.ngrok-free.app/api/v1.0/payments/stripe/callback';
     }
 
@@ -49,6 +48,10 @@ class StripeController extends ApiController {
      */
     public function init(int $paymentTransactionId, string $referenceNumber, array $orders) {
         $this->paymentTransactionId = $paymentTransactionId;
+        $this->referenceNumber = $referenceNumber;
+
+        $this->successURL = env("APP_URL") . '/api/v1.0/payments/success?reference_number=' . $this->referenceNumber;
+        $this->cancelURL = env("APP_URL") . '/api/v1.0/payments/cancel?reference_number=' . $this->referenceNumber;
 
         $this->prepareOrderPayload($orders);
         return $this->createOrder($referenceNumber);
