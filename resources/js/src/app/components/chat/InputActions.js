@@ -1,68 +1,94 @@
 import React, { useRef } from "react";
-import { SpeedDial } from "primereact/speeddial";
-import { Button } from "primereact/button";
+import { Button } from "react-bootstrap";
+import { BsFileEarmarkMusic } from "react-icons/bs";
+import { FaPlayCircle } from "react-icons/fa";
+import { FaRegImage } from "react-icons/fa6";
+import { ImAttachment, ImSpinner10 } from "react-icons/im";
+import { IoMdSend } from "react-icons/io";
 
-export default function InputActions() {
-    const toast = useRef(null);
+export default function InputActions({
+    loading,
+    setMessageType,
+    setMessageFile,
+    setFileViewer,
+}) {
+    const handleChangeMessageFile = (e, fileType) => {
+        const file = e.target.files[0];
+        var fileViewElement = "";
 
-    const items = [
-        {
-            label: "Add",
-            icon: "pi pi-pencil",
-            command: () => {
-                toast.current.show({
-                    severity: "info",
-                    summary: "Add",
-                    detail: "Data Added",
-                });
-            },
-        },
-        {
-            label: "Update",
-            icon: "pi pi-refresh",
-            command: () => {
-                toast.current.show({
-                    severity: "success",
-                    summary: "Update",
-                    detail: "Data Updated",
-                });
-            },
-        },
-        {
-            label: "Delete",
-            icon: "pi pi-trash",
-            command: () => {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Delete",
-                    detail: "Data Deleted",
-                });
-            },
-        },
-        {
-            label: "React Website",
-            icon: "pi pi-external-link",
-            command: () => {
-                window.location.href = "https://facebook.github.io/react/";
-            },
-        },
-    ];
+        setMessageFile(file);
+        setMessageType(fileType);
+
+        if (fileType === 2) {
+            fileViewElement = (
+                <img
+                    src={URL.createObjectURL(file)}
+                    width="45px"
+                    height="45px"
+                    alt="sender file viewer"
+                />
+            );
+        } else if (fileType === 4) {
+            fileViewElement = (
+                <span className="truncate-text">
+                    <FaPlayCircle /> {file.name}
+                </span>
+            );
+        } else if (fileType === 5) {
+            fileViewElement = (
+                <span className="truncate-text">
+                    <ImAttachment /> {file.name}
+                </span>
+            );
+        }
+        setFileViewer(fileViewElement);
+    };
 
     return (
         <>
             <div className="input-actions-container">
-                <div className="speed-actions-container">
-                    <SpeedDial
-                        model={items}
-                        className="speed-actions"
-                        size="small"
-                        showIcon
-                        hideOnClickOutside
-                        direction="up"
-                        style={{ left: "calc(50% - 2rem)", bottom: 0 }}
-                    />
+                <div className="chat-messages-container">
+                    <label className="text-primary" for="fileUpload">
+                        <ImAttachment />
+                        <input
+                            type="file"
+                            onChange={(e) => handleChangeMessageFile(e, 5)}
+                            id="fileUpload"
+                            className="d-none"
+                            name="message_file"
+                            accept="application/pdf, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        />
+                    </label>
+                    <label className="text-primary" for="musicUpload">
+                        <BsFileEarmarkMusic />
+                        <input
+                            type="file"
+                            onChange={(e) => handleChangeMessageFile(e, 4)}
+                            id="musicUpload"
+                            className="d-none"
+                            accept=".mp3, .ogg"
+                            name="message_file"
+                        />
+                    </label>
+                    <label className="text-primary" for="imageUpload">
+                        <FaRegImage />
+                        <input
+                            type="file"
+                            onChange={(e) => handleChangeMessageFile(e, 2)}
+                            id="imageUpload"
+                            className="d-none"
+                            accept=".jpg, .jpeg, .png, .gif"
+                            name="message_file"
+                        />
+                    </label>
+                    <Button type="submit" size="small">
+                        {loading ? (
+                            <ImSpinner10 className="icon-spin-1" />
+                        ) : (
+                            <IoMdSend />
+                        )}
+                    </Button>
                 </div>
-                <Button icon="pi pi-send" size="small" />
             </div>
         </>
     );

@@ -27,6 +27,20 @@ class CartController extends ApiController {
             }])
             ->get();
 
+        $cartPrice = self::calculateCartPrice($courses);
+        
+        $response = [
+            'courses' => $courses,
+            'total_price' => number_format($cartPrice['total_price']),
+            'discount_price' => number_format($cartPrice['discount_price']),
+            'discount_percentage' => abs(round($cartPrice['discount_percentage'], 2)),
+            'currency' => "$" // TODO dynamic currency
+        ];
+
+        return $this->return(200, "Cart fetched successfully", $response);
+    }
+
+    public static function calculateCartPrice($courses): array {
         $totalPrice = $courses->sum(function ($course) {
             return $course->final_price;
         });
@@ -37,15 +51,11 @@ class CartController extends ApiController {
 
         $discountPercentage = $totalPrice > 0 ? (($totalPrice - $discountPrice) / $totalPrice) * 100 : 0;
 
-        $response = [
-            'courses' => $courses,
-            'total_price' => number_format($totalPrice),
-            'discount_price' => number_format($discountPrice),
-            'discount_percentage' => abs(round($discountPercentage, 2)),
-            'currency' => "$" // TODO dynamic currency
+        return [
+            'total_price' => $totalPrice,
+            'discount_price' => $discountPrice,
+            'discount_percentage' => $discountPercentage
         ];
-
-        return $this->return(200, "Cart fetched successfully", $response);
     }
 
     /**

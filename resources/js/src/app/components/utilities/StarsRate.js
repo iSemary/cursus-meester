@@ -7,7 +7,7 @@ export default function StarsRate({ rate, totalStudents }) {
 
     return (
         <div className="stars-rate">
-            <span className="text-muted">{rate.average}</span>
+            <span className="text-muted">{rate.average} | </span>
             {Array.from({ length: totalStars }, (_, index) => (
                 <AiFillStar
                     key={index}
@@ -16,11 +16,11 @@ export default function StarsRate({ rate, totalStudents }) {
                     }
                 />
             ))}
-            {totalStudents && (
+            {totalStudents ? (
                 <span className="text-muted mx-2">
-                    {"(" + totalStudents + ") Students"}
+                   | {"(" + totalStudents + ") Students"}
                 </span>
-            )}
+            ) : ""}
         </div>
     );
 }

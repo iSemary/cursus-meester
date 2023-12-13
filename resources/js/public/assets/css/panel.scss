@@ -166,7 +166,7 @@ $thumbnailHeight: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
     display: grid;
-    max-height: 36%;
+    height: 300px;
     background-color: #f3f3f394;
     padding: 0 5px;
     .message-bubble {
@@ -242,7 +242,22 @@ $thumbnailHeight: 400px;
         }
     }
 }
-
+.chat-messages-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    label {
+        cursor: pointer;
+    }
+}
+.truncate-text {
+    display: inline-block;
+    width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .message-input-container {
     background-color: #f3f3fe;
     width: 100%;
@@ -250,9 +265,7 @@ $thumbnailHeight: 400px;
         width: 100%;
     }
 }
-.input-actions-container {
-    display: flex;
-}
+
 .speed-actions-container {
     width: 55px;
     position: relative;

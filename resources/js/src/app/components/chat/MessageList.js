@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MessageBubble from "./MessageBubble";
 
 export default function MessageList({ messages }) {
-    const [Bubbles, setBubbles] = useState([]);
+    const [bubbles, setBubbles] = useState([]);
+    const messagesRef = useRef(null);
     useEffect(() => {
-        const bubblesContent = messages.map((message, i) => (
-            <MessageBubble message={message} />
-        ));
-
+        const bubblesContent = messages
+            .reverse()
+            .map((message, i) => <MessageBubble message={message} />);
         setBubbles(bubblesContent);
     }, [messages]);
 
-    return <div className="message-list-container">{Bubbles}</div>;
+    useEffect(() => {
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }, [bubbles]);
+
+    return (
+        <div className="message-list-container" ref={messagesRef}>
+            {bubbles}
+        </div>
+    );
 }

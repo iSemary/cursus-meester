@@ -5,13 +5,13 @@ export default function ChatHeader({ userDetails }) {
         <div className="chat-header">
             <div className="d-flex align-items-center">
                 <img
-                    src={userDetails.avatar}
-                    alt={userDetails.name}
+                    src={userDetails.base_avatar}
+                    alt={userDetails.full_name}
                     width="30"
                     height="30"
                     className="rounded-circle"
                 />
-                <h4 className="ms-2 my-0">{userDetails.name}</h4>
+                <h6 className="font-weight-bold ms-2 my-0">{userDetails.full_name}</h6>
             </div>
         </div>
     );

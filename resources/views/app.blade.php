@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ env('APP_NAME', 'GeestGids') }}</title>
+    <title>{{ env('APP_NAME', 'Cursus Meester') }}</title>
 </head>
 
 <body>
-
+HOME
 </body>
 
 </html>

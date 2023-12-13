@@ -33,8 +33,7 @@ class SendMessageRequest extends FormRequest {
     public function rules(): array {
         return [
             'conversation_id' => 'required|numeric|exists:conversations,id',
-            'receiver_id' => 'required|numeric|exists:users,id',
-            'message_text' => 'required|max:5000|min:1',
+            'message_text' => 'sometimes|max:5000',
             'message_type' => 'required|numeric|in:' . $this->messageTypes,
             'message_file' => 'sometimes|file|mimes:png,jpg,pdf,xlsx,csv,doc,docx',
         ];

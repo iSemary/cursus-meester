@@ -46,7 +46,17 @@ class ChatController extends ApiController {
      */
     public function send(SendMessageRequest $sendMessageRequest): JsonResponse {
         $messageInstance = $sendMessageRequest->validated();
-        $messageInstance['sender_id'] = auth()->guard('api')->id();
+        $auth = auth()->guard('api')->user();
+
+        $conversation = Conversation::whereId($sendMessageRequest->conversation_id)
+            ->where(function ($query) use ($auth) {
+                $query->where("conversations.receiver_id", $auth->id)
+                    ->orWhere("conversations.sender_id", $auth->id);
+            })
+            ->first();
+
+        $messageInstance['sender_id'] = $auth->id;
+        $messageInstance['receiver_id'] = ($conversation->sender_id == $auth->id ? $conversation->receiver_id : $conversation->sender_id);
 
         $message = Message::send($messageInstance);
         return $this->return(200, "Message sent successfully", ['message' => $message]);
@@ -86,13 +96,40 @@ class ChatController extends ApiController {
 
         foreach ($conversations as $key => $conversation) {
             $userId = ($conversation->sender_id == $auth->id ? $conversation->receiver_id : $conversation->sender_id);
-            $conversation->latest_message = Message::select(['id', 'message_text', 'seen_at'])->where("conversation_id", $conversation->id)->latest()->first();
+            $conversation->latest_message = Message::select(['id', 'message_text', 'sender_id', 'seen_at', 'updated_at'])->where("conversation_id", $conversation->id)->latest()->first();
+            $conversation->latest_message->updated_at_diff = $conversation->latest_message->updated_at->diffForHumans();
             $conversation->user = User::select(['id', 'full_name', 'username'])->where("id", $userId)->first();
         }
 
         return $this->return(200, "Conversations fetched successfully", ['conversations' => $conversations]);
     }
-    public function messages(): JsonResponse {
-        return $this->return(200, "Conversation marked seen");
+    public function messages(int $conversationId): JsonResponse {
+        $auth = auth()->guard('api')->user();
+        $conversation = Conversation::whereId($conversationId)
+            ->where(function ($query) use ($auth) {
+                $query->where("conversations.receiver_id", $auth->id)
+                    ->orWhere("conversations.sender_id", $auth->id);
+            })
+            ->first();
+        if (!$conversation) {
+            return $this->return(400, "Conversation not exists");
+        }
+
+        $user = User::select(['users.id', 'full_name', 'username'])->whereId($conversation->receiver_id == $auth->id ? $conversation->sender_id : $conversation->receiver_id)->first();
+        $messages = Message::where("conversation_id", $conversationId)->latest('id')->paginate(20);
+        foreach ($messages as $message) {
+            $message = $this->formatMessage($message, $auth->id);
+        }
+        return $this->return(
+            200,
+            "Conversation fetched successfully",
+            ['messages' => $messages, 'user' => $user]
+        );
+    }
+
+    public function formatMessage($message, $authId) {
+        $message->type = $authId == $message->sender_id ? "out" : "in";
+
+        return $message;
     }
 }

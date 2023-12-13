@@ -185,7 +185,7 @@ class AuthController extends ApiController {
     }
 
     private function selectUserData(User $user): User {
-        return $user->select('full_name', 'email', 'username', 'created_at')->first();
+        return $user->where("id", $user->id)->select('full_name', 'email', 'username', 'created_at')->first();
     }
     /**
      * The function logs out a user by deleting their access tokens either for a specific request or

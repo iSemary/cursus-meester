@@ -575,5 +575,13 @@
     transform: scale(1) rotate(0deg); }
   to {
     transform: scale(1) rotate(360deg); } }
+.payment-methods-container {
+  display: grid; }
+  .payment-methods-container .payment-method-input {
+    cursor: pointer;
+    padding: 15px 0;
+    border-bottom: 1px solid #6a5c5c61; }
+    .payment-methods-container .payment-method-input:last-of-type {
+      border-bottom: 0; }
 
 /*# sourceMappingURL=style.css.map */
