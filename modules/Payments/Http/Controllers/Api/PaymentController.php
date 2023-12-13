@@ -208,8 +208,8 @@ class PaymentController extends ApiController {
     }
 
 
-    public function changeStatus(string $transactionNumber, int $status) {
-        PaymentTransaction::where("transaction_number", $transactionNumber)->update(['status' => $status]);
+    public function changeStatus(string $referenceNumber, int $status) {
+        PaymentTransaction::where("reference_number", $referenceNumber)->update(['status' => $status]);
     }
 
     public function enrollCourses(array $courseIds, int $userId): void {
@@ -223,7 +223,7 @@ class PaymentController extends ApiController {
         $paymentTransaction = PaymentTransaction::select('status')->where("reference_number", $referenceNumber)->first();
         if ($paymentTransaction) {
             if ($paymentTransaction->status == PaymentStatues::SUCCESS) {
-                return $this->return(400, "Payment purchased successfully", ['status' => true]);
+                return $this->return(200, "Payment purchased successfully", ['status' => true]);
             }
             return $this->return(400, "Payment not purchased yet", ['status' => false]);
         }

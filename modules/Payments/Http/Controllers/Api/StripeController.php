@@ -32,7 +32,7 @@ class StripeController extends ApiController {
     public function __construct() {
         Stripe::setApiKey(env("STRIPE_SECRET_KEY"));
         $this->stripe = new \Stripe\StripeClient(env("STRIPE_SECRET_KEY"));
-        $this->webhookURL = 'https://fd63-196-158-195-231.ngrok-free.app/api/v1.0/payments/stripe/callback';
+        $this->webhookURL = 'https://19a9-156-204-177-207.ngrok-free.app/api/v1.0/payments/stripe/callback';
     }
 
     /**
@@ -82,9 +82,9 @@ class StripeController extends ApiController {
         // Prepare payload for stripe
         $payload = [
             'payment_method_types' => $this->allowedPaymentTypes,
-            'line_items' => [
-                $preparedOrder
-            ],
+            'line_items' => [$preparedOrder],
+            'client_reference_id' => $this->referenceNumber,
+            'payment_intent_data' => ['metadata' => ['reference_number' => $this->referenceNumber]],
             'mode' => 'payment',
             'success_url' => $this->successURL,
             'cancel_url' => $this->cancelURL,
@@ -121,37 +121,62 @@ class StripeController extends ApiController {
      */
     private function logRequest(array $payload, array|object $response): void {
         StripeLog::create([
-            'transaction_number' => $response['id'],
+            'reference_number' => $this->referenceNumber,
             'status' => PaymentStatues::PENDING,
             'payload' => serialize($payload),
             'response' => serialize($response),
         ]);
     }
 
-    public function callback(Request $request): void {
-        $notification = $request->all();
-        $transactionNumber = $notification['data']['object']['id'];
 
-        $status = PaymentStatues::EXPIRED;
-        if ($notification['data']['object']['payment_status'] == $this->successStatus) {
+    public function checkForExistingWebhooks(): bool {
+        $existingEndpoints = \Stripe\WebhookEndpoint::all();
+        $webhookExists = false;
+        foreach ($existingEndpoints as $endpoint) {
+            if ($endpoint->url === $this->webhookURL) {
+                $webhookExists = true;
+                break;
+            }
+        }
+        return $webhookExists;
+    }
+
+    public function appendWebhook(): void {
+        WebhookEndpoint::create([
+            'url' => $this->webhookURL,
+            'enabled_events' => [
+                'charge.succeeded',
+                'charge.failed',
+            ],
+        ]);
+    }
+
+    public function callback(Request $request) {
+        $notification = $request->all();
+        $referenceNumber = $notification['data']['object']['metadata']['reference_number'];
+        $status = PaymentStatues::FAILED;
+
+        if ($notification['data']['object']['paid']) {
             $status = PaymentStatues::SUCCESS;
         }
         // Change payment transaction status to success or fail based on callback 
-        (new PaymentController)->changeStatus($transactionNumber, $status);
+        (new PaymentController)->changeStatus($referenceNumber, $status);
         // if the callback returned success status, then add the payment transaction items into enrolled course
         if ($status == PaymentStatues::SUCCESS) {
-            $paymentTransaction = PaymentTransaction::where("transaction_number", $transactionNumber)->first();
+            $paymentTransaction = PaymentTransaction::where("reference_number", $referenceNumber)->first();
             $coursesId = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->pluck("course_id")->toArray();
             $userId = $paymentTransaction->user_id;
             (new PaymentController)->enrollCourses($coursesId, $userId);
         }
 
-        $this->logNotification($transactionNumber, $notification, $status);
+        $this->logNotification($referenceNumber, $notification, $status);
+
+        return response()->json(['success' => true], 200);
     }
 
 
-    private function logNotification(string $transactionNumber, array $notification, int $status): void {
-        StripeLog::where("transaction_number", $transactionNumber)->update([
+    private function logNotification(string $referenceNumber, array $notification, int $status): void {
+        StripeLog::where("reference_number", $referenceNumber)->update([
             'status' => $status,
             'notification' => serialize($notification)
         ]);
@@ -165,13 +190,9 @@ class StripeController extends ApiController {
      */
     public function createOrder(string $referenceNumber): JsonResponse {
         try {
-            WebhookEndpoint::create([
-                'url' => $this->webhookURL,
-                'enabled_events' => [
-                    'charge.succeeded',
-                    'charge.failed',
-                ],
-            ]);
+            if (!$this->checkForExistingWebhooks()) {
+                $this->appendWebhook();
+            }
             $session = $this->stripe->checkout->sessions->create([$this->payload]);
 
             $this->updateTransactionId($session);

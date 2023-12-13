@@ -9,7 +9,7 @@ class StripeLog extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'transaction_number',
+        'reference_number',
         'status',
         'payload',
         'response',

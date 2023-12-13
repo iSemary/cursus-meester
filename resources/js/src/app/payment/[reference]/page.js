@@ -13,7 +13,7 @@ export default function PaymentChecker({ params }) {
 
     useEffect(() => {
         axiosConfig
-            .get(`payments/${reference}/check`)
+            .get(`payments/check/${reference}`)
             .then((response) => {
                 Cookies.set("PAYMENT_STATUS_" + reference, response.data.data.status);
                 setLoading(false);

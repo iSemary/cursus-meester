@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('stripe_logs', function (Blueprint $table) {
             $table->id();
-            $table->string("transaction_number", 255)->nullable();
+            $table->string("reference_number", 255)->nullable();
             $table->tinyInteger("status")->default(0);
             $table->longText("payload")->nullable();
             $table->longText("response")->nullable();

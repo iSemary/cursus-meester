@@ -6,6 +6,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { ImSpinner10 } from "react-icons/im";
 import toastAlert from "../../utilities/Alert";
 import Cookies from "js-cookie";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function PaymentSelectorModal({
     paymentType, // 1-> Single Item | 2-> Cart
@@ -15,8 +16,7 @@ export default function PaymentSelectorModal({
 }) {
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [paymentLink, setPaymentLink] = useState(false);
-    const [referenceNumber, setReferenceNumber] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(null);
 
     const handleClose = () => {
@@ -42,9 +42,10 @@ export default function PaymentSelectorModal({
                 }
             )
             .then((response) => {
-                setPaymentLink(response.data.data.payment_link);
-                setReferenceNumber(response.data.data.reference_number);
-                handleOpenPopup(response.data.data.payment_link);
+                handleOpenPopup(
+                    response.data.data.payment_link,
+                    response.data.data.reference_number
+                );
             })
             .catch((error) => {
                 setLoading(false);
@@ -52,7 +53,7 @@ export default function PaymentSelectorModal({
             });
     };
 
-    const handleOpenPopup = (link) => {
+    const handleOpenPopup = (link, referenceNumber) => {
         let windowWidth = 500;
         let windowHeight = 600;
 
@@ -76,17 +77,21 @@ export default function PaymentSelectorModal({
             if (paymentWindow.closed) {
                 clearInterval(checkClosed);
                 const paymentStatus = Cookies.get(
-                    "PAYMENT_STATUS_" + referenceNumber
+                    `PAYMENT_STATUS_${referenceNumber}`
                 );
-                if (paymentStatus === true) {
+                if (paymentStatus === "true") {
                     toastAlert(
                         "Cheers! Your purchase completed successfully!",
                         "success"
                     );
+                    setPaymentSuccess(true);
                     setTimeout(() => {
+                        Cookies.remove(`PAYMENT_STATUS_${referenceNumber}`);
                         location.reload();
                     }, 3000);
                 } else {
+                    setLoading(false);
+                    setPaymentSuccess(false);
                     toastAlert("Invalid payment.", "error");
                 }
             }
@@ -163,16 +168,20 @@ export default function PaymentSelectorModal({
                     </div>
                     <div className="mt-2 form-group text-right">
                         <Button
-                            variant="primary"
+                            variant={paymentSuccess ? "success" : "primary"}
                             type="submit"
                             disabled={!paymentMethod || loading}
                         >
-                            {loading ? (
+                            {paymentSuccess ? (
+                                <FaCheckCircle />
+                            ) : loading ? (
                                 <ImSpinner10 className="icon-spin-1" />
                             ) : (
                                 ""
                             )}{" "}
-                            Processed to payment
+                            {paymentSuccess
+                                ? "Purchased!"
+                                : "Processed to payment"}
                         </Button>
                     </div>
                 </form>
