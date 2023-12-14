@@ -1,5 +1,4 @@
 import axios from "axios";
-import toastAlert from "../Alert";
 import Cookies from "js-cookie";
 
 export const Token = {

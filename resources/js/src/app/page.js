@@ -50,7 +50,7 @@ export default function Home() {
                 );
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
 
         axiosConfig.get("categories?parents=1").then((response) => {

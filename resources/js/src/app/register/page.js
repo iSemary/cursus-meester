@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import StudentTemplate from "../Templates/StudentTemplate";
 import "intl-tel-input/build/css/intlTelInput.css";
-import intlTelInput from "intl-tel-input";
+// import intlTelInput from "intl-tel-input";
 import toastAlert from "../components/utilities/Alert";
 import axios from "axios";
 import { Token } from "../components/utilities/Authentication/Token";
@@ -73,28 +73,28 @@ const Register = () => {
     };
 
     useEffect(() => {
-        const inputPhoneElement = inputPhoneRef.current;
-        const itiInstance = intlTelInput(inputPhoneElement, {
-            initialCountry: "auto",
-            geoIpLookup: function (callback) {
-                fetch("https://ipapi.co/json")
-                    .then(function (res) {
-                        return res.json();
-                    })
-                    .then(function (data) {
-                        callback(data.country_code);
-                        setFormValues({
-                            ...formValues,
-                            country_dial_code: data.country_calling_code,
-                        });
-                    })
-                    .catch(function () {
-                        callback("nl");
-                    });
-            },
-        });
+        // const inputPhoneElement = inputPhoneRef.current;
+        // const itiInstance = intlTelInput(inputPhoneElement, {
+        //     initialCountry: "auto",
+        //     geoIpLookup: function (callback) {
+        //         fetch("https://ipapi.co/json")
+        //             .then(function (res) {
+        //                 return res.json();
+        //             })
+        //             .then(function (data) {
+        //                 callback(data.country_code);
+        //                 setFormValues({
+        //                     ...formValues,
+        //                     country_dial_code: data.country_calling_code,
+        //                 });
+        //             })
+        //             .catch(function () {
+        //                 callback("nl");
+        //             });
+        //     },
+        // });
 
-        setIti(itiInstance);
+        // setIti(itiInstance);
 
         axios
             .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")

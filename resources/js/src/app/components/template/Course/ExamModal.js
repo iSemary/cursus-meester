@@ -91,7 +91,7 @@ export default function ExamModal({
                 setExam(response.data.data.results);
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     };
 

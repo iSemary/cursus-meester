@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Col, FormGroup, Row } from "react-bootstrap";
-import intlTelInput from "intl-tel-input";
+// import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
 import { BiUpload } from "react-icons/bi";
 import Card from "react-bootstrap/Card";
@@ -9,7 +9,7 @@ import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import CountrySelector from "../../components/forms/CountrySelector";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import toastAlert from "../../components/utilities/Alert";
+import toastAlert from "../../components/utilities/Alert";na
 import { Token } from "../../components/utilities/Authentication/Token";
 import LanguageSelector from "../../components/forms/LanguageSelector";
 import { numbers } from "../../components/utilities/global/numbers";
@@ -29,10 +29,10 @@ export default function Profile() {
     const verifyPhoneBtnRef = useRef(null);
 
     useEffect(() => {
-        const inputPhoneElement = inputPhoneRef.current;
-        const itiInstance = intlTelInput(inputPhoneElement, {
-            initialCountry: "NL",
-        });
+        // const inputPhoneElement = inputPhoneRef.current;
+        // const itiInstance = intlTelInput(inputPhoneElement, {
+        //     initialCountry: "NL",
+        // });
 
         // Get Profile Details
         axiosConfig
@@ -42,8 +42,8 @@ export default function Profile() {
                 setProfile(response.data.data.data.student_profile);
                 setSocialLinks(response.data.data.data.social_links);
 
-                itiInstance.setNumber("+" + response.data.data.data.user.phone);
-                setIti(itiInstance);
+                // itiInstance.setNumber("+" + response.data.data.data.user.phone);
+                // setIti(itiInstance);
             })
             .catch((error) => {
                 console.error(error);

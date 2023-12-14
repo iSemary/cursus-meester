@@ -5,8 +5,10 @@ import DashboardTitle from "../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../components/utilities/Alert";
 import { useRouter } from "next/navigation";
-import FormEditor from "../components/FormEditor";
+// import FormEditor from "../components/FormEditor";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
 export default function createCourse() {
     const router = useRouter();
     const initialCourse = {
@@ -83,6 +85,10 @@ export default function createCourse() {
                 }
             });
     };
+
+    const FormEditor = dynamic(() => import("../components/FormEditor"), {
+        ssr: false,
+    });
 
     return (
         <DashboardTemplate>
