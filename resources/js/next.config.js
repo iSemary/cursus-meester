@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    staticPageGenerationTimeout: 1000,
+    staticPageGenerationTimeout: 10000,
     images: {
         domains: [
             "127.0.0.1",

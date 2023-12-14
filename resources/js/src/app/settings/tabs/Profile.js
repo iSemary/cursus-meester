@@ -35,14 +35,19 @@ export default function Profile() {
         });
 
         // Get Profile Details
-        axiosConfig.get("/user/profile").then((response) => {
-            setUserDetails(response.data.data.data.user);
-            setProfile(response.data.data.data.student_profile);
-            setSocialLinks(response.data.data.data.social_links);
+        axiosConfig
+            .get("/user/profile")
+            .then((response) => {
+                setUserDetails(response.data.data.data.user);
+                setProfile(response.data.data.data.student_profile);
+                setSocialLinks(response.data.data.data.social_links);
 
-            itiInstance.setNumber("+" + response.data.data.data.user.phone);
-            setIti(itiInstance);
-        });
+                itiInstance.setNumber("+" + response.data.data.data.user.phone);
+                setIti(itiInstance);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }, []);
 
     /** Deactivate account */

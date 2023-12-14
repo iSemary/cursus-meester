@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import DashboardTemplate from "../../../Templates/DashboardTemplate";
 import DashboardTitle from "../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../components/axiosConfig/axiosConfig";
@@ -64,9 +64,23 @@ export default function createCourse() {
                     `/dashboard/courses/${response.data.data.slug}/lectures/create`
                 );
             })
-            .catch(({ response }) => {
+            .catch((error) => {
                 setFormLoading(false);
-                toastAlert(response.data.message, "error");
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.message
+                ) {
+                    // Handle specific error message from the server
+                    toastAlert(error.response.data.message, "error");
+                } else {
+                    // Handle other errors (network error, unexpected error)
+                    toastAlert(
+                        "An error occurred while creating the course",
+                        "error"
+                    );
+                    console.error("Error creating course:", error);
+                }
             });
     };
 
@@ -98,8 +112,8 @@ export default function createCourse() {
                                 ? thumbnailImage
                                 : "https://placehold.co/600x400/EEE/31343C"
                         }
-                        width={"600"}
-                        height={"400"}
+                        width={600}
+                        height={400}
                         className="thumbnail-image course"
                         alt="thumbnail"
                     />

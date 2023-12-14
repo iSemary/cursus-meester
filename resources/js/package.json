@@ -45,5 +45,8 @@
     "redux": "^4.2.1",
     "sweetalert2": "^11.6.13",
     "video-react": "^0.16.0"
+  },
+  "devDependencies": {
+    "encoding": "^0.1.13"
   }
 }

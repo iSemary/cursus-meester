@@ -99,16 +99,25 @@ const RegisterInstructor = () => {
             .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")
             .then((response) => {
                 setCountries(response.data.data.countries);
+            })
+            .catch((error) => {
+                console.error(error);
             });
         axios
             .get(process.env.NEXT_PUBLIC_API_URL + "/industries?all=true")
             .then((response) => {
                 setIndustries(response.data.data.industries);
+            })
+            .catch((error) => {
+                console.error(error);
             });
         axios
             .get(process.env.NEXT_PUBLIC_API_URL + "/organizations?all=true")
             .then((response) => {
                 setOrganizations(response.data.data.organizations);
+            })
+            .catch((error) => {
+                console.error(error);
             });
     }, []);
 
