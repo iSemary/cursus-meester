@@ -5,6 +5,8 @@ import DashboardTitle from "../../../../layouts/dashboard/DashboardTitle";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
 import FormEditor from "../../components/FormEditor";
+import Image from "next/image";
+
 export default function editCourse({ params }) {
     const [course, setCourse] = useState({});
     const [thumbnailImage, setThumbnailImage] = useState(null);
@@ -83,8 +85,10 @@ export default function editCourse({ params }) {
                 <hr />
                 <div className="col-md-3">
                     <h5>Course Thumbnail Image</h5>
-                    <img
+                    <Image
                         src={thumbnailImage ? thumbnailImage : course.thumbnail}
+                        width={"600"}
+                        height={"400"}
                         className="thumbnail-image course"
                         alt="thumbnail"
                     />

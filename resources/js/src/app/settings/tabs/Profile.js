@@ -13,6 +13,7 @@ import toastAlert from "../../components/utilities/Alert";
 import { Token } from "../../components/utilities/Authentication/Token";
 import LanguageSelector from "../../components/forms/LanguageSelector";
 import { numbers } from "../../components/utilities/global/numbers";
+import Image from "next/image";
 
 export default function Profile() {
     const router = useRouter();
@@ -242,7 +243,7 @@ export default function Profile() {
                     <Row>
                         <Col className="mb-2" md={12}>
                             <div className="position-relative w-fit-content">
-                                <img
+                                <Image
                                     src={
                                         newAvatarImage
                                             ? newAvatarImage
@@ -250,6 +251,8 @@ export default function Profile() {
                                             ? profile.avatar
                                             : "/assets/images/icons/avatar.png"
                                     }
+                                    width="150"
+                                    height="150"
                                     className="avatar-image settings"
                                     alt="avatar"
                                 />

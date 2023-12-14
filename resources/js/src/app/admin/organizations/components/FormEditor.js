@@ -9,6 +9,7 @@ import { GrStatusGoodSmall } from "react-icons/gr";
 import { InputTextarea } from "primereact/inputtextarea";
 import { ImFileText2 } from "react-icons/im";
 import axiosConfig from "../../../components/axiosConfig/axiosConfig";
+import Image from "next/image";
 
 export default function FormEditor({
     organization,
@@ -154,7 +155,7 @@ export default function FormEditor({
             </div>
             <div className="row">
                 <div className="col-md-3">
-                    <img
+                    <Image
                         src={
                             thumbnailImage
                                 ? thumbnailImage

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useRef } from "react";
 import { Button } from "react-bootstrap";
 import { BsFileEarmarkMusic } from "react-icons/bs";
@@ -21,7 +22,7 @@ export default function InputActions({
 
         if (fileType === 2) {
             fileViewElement = (
-                <img
+                <Image
                     src={URL.createObjectURL(file)}
                     width="45px"
                     height="45px"

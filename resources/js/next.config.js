@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    staticPageGenerationTimeout: 1000,
     images: {
-        domains: ['placehold.co', 'cdn.icon-icons.com', 'upload.wikimedia.org', 'github.com', 'https://github.com/mdo.png'],
-      },
-}
+        domains: [
+            "127.0.0.1",
+            "placehold.co",
+        ],
+    },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

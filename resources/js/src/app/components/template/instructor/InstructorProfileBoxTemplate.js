@@ -15,7 +15,7 @@ export default function InstructorProfileBoxTemplate({
             >
                 <div className="row">
                     <div className="col-3 grid-center">
-                        <img
+                        <Image
                             src={instructor.avatar}
                             width={50}
                             height={50}

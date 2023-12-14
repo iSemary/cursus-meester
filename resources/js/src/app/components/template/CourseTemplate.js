@@ -31,7 +31,7 @@ export default function CourseTemplate({
             <div className="row">
                 <div className={cols ? cols[0] : "col-12"}>
                     <Link href={`/courses/${course.slug}`} className="no-link">
-                        <img
+                        <Image
                             src={course.thumbnail}
                             width={imageWidth}
                             height={150}

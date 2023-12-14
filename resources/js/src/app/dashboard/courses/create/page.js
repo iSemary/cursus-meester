@@ -6,6 +6,7 @@ import axiosConfig from "../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../components/utilities/Alert";
 import { useRouter } from "next/navigation";
 import FormEditor from "../components/FormEditor";
+import Image from "next/image";
 export default function createCourse() {
     const router = useRouter();
     const initialCourse = {
@@ -91,12 +92,14 @@ export default function createCourse() {
                 <hr />
                 <div className="col-md-3">
                     <h5>Course Thumbnail Image</h5>
-                    <img
+                    <Image
                         src={
                             thumbnailImage
                                 ? thumbnailImage
                                 : "https://placehold.co/600x400/EEE/31343C"
                         }
+                        width={"600"}
+                        height={"400"}
                         className="thumbnail-image course"
                         alt="thumbnail"
                     />

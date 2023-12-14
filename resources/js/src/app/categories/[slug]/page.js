@@ -10,6 +10,7 @@ import toastAlert from "../../components/utilities/Alert";
 import SubCategoriesTemplate from "../../components/template/SubCategoriesTemplate";
 import { MdOutlineCategory } from "react-icons/md";
 import CourseListLoader from "../../components/loaders/CourseListLoader";
+import Image from "next/image";
 
 export default function CategoryCourses({ params }) {
     const slug = params.slug;
@@ -44,7 +45,7 @@ export default function CategoryCourses({ params }) {
                         </div>
                         <div className="col-6 text-right">
                             {category?.icon && (
-                                <img
+                                <Image
                                     src={category?.icon}
                                     height={50}
                                     width={50}

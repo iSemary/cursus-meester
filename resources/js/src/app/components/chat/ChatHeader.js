@@ -1,10 +1,11 @@
+import Image from "next/image";
 import React from "react";
 
 export default function ChatHeader({ userDetails }) {
     return (
         <div className="chat-header">
             <div className="d-flex align-items-center">
-                <img
+                <Image
                     src={userDetails.base_avatar}
                     alt={userDetails.full_name}
                     width="30"

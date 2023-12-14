@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UsersSearch from "./UsersSearch";
 import axiosConfig from "../axiosConfig/axiosConfig";
+import Image from "next/image";
 
 export default function UsersList({
     activeConversation,
@@ -36,12 +37,14 @@ export default function UsersList({
                     onClick={(e) => openChat(conversation.id)}
                     className={
                         "d-grid" +
-                        (activeConversation === conversation.id ? " active" : "")
+                        (activeConversation === conversation.id
+                            ? " active"
+                            : "")
                     }
                 >
                     <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
-                            <img
+                            <Image
                                 src={conversation.user.base_avatar}
                                 alt={conversation.user.full_name}
                                 width="32"
@@ -51,12 +54,16 @@ export default function UsersList({
                             <h6>{conversation.user.full_name}</h6>
                         </div>
                         <div>
-                            <small>{conversation?.latest_message?.updated_at_diff}</small>
+                            <small>
+                                {conversation?.latest_message?.updated_at_diff}
+                            </small>
                         </div>
                     </div>
                     <div className="d-flex mt-2 mx-0">
                         <i className="pi pi-check mx-0"></i>
-                        <p className="ms-2">{conversation?.latest_message?.message_text}</p>
+                        <p className="ms-2">
+                            {conversation?.latest_message?.message_text}
+                        </p>
                     </div>
                 </li>
             ));

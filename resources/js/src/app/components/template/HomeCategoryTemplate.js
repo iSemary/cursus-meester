@@ -6,7 +6,7 @@ export default function HomeCategoryTemplate({ category, containerClass }) {
     return (
         <div className={"home-category-box " + containerClass}>
             <Link href={`/categories/${category.slug}`} className="no-link">
-                <img
+                <Image
                     src={category.icon}
                     width={200}
                     height={200}

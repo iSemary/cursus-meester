@@ -7,6 +7,7 @@ import { BiCategoryAlt, BiSolidImage } from "react-icons/bi";
 import { Dropdown } from "primereact/dropdown";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { FaSortNumericDown } from "react-icons/fa";
+import Image from "next/image";
 
 export default function FormEditor({
     category,
@@ -144,7 +145,7 @@ export default function FormEditor({
             </div>
             <div className="row">
                 <div className="col-md-3">
-                    <img
+                    <Image
                         src={
                             thumbnailImage
                                 ? thumbnailImage

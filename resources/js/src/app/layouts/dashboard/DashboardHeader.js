@@ -11,6 +11,7 @@ import { useAuth } from "../../components/hooks/AuthProvider";
 import { useEffect } from "react";
 import NotificationItem from "../../components/template/NotificationItem";
 import { Token } from "../../components/utilities/Authentication/Token";
+import Image from "next/image";
 
 export default function DashboardHeader() {
     const messagesPanel = useRef(null);
@@ -178,7 +179,7 @@ export default function DashboardHeader() {
                                         }
                                         target="_blank"
                                     >
-                                        <img
+                                        <Image
                                             src={
                                                 user?.data?.data?.instructor_profile?.avatar
                                             }

@@ -129,7 +129,7 @@ export default function Home() {
                                                 organization.slug
                                             }
                                         >
-                                            <img
+                                            <Image
                                                 src={organization.logo}
                                                 className="grayscale-image"
                                                 width={100}
