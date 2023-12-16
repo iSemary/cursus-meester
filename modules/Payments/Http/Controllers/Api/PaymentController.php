@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use modules\Courses\Entities\Course;
 use modules\Payments\Entities\Cart;
@@ -207,11 +208,27 @@ class PaymentController extends ApiController {
         return $referenceNumber;
     }
 
-
-    public function changeStatus(string $referenceNumber, int $status) {
+    /**
+     * The function "changeStatus" updates the status of a payment transaction based on the provided
+     * reference number.
+     * 
+     * @param string referenceNumber The reference number is a unique identifier for a payment transaction.
+     * It is used to locate the specific transaction that needs its status changed.
+     * @param int status The status parameter is an integer that represents the new status value that you
+     * want to update for the payment transaction.
+     */
+    public function changeStatus(string $referenceNumber, int $status): void {
         PaymentTransaction::where("reference_number", $referenceNumber)->update(['status' => $status]);
     }
 
+    /**
+     * The function "enrollCourses" enrolls a user in multiple courses by creating records in the
+     * "EnrolledCourse" table and removing corresponding records from the "Cart" table.
+     * 
+     * @param array courseIds An array of course IDs that the user wants to enroll in.
+     * @param int userId The userId parameter is an integer that represents the ID of the user who wants to
+     * enroll in the courses.
+     */
     public function enrollCourses(array $courseIds, int $userId): void {
         foreach ($courseIds as $courseId) {
             EnrolledCourse::create(["course_id" => $courseId, "user_id" => $userId]);
@@ -219,7 +236,17 @@ class PaymentController extends ApiController {
         }
     }
 
-    public function checkPayment($referenceNumber) {
+    /**
+     * The function checks the status of a payment transaction based on a given reference number and
+     * returns a JSON response indicating whether the payment was successful or not.
+     * 
+     * @param string referenceNumber The `referenceNumber` parameter is a string that represents the
+     * reference number of a payment transaction. It is used to identify a specific payment transaction in
+     * the database.
+     * 
+     * @return JsonResponse a JsonResponse object.
+     */
+    public function checkPayment(string $referenceNumber): JsonResponse {
         $paymentTransaction = PaymentTransaction::select('status')->where("reference_number", $referenceNumber)->first();
         if ($paymentTransaction) {
             if ($paymentTransaction->status == PaymentStatues::SUCCESS) {

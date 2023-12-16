@@ -61,12 +61,12 @@ const DashboardSidebar = () => {
                 {
                     label: "Payout",
                     icon: "pi pi-list",
-                    url: "/dashboard/courses/all",
+                    url: "/dashboard/payments/payout",
                 },
                 {
                     label: "Payment History",
                     icon: "pi pi-list",
-                    url: "/dashboard/courses/all",
+                    url: "/dashboard/payments/payment-history",
                 },
             ],
         },

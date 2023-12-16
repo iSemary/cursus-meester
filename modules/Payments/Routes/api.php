@@ -16,4 +16,5 @@ Route::get("payments/success", [RedirectionController::class, "success"]);
 Route::get("payments/cancel", [RedirectionController::class, "cancel"]);
 
 Route::post("payments/stripe/callback", [StripeController::class, "callback"]);
-Route::get("payments/paypal/return", [PaypalController::class, "returnResponse"]);
+
+Route::get("payments/paypal/check-status/{referenceNumber}", [PaypalController::class, "checkStatus"]);

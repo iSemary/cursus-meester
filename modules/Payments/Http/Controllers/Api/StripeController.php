@@ -129,6 +129,11 @@ class StripeController extends ApiController {
     }
 
 
+    /**
+     * The function checks if a webhook endpoint with a specific URL already exists.
+     * 
+     * @return bool a boolean value indicating whether a webhook with the specified URL exists or not.
+     */
     public function checkForExistingWebhooks(): bool {
         $existingEndpoints = \Stripe\WebhookEndpoint::all();
         $webhookExists = false;
@@ -141,6 +146,9 @@ class StripeController extends ApiController {
         return $webhookExists;
     }
 
+    /**
+     * The function `appendWebhook` creates a new webhook endpoint with a specified URL and enabled events.
+     */
     public function appendWebhook(): void {
         WebhookEndpoint::create([
             'url' => $this->webhookURL,
@@ -150,8 +158,19 @@ class StripeController extends ApiController {
             ],
         ]);
     }
-
-    public function callback(Request $request) {
+    
+    /**
+     * The function receives a callback request, extracts relevant data from the request, changes the
+     * payment transaction status based on the callback, and if the status is successful, enrolls the user
+     * in the corresponding courses.
+     * 
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class. It represents an incoming HTTP request and contains information such as the request method,
+     * headers, and payload.
+     * 
+     * @return JsonResponse a JsonResponse with a success status code of 200.
+     */
+    public function callback(Request $request): JsonResponse {
         $notification = $request->all();
         $referenceNumber = $notification['data']['object']['metadata']['reference_number'];
         $status = PaymentStatues::FAILED;
@@ -175,6 +194,19 @@ class StripeController extends ApiController {
     }
 
 
+    /**
+     * The logNotification function updates the status and notification fields of a StripeLog entry with
+     * the given reference number.
+     * 
+     * @param string referenceNumber The reference number is a string that is used to identify a specific
+     * Stripe log entry. It is used to query the StripeLog table and find the corresponding log entry to
+     * update.
+     * @param array notification The `` parameter is an array that contains information about
+     * the notification. It is being serialized using the `serialize()` function before being stored in the
+     * database.
+     * @param int status The status parameter is an integer that represents the status of the notification.
+     * It is used to update the 'status' field in the StripeLog table.
+     */
     private function logNotification(string $referenceNumber, array $notification, int $status): void {
         StripeLog::where("reference_number", $referenceNumber)->update([
             'status' => $status,
