@@ -113,7 +113,7 @@ export default function Settings() {
                                     />
                                     <div className="upload-avatar">
                                         <label
-                                            for="avatarUpload"
+                                            htmlFor="avatarUpload"
                                             className="custom-file-upload btn btn-primary btn-sm"
                                         >
                                             <BiUpload />

@@ -1,14 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar } from "primereact/sidebar";
-import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 import { useVisibility } from "../../components/utilities/dashboard/SidebarVisibility";
+import { useAuth } from "../../components/hooks/AuthProvider";
 
 const DashboardSidebar = () => {
     const { isVisible, setIsVisible } = useVisibility();
-    // Sample menu items
-    const items = [
+    const [items, setItems] = useState([]);
+    const { user } = useAuth();
+
+    const instructorItems = [
         {
             label: "Dashboard",
             icon: "pi pi-home",
@@ -79,6 +81,8 @@ const DashboardSidebar = () => {
                 },
             ],
         },
+    ];
+    const administrationItems = [
         {
             label: "Categories",
             icon: "pi pi-shopping-cart",
@@ -171,6 +175,22 @@ const DashboardSidebar = () => {
             ],
         },
     ];
+
+    useEffect(() => {
+        if (user) {
+            switch (user.data.data.user.role) {
+                case "instructor":
+                    setItems(instructorItems);
+                    break;
+                case "super_admin":
+                    setItems(administrationItems);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, [user]);
+
     return (
         <div>
             <Sidebar

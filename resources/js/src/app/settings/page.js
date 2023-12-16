@@ -5,7 +5,7 @@ import Tab from "react-bootstrap/Tab";
 import Col from "react-bootstrap/Col";
 import Nav from "react-bootstrap/Nav";
 import Row from "react-bootstrap/Row";
-// import Profile from "./tabs/Profile";
+import Profile from "./tabs/Profile";
 import Security from "./tabs/Security";
 import LoginAttempt from "./tabs/LoginAttempt";
 import PaymentMethods from "./tabs/PaymentMethods";
@@ -81,7 +81,7 @@ export default function Settings() {
                         <Col sm={9}>
                             <Tab.Content>
                                 <Tab.Pane eventKey="profile">
-                                    {/* <Profile /> */}
+                                    <Profile />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="security">
                                     <Security />

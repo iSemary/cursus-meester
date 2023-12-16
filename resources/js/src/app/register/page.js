@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import StudentTemplate from "../Templates/StudentTemplate";
 import "intl-tel-input/build/css/intlTelInput.css";
 import toastAlert from "../components/utilities/Alert";
@@ -67,7 +67,7 @@ const Register = () => {
                     // Store Access token
                     Token.store(response.data.data.user.access_token);
                     // Navigate to home page
-                    router.push("/");
+                    window.location.href = "/";
                 } else {
                     toastAlert(response.data.message, "error", 5000);
                 }
@@ -137,7 +137,7 @@ const Register = () => {
     const nextLogin = (authToken) => {
         toastAlert("Logged in successfully!", "success", 3000);
         // Navigate to home page
-        router.push("/");
+        window.location.href = "/";
     };
 
     return (
@@ -230,7 +230,6 @@ const Register = () => {
                                     fieldName="phone"
                                     defaultCountry={formValues?.country_dial_code?.toLowerCase()}
                                     value={formValues.phone}
-                                    className="form-control"
                                     onPhoneNumberChange={
                                         handleChangePhoneNumber
                                     }

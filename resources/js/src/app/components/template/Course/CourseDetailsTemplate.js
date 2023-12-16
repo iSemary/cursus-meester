@@ -162,7 +162,7 @@ export default function CourseDetailsTemplate({
 
                         {/* Claim or Download certificate */}
                         <div className="course-certificate">
-                            {course.has_certificate ? (
+                            {course?.actions?.purchased && course.has_certificate ? (
                                 <CertificateClaim
                                     courseId={course.id}
                                     canClaim={

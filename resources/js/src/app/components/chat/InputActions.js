@@ -49,7 +49,7 @@ export default function InputActions({
         <>
             <div className="input-actions-container">
                 <div className="chat-messages-container">
-                    <label className="text-primary" for="fileUpload">
+                    <label className="text-primary" htmlFor="fileUpload">
                         <ImAttachment />
                         <input
                             type="file"
@@ -60,7 +60,7 @@ export default function InputActions({
                             accept="application/pdf, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                         />
                     </label>
-                    <label className="text-primary" for="musicUpload">
+                    <label className="text-primary" htmlFor="musicUpload">
                         <BsFileEarmarkMusic />
                         <input
                             type="file"
@@ -71,7 +71,7 @@ export default function InputActions({
                             name="message_file"
                         />
                     </label>
-                    <label className="text-primary" for="imageUpload">
+                    <label className="text-primary" htmlFor="imageUpload">
                         <FaRegImage />
                         <input
                             type="file"

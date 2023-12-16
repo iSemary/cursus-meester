@@ -12,13 +12,14 @@ import { useEffect } from "react";
 import NotificationItem from "../../components/template/NotificationItem";
 import { Token } from "../../components/utilities/Authentication/Token";
 import Image from "next/image";
+import { ImSpinner10 } from "react-icons/im";
 
 export default function DashboardHeader() {
     const messagesPanel = useRef(null);
     const notificationsPanel = useRef(null);
     const { isVisible, setIsVisible } = useVisibility();
     const router = useRouter();
-    const { user } = useAuth(); // Get auth data
+    const { user, loading } = useAuth(); // Get auth data
     const dropDownItems = [
         {
             label: "Settings",
@@ -33,7 +34,7 @@ export default function DashboardHeader() {
             command: () => {
                 axiosConfig.post("/auth/logout").then(() => {
                     Token.explode();
-                    router.push("/");
+                    window.location.href = "/";
                 });
             },
         },
@@ -170,33 +171,39 @@ export default function DashboardHeader() {
                             </Link>
                         </div>
                         <div className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                            <SplitButton
-                                label={
-                                    <Link
-                                        href={
-                                            "/instructors/" +
-                                            user?.data?.data?.user.username
-                                        }
-                                        target="_blank"
-                                    >
-                                        <Image
-                                            src={
-                                                user?.data?.data?.instructor_profile?.avatar
+                            {loading ? (
+                                <ImSpinner10 className="icon-spin-1 text-primary" />
+                            ) : (
+                                <SplitButton
+                                    label={
+                                        <Link
+                                            href={
+                                                "/instructors/" +
+                                                user?.data?.data?.user.username
                                             }
-                                            alt="profile"
-                                            width="32"
-                                            height="32"
-                                            className="rounded-circle"
-                                        />
-                                    </Link>
-                                }
-                                raised
-                                text
-                                className="header-split-button"
-                                size="small"
-                                rounded
-                                model={dropDownItems}
-                            />
+                                            target="_blank"
+                                        >
+                                            <Image
+                                                src={
+                                                    user?.data?.data
+                                                        ?.instructor_profile
+                                                        ?.avatar
+                                                }
+                                                alt="profile"
+                                                width="32"
+                                                height="32"
+                                                className="rounded-circle"
+                                            />
+                                        </Link>
+                                    }
+                                    raised
+                                    text
+                                    className="header-split-button"
+                                    size="small"
+                                    rounded
+                                    model={dropDownItems}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,13 +1,14 @@
 "use client";
 import StudentTemplate from "../../Templates/StudentTemplate";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "intl-tel-input/build/css/intlTelInput.css";
-// import intlTelInput from "intl-tel-input";
 import toastAlert from "../../components/utilities/Alert";
 import axios from "axios";
 import { Token } from "../../components/utilities/Authentication/Token";
 import { useRouter } from "next/navigation";
 import { numbers } from "../../components/utilities/global/numbers";
+import IntlTelInput from "react-intl-tel-input-18";
+import "react-intl-tel-input-18/dist/main.css";
 
 const RegisterInstructor = () => {
     const initialValues = {
@@ -27,9 +28,6 @@ const RegisterInstructor = () => {
     const [industries, setIndustries] = useState([]);
     const [organizations, setOrganizations] = useState([]);
 
-    const [iti, setIti] = useState(null);
-    const inputPhoneRef = useRef(null);
-
     const router = useRouter();
 
     const handleChangeValues = (e) => {
@@ -38,14 +36,6 @@ const RegisterInstructor = () => {
             ...formValues,
             [name]: value,
         });
-        if (name === "phone") {
-            const selectedCountryData = iti.getSelectedCountryData();
-            setFormValues({
-                ...formValues,
-                phone: numbers.extractNumbers(value),
-                country_dial_code: selectedCountryData.dialCode,
-            });
-        }
     };
 
     const handleSubmitForm = (e) => {
@@ -71,29 +61,22 @@ const RegisterInstructor = () => {
             });
     };
 
-    useEffect(() => {
-        // const inputPhoneElement = inputPhoneRef.current;
-        // const itiInstance = intlTelInput(inputPhoneElement, {
-        //     initialCountry: "auto",
-        //     geoIpLookup: function (callback) {
-        //         fetch("https://ipapi.co/json")
-        //             .then(function (res) {
-        //                 return res.json();
-        //             })
-        //             .then(function (data) {
-        //                 callback(data.country_code);
-        //                 setFormValues({
-        //                     ...formValues,
-        //                     country_dial_code: data.country_calling_code,
-        //                 });
-        //             })
-        //             .catch(function () {
-        //                 callback("nl");
-        //             });
-        //     },
-        // });
+    const handleChangePhoneNumber = (
+        isValid,
+        value,
+        selectedCountryData,
+        fullNumber,
+        extension
+    ) => {
+        setFormValues({
+            ...formValues,
+            phone: numbers.extractNumbers(value),
+            country_dial_code: selectedCountryData.iso2,
+        });
+    };
 
-        // setIti(itiInstance);
+    useEffect(() => {
+   
 
         axios
             .get(process.env.NEXT_PUBLIC_API_URL + "/countries?all=true")
@@ -146,15 +129,17 @@ const RegisterInstructor = () => {
                         <div className="row mt-2">
                             <div className="form-group col-6">
                                 <label htmlFor="inputPhone">Phone Number</label>
-                                <input
-                                    type="tel"
+                                 <IntlTelInput
                                     id="inputPhone"
-                                    ref={inputPhoneRef}
-                                    placeholder=""
-                                    name="phone"
+                                    autoPlaceholder
+                                    containerClassName="intl-tel-input"
+                                    inputClassName="form-control"
+                                    fieldName="phone"
+                                    defaultCountry={formValues?.country_dial_code?.toLowerCase()}
                                     value={formValues.phone}
-                                    className="form-control"
-                                    onChange={handleChangeValues}
+                                    onPhoneNumberChange={
+                                        handleChangePhoneNumber
+                                    }
                                 />
                             </div>
                             <div className="form-group col-6">

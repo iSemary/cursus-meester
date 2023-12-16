@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { FaSquareTwitter, FaProductHunt } from "react-icons/fa6";
-import { BsFacebook } from "react-icons/bs";
+import { FaStackOverflow, FaLinkedinIn } from "react-icons/fa6";
 import toastAlert from "../components/utilities/Alert";
 import axios from "axios";
+import Link from "next/link";
+import { IoLogoGithub } from "react-icons/io5";
+import { AiOutlineGlobal } from "react-icons/ai";
 
 const Footer = () => {
     const [NewsletterEmail, setNewsletterEmail] = useState("");
@@ -40,100 +42,37 @@ const Footer = () => {
         <footer className="container py-5">
             <hr />
             <div className="row">
-                <div className="col-6 col-md-2 mb-3">
-                    <h5>Section</h5>
+                <div className="col-lg-6 col-md-4 col-6 mb-3">
+                    <h5>Get Started</h5>
                     <ul className="nav flex-column">
                         <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Home
-                            </a>
+                            <Link
+                                className="nav-link p-0 text-muted"
+                                href="/login"
+                            >
+                                Login
+                            </Link>
                         </li>
                         <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Features
-                            </a>
+                            <Link
+                                className="nav-link p-0 text-muted"
+                                href="/register"
+                            >
+                                Register
+                            </Link>
                         </li>
                         <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Pricing
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                FAQs
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                About
-                            </a>
+                            <Link
+                                className="nav-link p-0 text-muted"
+                                href="/register/instructor"
+                            >
+                                Register as instructor
+                            </Link>
                         </li>
                     </ul>
                 </div>
 
-                <div className="col-6 col-md-2 mb-3">
-                    <h5>Section</h5>
-                    <ul className="nav flex-column">
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Home
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Features
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Pricing
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                FAQs
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                About
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="col-6 col-md-2 mb-3">
-                    <h5>Section</h5>
-                    <ul className="nav flex-column">
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Home
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Features
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                Pricing
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                FAQs
-                            </a>
-                        </li>
-                        <li className="nav-item mb-2">
-                            <a href="#" className="nav-link p-0 text-muted">
-                                About
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="col-md-5 offset-md-1 mb-3">
+                <div className="col-lg-6 col-md-4 col-12 mb-3">
                     <form method="POST" onSubmit={handleNewsletterSubmit}>
                         <h5>Subscribe to our newsletter</h5>
                         <p>
@@ -172,18 +111,39 @@ const Footer = () => {
                 </p>
                 <ul className="list-unstyled d-flex">
                     <li className="ms-3">
-                        <a className="link-dark" href="#">
-                            <BsFacebook />
+                        <a
+                            className="link-dark"
+                            target="_blank"
+                            href="https://www.abdelrahman.online/"
+                        >
+                            <AiOutlineGlobal />
                         </a>
                     </li>
                     <li className="ms-3">
-                        <a className="link-dark" href="#">
-                            <FaSquareTwitter />
+                        <a
+                            className="link-dark"
+                            target="_blank"
+                            href="https://github.com/iSemary"
+                        >
+                            <IoLogoGithub />
                         </a>
                     </li>
                     <li className="ms-3">
-                        <a className="link-dark" href="#">
-                            <FaProductHunt />
+                        <a
+                            className="link-dark"
+                            target="_blank"
+                            href="https://www.linkedin.com/in/isemary/"
+                        >
+                            <FaLinkedinIn />
+                        </a>
+                    </li>
+                    <li className="ms-3">
+                        <a
+                            className="link-dark"
+                            target="_blank"
+                            href="https://stackoverflow.com/users/9735658/abdelrahman"
+                        >
+                            <FaStackOverflow />
                         </a>
                     </li>
                 </ul>
