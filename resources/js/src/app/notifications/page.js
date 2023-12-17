@@ -53,7 +53,7 @@ export default function notifications() {
             .catch((error) => {
                 setNotifications([]);
                 setLoading(false);
-                console.log(error);
+                console.error(error);
             });
     };
 

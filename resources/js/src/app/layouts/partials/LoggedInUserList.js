@@ -12,7 +12,7 @@ export default function LoggedInUserList({ user }) {
     const handleLogout = (e) => {
         axiosConfig.post("/auth/logout").then(() => {
             Token.explode();
-            router.push("/");
+            window.location.href = "/";
         });
     };
 

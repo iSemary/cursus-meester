@@ -8,4 +8,14 @@ interface PaymentStatues {
     const FAILED = 2;
     const EXPIRED = 3;
     const CANCELED = 4;
+    const TRANSFERRED = 5;
+
+    const STATUES_TEXT = [
+        PaymentStatues::PENDING => 'Pending',
+        PaymentStatues::SUCCESS => 'Success',
+        PaymentStatues::FAILED => 'Failed',
+        PaymentStatues::EXPIRED => 'Expired',
+        PaymentStatues::CANCELED => 'Canceled',
+        PaymentStatues::TRANSFERRED => 'Transferred',
+    ];
 }

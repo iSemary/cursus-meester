@@ -9,6 +9,7 @@ import { Button } from "primereact/button";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import { BiUpload } from "react-icons/bi";
 import toastAlert from "../../components/utilities/Alert";
+import Image from "next/image";
 
 export default function Settings() {
     const initialState = {
@@ -96,7 +97,7 @@ export default function Settings() {
                         <Row>
                             <Col md={3}>
                                 <div className="position-relative w-fit-content">
-                                    <img
+                                    <Image
                                         src={
                                             newAvatarImage
                                                 ? newAvatarImage
@@ -106,11 +107,13 @@ export default function Settings() {
                                                   "/storage/users/avatar/default.png"
                                         }
                                         className="avatar-image settings"
+                                        height={"150px"}
+                                        width={"150px"}
                                         alt="avatar"
                                     />
                                     <div className="upload-avatar">
                                         <label
-                                            for="avatarUpload"
+                                            htmlFor="avatarUpload"
                                             className="custom-file-upload btn btn-primary btn-sm"
                                         >
                                             <BiUpload />

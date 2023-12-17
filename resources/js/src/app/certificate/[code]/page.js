@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import StudentTemplate from "../../Templates/StudentTemplate";
 import TaskLoader from "../../components/loaders/TaskLoader";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
+import Image from "next/image";
 
 export default function certificateChecker({ params }) {
     const code = params.code;
@@ -28,7 +29,8 @@ export default function certificateChecker({ params }) {
             ) : certificate ? (
                 <div className="text-center">
                     <div>
-                        <img
+                        <Image
+                            alt="valid certificate"
                             src={"/assets/images/icons/valid-certificate.png"}
                             width={150}
                             height={150}
@@ -46,7 +48,8 @@ export default function certificateChecker({ params }) {
                 </div>
             ) : (
                 <div className="text-center">
-                    <img
+                    <Image
+                        alt="invalid certificate"
                         src={"/assets/images/icons/invalid-certificate.png"}
                         width={150}
                         height={150}

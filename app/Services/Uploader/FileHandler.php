@@ -85,7 +85,10 @@ class FileHandler {
                 // Switch between file types to append extra data into the response
                 switch ($type) {
                     case 2: // Video
-                        $extra['duration'] = self::calculateVideoDuration(public_path() . '/storage/' . $fullPath);
+                        $extra['duration'] = self::calculateVideoDuration(storage_path('app/' . $disk . '/' . $fullPath));
+                        var_dump(storage_path($disk . '/' . $fullPath));
+                        var_dump(storage_path($fullPath));
+                        var_dump(($fullPath));
                         break;
                     default:
                         break;

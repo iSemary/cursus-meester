@@ -8,7 +8,6 @@ import { Token } from "../../components/utilities/Authentication/Token";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { GrCertificate } from "react-icons/gr";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
 import { AiOutlineVideoCameraAdd } from "react-icons/ai";
@@ -16,13 +15,6 @@ export default function viewCourses() {
     const router = useRouter();
     /** Split button items */
     const dropDownItems = (slug) => [
-        {
-            label: "Certificate Editor",
-            icon: <GrCertificate className="dropdown-icon" />,
-            command: () => {
-                router.push(`/dashboard/courses/${slug}/certificate/editor`);
-            },
-        },
         {
             label: "Create lecture",
             icon: <AiOutlineVideoCameraAdd className="dropdown-icon" />,

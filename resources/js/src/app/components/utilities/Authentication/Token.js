@@ -1,5 +1,4 @@
 import axios from "axios";
-import toastAlert from "../Alert";
 import Cookies from "js-cookie";
 
 export const Token = {
@@ -11,8 +10,7 @@ export const Token = {
     },
     explode() {
         // Delete token from local storage
-        Cookies.set("AUTH_TOKEN", "");
-        localStorage.removeItem("AUTH_TOKEN");
+        Cookies.remove("AUTH_TOKEN");
     },
     get() {
         // Get token from local storage

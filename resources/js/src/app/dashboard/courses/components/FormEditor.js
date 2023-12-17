@@ -1,3 +1,4 @@
+"use client";
 import "react-datepicker/dist/react-datepicker.css";
 import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";

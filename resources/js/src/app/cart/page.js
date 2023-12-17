@@ -11,23 +11,38 @@ export default function Cart() {
     const [courses, setCourses] = useState(null);
     /** Fetch cart items */
     const handleCartContent = () => {
-        axiosConfig.get("cart").then((response) => {
-            setCourses(response.data.data);
-        });
+        axiosConfig
+            .get("cart")
+            .then((response) => {
+                setCourses(response.data.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     /** Soft deleting cart item */
     const handleRemoveCart = (id) => {
-        axiosConfig.delete(`cart/${id}`).then((response) => {
-            toastAlert(response.data.message, "success");
-            handleCartContent();
-        });
+        axiosConfig
+            .delete(`cart/${id}`)
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+                handleCartContent();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     /** Move item to wishlist and Soft delete cart item */
     const handleMoveToWishlist = (id) => {
-        axiosConfig.post(`cart/${id}/move-wishlist`).then((response) => {
-            toastAlert(response.data.message, "success");
-            handleCartContent();
-        });
+        axiosConfig
+            .post(`cart/${id}/move-wishlist`)
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+                handleCartContent();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     useState(() => {

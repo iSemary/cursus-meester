@@ -128,7 +128,7 @@ export default function examEditor({ params }) {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     }, []);
 

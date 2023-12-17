@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import StudentTemplate from "../Templates/StudentTemplate";
 import axios from "axios";
 import toastAlert from "../components/utilities/Alert";
@@ -41,7 +41,7 @@ const Login = () => {
                 // Store Access token
                 Token.store(response.data.data.user.access_token);
                 // Navigate to home page
-                router.push("/");
+                window.location.href = "/";
             })
             .catch(({ response }) => {
                 toastAlert(response.data.message, "error", 5000);
@@ -84,7 +84,7 @@ const Login = () => {
     const nextLogin = (authToken) => {
         toastAlert("Logged in successfully!", "success", 3000);
         // Navigate to home page
-        router.push("/");
+        window.location.href = "/";
     };
 
     return (

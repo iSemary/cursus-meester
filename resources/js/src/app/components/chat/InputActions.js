@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useRef } from "react";
 import { Button } from "react-bootstrap";
 import { BsFileEarmarkMusic } from "react-icons/bs";
@@ -21,7 +22,7 @@ export default function InputActions({
 
         if (fileType === 2) {
             fileViewElement = (
-                <img
+                <Image
                     src={URL.createObjectURL(file)}
                     width="45px"
                     height="45px"
@@ -48,7 +49,7 @@ export default function InputActions({
         <>
             <div className="input-actions-container">
                 <div className="chat-messages-container">
-                    <label className="text-primary" for="fileUpload">
+                    <label className="text-primary" htmlFor="fileUpload">
                         <ImAttachment />
                         <input
                             type="file"
@@ -59,7 +60,7 @@ export default function InputActions({
                             accept="application/pdf, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                         />
                     </label>
-                    <label className="text-primary" for="musicUpload">
+                    <label className="text-primary" htmlFor="musicUpload">
                         <BsFileEarmarkMusic />
                         <input
                             type="file"
@@ -70,7 +71,7 @@ export default function InputActions({
                             name="message_file"
                         />
                     </label>
-                    <label className="text-primary" for="imageUpload">
+                    <label className="text-primary" htmlFor="imageUpload">
                         <FaRegImage />
                         <input
                             type="file"

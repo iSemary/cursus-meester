@@ -5,7 +5,7 @@ export default function LanguageSelector({
     defaultValue = "",
     className = "",
     name = "language_id",
-    id="language",
+    id = "language",
     required = false,
 }) {
     const [languages, setLanguages] = useState([]);
@@ -16,6 +16,9 @@ export default function LanguageSelector({
                 if (response.data.status === 200) {
                     setLanguages(response.data.data.languages);
                 }
+            })
+            .catch((error) => {
+                console.error(error);
             });
     }, []);
     return (

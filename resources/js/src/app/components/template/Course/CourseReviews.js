@@ -3,6 +3,7 @@ import React from "react";
 import StarsRate from "../../utilities/StarsRate";
 import { FaQuoteLeft } from "react-icons/fa6";
 import LeaveReview from "./LeaveReview";
+import Image from "next/image";
 
 export default function CourseReviews({ rates, courseSlug, canRate }) {
     return (
@@ -23,7 +24,7 @@ export default function CourseReviews({ rates, courseSlug, canRate }) {
                                 >
                                     <div className="row">
                                         <div className="col-2 px-0">
-                                            <img
+                                            <Image
                                                 src={rate?.user?.base_avatar}
                                                 width={50}
                                                 height={50}

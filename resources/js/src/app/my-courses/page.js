@@ -12,6 +12,8 @@ export default function MyCourses() {
     const handleContentPagination = (page) => {
         axiosConfig.get(`my-courses?page=${page}`).then((response) => {
             setMyCourses(response.data.data.courses);
+        }).catch((error)=>{
+            console.error(error);
         });
     };
 

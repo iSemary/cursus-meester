@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Profile from "./tabs/Profile";
 import Security from "./tabs/Security";
 import LoginAttempt from "./tabs/LoginAttempt";
-import PaymentMethods from "./tabs/PaymentMethods";
+import PaymentHistory from "./tabs/PaymentHistory";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -68,12 +68,12 @@ export default function Settings() {
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link
-                                        eventKey="payment-methods"
+                                        eventKey="payment-history"
                                         onClick={() =>
-                                            handleChangeTab("payment-methods")
+                                            handleChangeTab("payment-history")
                                         }
                                     >
-                                        Payment Methods
+                                        Payment History
                                     </Nav.Link>
                                 </Nav.Item>
                             </Nav>
@@ -81,16 +81,16 @@ export default function Settings() {
                         <Col sm={9}>
                             <Tab.Content>
                                 <Tab.Pane eventKey="profile">
-                                    <Profile />
+                                    {settingTab === "profile" && <Profile />}
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="security">
-                                    <Security />
+                                    {settingTab === "security" && <Security />}
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="login-attempt">
-                                    <LoginAttempt />
+                                    {settingTab === "login-attempt" && (<LoginAttempt />)}
                                 </Tab.Pane>
-                                <Tab.Pane eventKey="payment-methods">
-                                    <PaymentMethods />
+                                <Tab.Pane eventKey="payment-history">
+                                    {settingTab === "payment-history" && (<PaymentHistory />)}
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>

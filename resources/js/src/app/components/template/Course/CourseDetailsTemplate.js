@@ -11,6 +11,7 @@ import CourseReviews from "./CourseReviews";
 import MediaPlayer from "../../MediaPlayer/MediaPlayer";
 import PurchaseCourseButtons from "./PurchaseCourseButtons";
 import CertificateClaim from "./CertificateClaim";
+import Image from "next/image";
 
 export default function CourseDetailsTemplate({
     course,
@@ -105,7 +106,7 @@ export default function CourseDetailsTemplate({
                 <div className="col-4">
                     <div className="lecture-viewer">
                         <div className="preview-image">
-                            <img
+                            <Image
                                 src={course.thumbnail}
                                 alt="course preview"
                                 width={250}
@@ -161,7 +162,7 @@ export default function CourseDetailsTemplate({
 
                         {/* Claim or Download certificate */}
                         <div className="course-certificate">
-                            {course.has_certificate ? (
+                            {course?.actions?.purchased && course.has_certificate ? (
                                 <CertificateClaim
                                     courseId={course.id}
                                     canClaim={

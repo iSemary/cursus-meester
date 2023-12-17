@@ -7,6 +7,7 @@ import { ImSpinner10 } from "react-icons/im";
 import toastAlert from "../../utilities/Alert";
 import Cookies from "js-cookie";
 import { FaCheckCircle } from "react-icons/fa";
+import Image from "next/image";
 
 export default function PaymentSelectorModal({
     paymentType, // 1-> Single Item | 2-> Cart
@@ -79,6 +80,7 @@ export default function PaymentSelectorModal({
                 const paymentStatus = Cookies.get(
                     `PAYMENT_STATUS_${referenceNumber}`
                 );
+
                 if (paymentStatus === "true") {
                     toastAlert(
                         "Cheers! Your purchase completed successfully!",
@@ -131,7 +133,7 @@ export default function PaymentSelectorModal({
                                 onChange={handleChangePaymentMethod}
                             />
                             <span>
-                                <img
+                                <Image
                                     src="/assets/images/icons/mastercard.png"
                                     width={35}
                                     height={25}
@@ -155,7 +157,7 @@ export default function PaymentSelectorModal({
                                 onChange={handleChangePaymentMethod}
                             />
                             <span>
-                                <img
+                                <Image
                                     src="/assets/images/icons/paypal.png"
                                     width={35}
                                     height={25}

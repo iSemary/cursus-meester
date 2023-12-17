@@ -6,6 +6,7 @@ import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
 import SocialLinks from "../../components/SocialLinks/SocialLinks";
 import { ProfileLoader } from "../../components/loaders/ProfileLoader";
+import Image from "next/image";
 
 export default function InstructorProfile({ params }) {
     const username = params.username;
@@ -35,11 +36,12 @@ export default function InstructorProfile({ params }) {
                             <div className="instructor-details">
                                 <div className="row">
                                     <div className="col-4 text-center">
-                                        <img
+                                        <Image
                                             className="instructor-profile-image"
-                                            width={150}
                                             src={instructor?.info?.avatar}
+                                            width={150}
                                             height={150}
+                                            alt="avatar"
                                         />
                                     </div>
                                     <div className="col-8 text-left pt-5">

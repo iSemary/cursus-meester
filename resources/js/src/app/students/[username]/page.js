@@ -6,6 +6,7 @@ import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
 import SocialLinks from "../../components/SocialLinks/SocialLinks";
 import { ProfileLoader } from "../../components/loaders/ProfileLoader";
+import Image from "next/image";
 
 export default function StudentProfile({ params }) {
     const username = params.username;
@@ -35,7 +36,8 @@ export default function StudentProfile({ params }) {
                             <div className="student-details">
                                 <div className="row">
                                     <div className="col-4 text-center">
-                                        <img
+                                        <Image
+                                            alt="student-avatar"
                                             className="student-profile-image"
                                             width={150}
                                             src={student?.info?.avatar}

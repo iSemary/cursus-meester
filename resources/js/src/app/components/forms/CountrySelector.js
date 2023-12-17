@@ -17,6 +17,9 @@ export default function CountrySelector({
                 if (response.data.status === 200) {
                     setCountries(response.data.data.countries);
                 }
+            })
+            .catch((error) => {
+                console.error(error);
             });
     }, []);
     return (

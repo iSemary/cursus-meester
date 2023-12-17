@@ -307,4 +307,56 @@ hr {
 .notifications-header-container {
   margin-top: 65px; }
 
+.dashboard-loader {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 32px 0 #fff, -32px 0 #fff;
+  position: relative;
+  animation: dashboardLoader 0.5s ease-out infinite alternate; }
+
+@keyframes dashboardLoader {
+  0% {
+    background-color: #0d6efd14;
+    box-shadow: 32px 0 #0d6efd14, -32px 0 #556cd6; }
+  50% {
+    background-color: #556cd6;
+    box-shadow: 32px 0 #0d6efd14, -32px 0 #0d6efd14; }
+  100% {
+    background-color: #0d6efd14;
+    box-shadow: 32px 0 #556cd6, -32px 0 #0d6efd14; } }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+.icon-spin-05 {
+  animation: spin 500ms linear infinite; }
+
+.icon-spin-1 {
+  animation: spin 1s linear infinite; }
+
+.icon-spin-2 {
+  animation: spin 2s linear infinite; }
+
+.font-weight-bold {
+  font-weight: bold; }
+
+.no-border-right-radius {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0; }
+
+.no-border-left-radius {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.paypal-section {
+  display: flex;
+  align-items: center; }
+  .paypal-section .paypal-title {
+    color: #002e86;
+    font-weight: bold; }
+
 /*# sourceMappingURL=panel.css.map */

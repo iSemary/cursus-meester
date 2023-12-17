@@ -95,7 +95,7 @@ export default function Security() {
                                 <Col md="12">
                                     <Row>
                                         <Col md="8">
-                                            <label for="">
+                                            <label htmlFor="">
                                                 Logout from all other sessions
                                             </label>
                                         </Col>
@@ -127,7 +127,7 @@ export default function Security() {
                                     className="form-check-input"
                                     type="checkbox"
                                     role="switch"
-                                    id="flexSwitchCheckChecked"
+                                    id="twoAuthSwitch"
                                     onChange={handleChangeTwoFactorAuthenticate}
                                     checked={
                                         isTwoFactorAuthenticate ? "checked" : ""
@@ -135,7 +135,7 @@ export default function Security() {
                                 />
                                 <label
                                     className="form-check-label"
-                                    for="flexSwitchCheckChecked"
+                                    htmlFor="twoAuthSwitch"
                                 >
                                     Enable 2FA Authentication
                                 </label>

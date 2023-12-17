@@ -10,8 +10,8 @@ use Illuminate\View\View;
 class RedirectionController extends ApiController {
 
 
-    public function success(): View {
-        $referenceNumber = request()->reference_number ?? "";
+    public function success($referenceNumber = ""): View {
+        $referenceNumber = request()->reference_number ?? $referenceNumber;
         return view("callback.payments.stripe.success", compact("referenceNumber"));
     }
 
@@ -20,8 +20,8 @@ class RedirectionController extends ApiController {
      * 
      * @return View A view named "callback.payments.stripe.cancel" is being returned.
      */
-    public function cancel(): View {
-        $referenceNumber = request()->reference_number ?? "";
+    public function cancel($referenceNumber = ""): View {
+        $referenceNumber = request()->reference_number ?? $referenceNumber;
         return view("callback.payments.stripe.cancel", compact("referenceNumber"));
     }
 }

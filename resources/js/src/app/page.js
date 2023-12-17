@@ -50,7 +50,7 @@ export default function Home() {
                 );
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
 
         axiosConfig.get("categories?parents=1").then((response) => {
@@ -129,7 +129,7 @@ export default function Home() {
                                                 organization.slug
                                             }
                                         >
-                                            <img
+                                            <Image
                                                 src={organization.logo}
                                                 className="grayscale-image"
                                                 width={100}

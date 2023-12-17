@@ -37,7 +37,7 @@ export default function createLecture({ params }) {
                 setCourse(response.data.data.course);
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     }, [params.slug]);
 

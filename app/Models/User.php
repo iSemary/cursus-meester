@@ -22,7 +22,7 @@ class User extends Authenticatable {
      *
      * @var array<int, string>
      */
-    protected $fillable = ['full_name', 'email', 'username', 'phone', 'country_id', 'language_id', 'password'];
+    protected $fillable = ['full_name', 'email', 'username', 'phone', 'country_id', 'country_dial_code', 'language_id', 'password'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,6 +46,11 @@ class User extends Authenticatable {
         'password' => 'hashed',
     ];
 
+
+
+    public function role() {
+        return $this->roles()->latest()->first();
+    }
 
     /**
      * The function `verifyToken` checks if a given token exists in the `EmailToken` table, updates its

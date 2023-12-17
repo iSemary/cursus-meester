@@ -12,9 +12,14 @@ export default function Wishlist() {
 
     /** Fetch wishlist items */
     const handleContentPagination = (page) => {
-        axiosConfig.get(`wishlist?page=${page}`).then((response) => {
-            setCourses(response.data.data.courses);
-        });
+        axiosConfig
+            .get(`wishlist?page=${page}`)
+            .then((response) => {
+                setCourses(response.data.data.courses);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     /** Handle pagination fetching data */
     const handlePageClick = (e) => {
@@ -25,17 +30,27 @@ export default function Wishlist() {
 
     /** handle soft delete wishlist item */
     const handleRemoveWishlist = (id) => {
-        axiosConfig.delete(`wishlist/${id}`).then((response) => {
-            toastAlert(response.data.message, "success");
-            handleContentPagination(currentPage);
-        });
+        axiosConfig
+            .delete(`wishlist/${id}`)
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+                handleContentPagination(currentPage);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     /** Move item to cart and Soft delete wishlist item */
     const handleMoveToCart = (id) => {
-        axiosConfig.post(`wishlist/${id}/move-cart`).then((response) => {
-            toastAlert(response.data.message, "success");
-            handleContentPagination(currentPage);
-        });
+        axiosConfig
+            .post(`wishlist/${id}/move-cart`)
+            .then((response) => {
+                toastAlert(response.data.message, "success");
+                handleContentPagination(currentPage);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     useState(() => {

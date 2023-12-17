@@ -8,6 +8,7 @@ import StudentTemplate from "../../Templates/StudentTemplate";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
 import CourseListLoader from "../../components/loaders/CourseListLoader";
+import Image from "next/image";
 
 export default function organizations({ params }) {
     const slug = params.slug;
@@ -41,7 +42,7 @@ export default function organizations({ params }) {
                         </div>
                         <div className="col-3 d-grid align-items-center justify-content-center">
                             {organization?.logo && (
-                                <img
+                                <Image
                                     src={organization?.logo}
                                     height={50}
                                     width={50}

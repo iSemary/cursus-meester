@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
 
 export default function UsersSearch() {
-    const [Keyword, setKeyword] = useState(null);
+    const [Keyword, setKeyword] = useState("");
     return (
         <div className="users-search-container">
             <span className="p-input-icon-left">

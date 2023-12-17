@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Col, FormGroup, Row } from "react-bootstrap";
-import intlTelInput from "intl-tel-input";
-import "intl-tel-input/build/css/intlTelInput.css";
 import { BiUpload } from "react-icons/bi";
 import Card from "react-bootstrap/Card";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
@@ -13,11 +11,12 @@ import toastAlert from "../../components/utilities/Alert";
 import { Token } from "../../components/utilities/Authentication/Token";
 import LanguageSelector from "../../components/forms/LanguageSelector";
 import { numbers } from "../../components/utilities/global/numbers";
+import Image from "next/image";
+import IntlTelInput from "react-intl-tel-input-18";
+import "react-intl-tel-input-18/dist/main.css";
 
 export default function Profile() {
     const router = useRouter();
-    const [iti, setIti] = useState(null);
-    const inputPhoneRef = useRef(null);
     const [newAvatarImage, setNewAvatarImage] = useState(null);
     const [newAvatar, setNewAvatar] = useState(null);
     const [userDetails, setUserDetails] = useState({});
@@ -28,20 +27,18 @@ export default function Profile() {
     const verifyPhoneBtnRef = useRef(null);
 
     useEffect(() => {
-        const inputPhoneElement = inputPhoneRef.current;
-        const itiInstance = intlTelInput(inputPhoneElement, {
-            initialCountry: "NL",
-        });
-
         // Get Profile Details
-        axiosConfig.get("/user/profile").then((response) => {
-            setUserDetails(response.data.data.data.user);
-            setProfile(response.data.data.data.student_profile);
-            setSocialLinks(response.data.data.data.social_links);
-
-            itiInstance.setNumber("+" + response.data.data.data.user.phone);
-            setIti(itiInstance);
-        });
+        axiosConfig
+            .get("/user/profile")
+            .then((response) => {
+                setUserDetails(response.data.data.data.user);
+                setProfile(response.data.data.data.student_profile);
+                setSocialLinks(response.data.data.data.social_links);
+                
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }, []);
 
     /** Deactivate account */
@@ -91,14 +88,20 @@ export default function Profile() {
             ...userDetails,
             [name]: value,
         });
-        if (name === "phone") {
-            const selectedCountryData = iti.getSelectedCountryData();
-            setUserDetails({
-                ...userDetails,
-                phone: numbers.extractNumbers(value),
-                country_dial_code: selectedCountryData.dialCode,
-            });
-        }
+    };
+
+    const handleChangePhoneNumber = (
+        isValid,
+        value,
+        selectedCountryData,
+        fullNumber,
+        extension
+    ) => {
+        setUserDetails({
+            ...userDetails,
+            phone: numbers.extractNumbers(value),
+            country_dial_code: selectedCountryData.iso2,
+        });
     };
 
     /** Change Profile State */
@@ -242,7 +245,7 @@ export default function Profile() {
                     <Row>
                         <Col className="mb-2" md={12}>
                             <div className="position-relative w-fit-content">
-                                <img
+                                <Image
                                     src={
                                         newAvatarImage
                                             ? newAvatarImage
@@ -250,12 +253,14 @@ export default function Profile() {
                                             ? profile.avatar
                                             : "/assets/images/icons/avatar.png"
                                     }
+                                    width="150"
+                                    height="150"
                                     className="avatar-image settings"
                                     alt="avatar"
                                 />
                                 <div className="upload-avatar">
                                     <label
-                                        for="avatarUpload"
+                                        htmlFor="avatarUpload"
                                         className="custom-file-upload btn btn-primary btn-sm"
                                     >
                                         <BiUpload />
@@ -345,15 +350,15 @@ export default function Profile() {
                                 <br />
                                 <Row>
                                     <Col md={9}>
-                                        <input
-                                            type="tel"
+                                        <IntlTelInput
                                             id="inputPhone"
-                                            ref={inputPhoneRef}
-                                            placeholder=""
-                                            onChange={handleChangeUserDetails}
-                                            name="phone"
-                                            value={userDetails?.phone}
-                                            className="form-control w-100"
+                                            autoPlaceholder
+                                            containerClassName="intl-tel-input"
+                                            inputClassName="form-control w-100"
+                                            fieldName="phone"
+                                            defaultCountry={String(userDetails.country_dial_code)}
+                                            value={String(userDetails?.phone)}
+                                            onPhoneNumberChange={handleChangePhoneNumber}
                                         />
                                     </Col>
                                     <Col md={3} className="text-right">

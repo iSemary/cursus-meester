@@ -6,11 +6,21 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (await Token.check()) {
-                setUser(await Token.getUser());
+            try {
+                if (Token.check()) {
+                    if (await Token.check()) {
+                        setUser(await Token.getUser());
+                    }
+                }
+                setLoading(false);
+            } catch (error) {
+                setError(error.message);
+                setLoading(false);
             }
         };
 
@@ -18,7 +28,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, loading }}>
+            {children}
+        </AuthContext.Provider>
     );
 };
 

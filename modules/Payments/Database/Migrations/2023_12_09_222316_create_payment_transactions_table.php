@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->tinyInteger('status');
             $table->tinyInteger('payment_method');
+            $table->tinyInteger('payment_type_id');
             $table->char('reference_number', 15);
             $table->string('transaction_number', 255)->nullable();
             $table->string('description', 255)->nullable();

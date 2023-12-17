@@ -14,7 +14,7 @@ class RolePermissionSeeder extends Seeder {
         // Create all roles
         $superAdminRole = Role::create(['name' => 'super_admin', 'guard_name' => 'api']);
         $instructorRole = Role::create(['name' => 'instructor', 'guard_name' => 'api']);
-        $studentRole = Role::create(['name' => 'student', 'guard_name' => 'api']);
+        Role::create(['name' => 'student', 'guard_name' => 'api']);
 
         /**
          *  Super Admin role and permissions

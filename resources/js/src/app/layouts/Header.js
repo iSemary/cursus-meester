@@ -8,8 +8,9 @@ import { useAuth } from "../components/hooks/AuthProvider";
 import { FaRegHeart } from "react-icons/fa6";
 import LoggedInUserList from "./partials/LoggedInUserList";
 import SearchBar from "./partials/SearchBar";
+import { ImSpinner10 } from "react-icons/im";
 const Header = () => {
-    const { user } = useAuth(); // Get auth data
+    const { user, loading } = useAuth(); // Get auth data
 
     return (
         <header className="main-header">
@@ -54,7 +55,13 @@ const Header = () => {
                                 <FaRegHeart size={23} />
                             </Link>
                         </li>
-                        {user ? (
+                        {loading ? (
+                            <>
+                                <li>
+                                    <ImSpinner10 className="icon-spin-1" />
+                                </li>
+                            </>
+                        ) : user ? (
                             <LoggedInUserList user={user} />
                         ) : (
                             <>

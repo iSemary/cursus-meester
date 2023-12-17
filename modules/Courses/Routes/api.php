@@ -13,6 +13,11 @@ use modules\Courses\Http\Controllers\Api\{
     ResourceController,
 };
 
+/**
+ * Course Details Page
+ */
+Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
+
 // Administration Routes 
 Route::group(["middleware" => ["auth:api", "checkRole:super_admin"]], function () {
     Route::get("courses/all", [CourseController::class, "all"]);
@@ -93,11 +98,6 @@ Route::group(["middleware" => "auth:api"], function () {
 Route::get("resources/media/{fileName}/{token}", [ResourceController::class, "returnMedia"]);
 
 /**  Public Routes */
-
-/**
- * Course Details Page
- */
-Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
 
 // Rate Course
 Route::get("courses/{courseSlug}/rates", [RateController::class, "getRates"]);
