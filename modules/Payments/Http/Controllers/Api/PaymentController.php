@@ -5,11 +5,13 @@ namespace modules\Payments\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Jobs\CartPurchasedMailJob;
 use App\Jobs\CoursePurchasedMailJob;
+use App\Jobs\PayoutMailJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use modules\Courses\Entities\Course;
 use modules\Payments\Entities\Cart;
 use modules\Payments\Entities\EnrolledCourse;
@@ -282,14 +284,34 @@ class PaymentController extends ApiController {
         $paymentTransaction = PaymentTransaction::where("id", $paymentTransactionId)->first();
         $user = User::where("id", $userId)->first();
 
-        $data = $paymentTransaction;
-        $data['items'] = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->get();
+        $data = [];
+        $data['reference_number'] = $paymentTransaction->reference_number;
+        $data['created_at'] = Carbon::now();
 
         switch ($paymentTransaction->payment_type_id) {
             case PaymentTypes::SINGLE_ITEM:
+                $paymentTransactionItem = PaymentTransactionItem::join("courses", "courses.id", "payment_transaction_items.course_id")
+                    ->select([
+                        'courses.id',
+                        'courses.title',
+                        'courses.slug',
+                    ])
+                    ->where("payment_transaction_id", $paymentTransaction->id)
+                    ->first();
+
+                $data['title'] = $paymentTransactionItem->title;
+                $data['slug'] = $paymentTransactionItem->slug;
+
+
                 CoursePurchasedMailJob::dispatch($user, $data);
                 break;
             case PaymentTypes::CART:
+                $coursesIds = PaymentTransactionItem::select("course_id")->where("payment_transaction_id", $paymentTransaction->id)->pluck("course_id")->toArray();
+
+                $courses = DB::table("courses")->select(['courses.title', 'courses.slug'])->whereIn("id", $coursesIds)->get();
+
+                $data['courses'] = $courses;
+
                 CartPurchasedMailJob::dispatch($user, $data);
                 break;
             default:
@@ -390,9 +412,77 @@ class PaymentController extends ApiController {
         return $totalPayOutAmount;
     }
 
-    public function payout(): JsonResponse {
+    public function payout(Request $request): JsonResponse {
+        $user = auth()->guard('api')->user();
 
-        return $this->return(200, "Paid out successfully");
+        $email = $request->email;
+        $totalPrice = (float) $this->calculatePayOutAmount($user->id);
+        $payload = $this->preparePayoutPayload($email, $totalPrice);
+
+        $response = $this->sendPayout($payload);
+
+        if ($response) {
+            // mark as transferred
+            Payout::whereUserId($user->id)->where("status", PaymentStatues::PENDING)
+                ->update([
+                    'transferred_email' => $email,
+                    'status' => PaymentStatues::TRANSFERRED,
+                    'transaction_number' => $response['batch_header']['payout_batch_id']
+                ]);
+            // send instructor mail
+            $data = [
+                'total_amount' => $totalPrice,
+                'created_at' => Carbon::now(),
+                'reference_number' => $response['batch_header']['payout_batch_id'],
+            ];
+            PayoutMailJob::dispatch($user, $data);
+            return $this->return(200, "Paid out successfully");
+        }
+        return $this->return(400, "Something went wrong");
+    }
+    /**
+     * The function prepares a payout payload with the sender's batch header and recipient details.
+     * 
+     * @param string email The email parameter is a string that represents the recipient's email address.
+     * @param float totalPrice The `totalPrice` parameter is a float value representing the total amount of
+     * money to be paid out. It is used to set the value of the payout amount in the payload.
+     * 
+     * @return array an array called .
+     */
+    private function preparePayoutPayload(string $email, float $totalPrice): array {
+        $payload = [];
+        $payload['sender_batch_header'] = [
+            'sender_batch_id' => "Payouts_" . time(),
+            'email_subject' => "You have a payout!",
+            'email_message' => "You have received a payout! Thanks for using our service!",
+        ];
+
+        $payload['items'] = [[
+            "recipient_type" => "EMAIL",
+            "amount" => [
+                "value" => $totalPrice,
+                "currency" => "USD",
+            ],
+            "note" => "Thank you for your efforts at " . env("APP_NAME") . "!",
+            "receiver" => $email,
+            "notification_language" => "en-US",
+        ]];
+
+        return $payload;
+    }
+
+    /**
+     * The function "sendPayout" sends a payout using the PaypalController and returns the response.
+     * 
+     * @param array payload The payload parameter is an array that contains the necessary data for sending
+     * a payout. It could include information such as the recipient's email address, the amount to be sent,
+     * and any additional details required by the payment gateway.
+     * 
+     * @return bool|array either a boolean value or an array.
+     */
+    private function sendPayout(array $payload): bool|array {
+        $response = (new PaypalController)->payout($payload);
+        return $response;
     }
 
     /**
@@ -404,7 +494,7 @@ class PaymentController extends ApiController {
      */
     public function payoutHistory(): JsonResponse {
         $user = auth()->guard("api")->user();
-        $payouts = Payout::where("user_id", $user->id)->paginate(5);
+        $payouts = Payout::where("user_id", $user->id)->orderByDesc("id")->paginate(5);
         foreach ($payouts as $payout) {
             $payout->status = PaymentStatues::STATUES_TEXT[$payout->status];
             $payout->payment_method = PaymentMethods::METHODS_TEXT[$payout->payment_method];

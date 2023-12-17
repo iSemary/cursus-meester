@@ -19,13 +19,17 @@ export default function payout() {
     const handlePayOut = () => {
         setPayLoading(true);
         axiosConfig
-            .post("payments/payout")
+            .post("payments/payout", { email: transferEmail })
             .then((response) => {
                 toastAlert(response.data.message, "success");
                 getPaymentDetails();
                 setPayLoading(false);
             })
             .catch((error) => {
+                setPayLoading(false);
+                const errorMessage =
+                    error.response?.data?.message || "An error occurred";
+                toastAlert(errorMessage, "error");
                 console.error(error);
             });
     };
@@ -125,6 +129,9 @@ export default function payout() {
                                         <InputText
                                             className="no-border-right-radius"
                                             value={transferEmail}
+                                            onChange={(e) =>
+                                                setTransferEmail(e.target.value)
+                                            }
                                             placeholder="Transfer Email Address"
                                             disabled={
                                                 paymentDetails.can_get_paid

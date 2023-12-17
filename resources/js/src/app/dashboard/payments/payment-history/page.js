@@ -27,6 +27,7 @@ export default function paymentHistory() {
                                 payment.transaction_number,
                                 payment.total_price,
                                 payment.status,
+                                payment.transferred_email,
                                 payment.payment_method,
                                 payment.updated_at_diff,
                             ]),
@@ -35,7 +36,7 @@ export default function paymentHistory() {
                     pagination={{
                         limit: 5,
                         server: {
-                            url: (prev, page, limit) => `${prev}?page=${page}`,
+                            url: (prev, page, limit) => `${prev}?page=${page+1}`,
                         },
                     }}
                     columns={[
@@ -43,6 +44,7 @@ export default function paymentHistory() {
                         "Transaction Number",
                         "Final Price",
                         "Status",
+                        "Transferred Email",
                         "Payment Method",
                         "Last Updated",
                     ]}

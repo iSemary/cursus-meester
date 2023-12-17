@@ -38,7 +38,7 @@ export default function PaymentHistory() {
                     pagination={{
                         limit: 5,
                         server: {
-                            url: (prev, page, limit) => `${prev}?page=${page}`,
+                            url: (prev, page, limit) => `${prev}?page=${page+1}`,
                         },
                     }}
                     columns={[

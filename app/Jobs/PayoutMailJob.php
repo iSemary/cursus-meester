@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\CoursePurchasedMail;
+use App\Mail\PayoutMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class CoursePurchasedMailJob implements ShouldQueue {
+class PayoutMailJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $user;
     private $data;
@@ -29,14 +29,12 @@ class CoursePurchasedMailJob implements ShouldQueue {
     public function handle(): void {
         $data = [
             'name' => $this->user->full_name,
-            'email' => $this->user->email,
-            'course_name' => $this->data['title'],
-            'course_url' => env("APP_URL") . '/courses/' . $this->data['slug'],
+            'total_amount' => $this->data['total_amount'],
             'created_at' => $this->data['created_at'],
             'reference_number' => $this->data['reference_number'],
         ];
 
         // if (env("APP_ENV") == "production")
-        Mail::to($this->user->email)->send(new CoursePurchasedMail($data));
+            Mail::to($this->user->email)->send(new PayoutMail($data));
     }
 }

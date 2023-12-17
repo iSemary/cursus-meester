@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->integer('payment_transaction_items_id');
             $table->string('reference_number', 255);
             $table->string('transaction_number', 255)->nullable();
+            $table->string('transferred_email', 255)->nullable();
             $table->tinyInteger('payment_method');
             $table->decimal('total_price', 10, 2);
             $table->integer('user_id');

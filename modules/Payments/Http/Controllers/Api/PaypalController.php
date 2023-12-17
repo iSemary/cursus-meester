@@ -283,4 +283,42 @@ class PaypalController extends ApiController {
             'notification' => serialize($notification)
         ]);
     }
+
+    /**
+     * The `payout` function sends a POST request to a specified endpoint with a JSON payload and returns
+     * the response if the status code is 201, otherwise it returns false.
+     * 
+     * @param array payload The `` parameter is an array that contains the data needed for the
+     * payout request. It should include all the necessary information for the payout, such as the
+     * recipient's details, the amount to be paid, and any additional information required by the payment
+     * service.
+     * 
+     * @return bool|array either a boolean value (true or false) or an array.
+     */
+    public function payout(array $payload): bool|array {
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Accept-Language' => 'en_US',
+            'Authorization' => 'Basic ' . base64_encode($this->clientID . ':' . $this->clientSecret),
+        ];
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request(
+            'POST',
+            $this->endpointURL . 'v1/payments/payouts',
+            [
+                'headers' => $headers,
+                'json' => $payload,
+            ]
+        );
+
+        if ($response->getStatusCode() == 201) {
+            $response = json_decode($response->getBody(), true);
+
+            return $response;
+        } else {
+            return false;
+        }
+    }
 }

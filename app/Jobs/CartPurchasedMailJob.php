@@ -27,9 +27,16 @@ class CartPurchasedMailJob implements ShouldQueue {
      * Execute the job.
      */
     public function handle(): void {
-        $data = [];
+        $data = [
+            'name' => $this->user->full_name,
+            'email' => $this->user->email,
+            'created_at' => $this->data['created_at'],
+            'reference_number' => $this->data['reference_number'],
+            'courses' => $this->data['courses'],
+            'redirect_url' => env("APP_ENV") . "/my-courses"
+        ];
 
-        if (env("APP_ENV") == "production")
-            Mail::to($this->user['email'])->send(new CartPurchasedMail($data));
+        // if (env("APP_ENV") == "production")
+        Mail::to($this->user->email)->send(new CartPurchasedMail($data));
     }
 }

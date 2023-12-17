@@ -32,7 +32,7 @@ class StripeController extends ApiController {
     public function __construct() {
         Stripe::setApiKey(env("STRIPE_SECRET_KEY"));
         $this->stripe = new \Stripe\StripeClient(env("STRIPE_SECRET_KEY"));
-        $this->webhookURL = 'https://19a9-156-204-177-207.ngrok-free.app/api/v1.0/payments/stripe/callback';
+        $this->webhookURL = env("APP_URL") . '/api/v1.0/payments/stripe/callback';
     }
 
     /**
@@ -158,7 +158,7 @@ class StripeController extends ApiController {
             ],
         ]);
     }
-    
+
     /**
      * The function receives a callback request, extracts relevant data from the request, changes the
      * payment transaction status based on the callback, and if the status is successful, enrolls the user
