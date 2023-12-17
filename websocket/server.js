@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
     // Sending message event
     socket.on("chat-message", (message) => {
         console.log(message);
-        io.emit("chat message", message);
+        io.emit("chat-message", message);
     });
 });
 

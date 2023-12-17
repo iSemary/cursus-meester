@@ -43,13 +43,12 @@ class Message extends Model {
 
     public static function sendToSocket($message) {
         // Send message to Node.js WebSocket server
-        $response = Http::post(env("SOCKET_URL") . ":" . env("SOCKET_PORT") . '/send-message', [
+        $response = Http::get(env("SOCKET_URL") . ":" . env("SOCKET_PORT") . '/chat-message', [
             'message' => $message,
         ]);
     }
 
     public static function handleMessageFile($file): JsonResponse {
-        $data = [];
         $mediaFileResponse = FileHandler::file($file, self::$filePath, null, 'protected');
         return $mediaFileResponse;
     }
