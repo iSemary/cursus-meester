@@ -6,6 +6,7 @@ use App\Services\Uploader\FileHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Http;
 
 class Message extends Model {
     use HasFactory;
@@ -33,7 +34,18 @@ class Message extends Model {
             'message' => $messageFile
         ]);
 
+
+        self::sendToSocket($data['message_text']);
+
         return $message;
+    }
+
+
+    public static function sendToSocket($message) {
+        // Send message to Node.js WebSocket server
+        $response = Http::post(env("SOCKET_URL") . ":" . env("SOCKET_PORT") . '/send-message', [
+            'message' => $message,
+        ]);
     }
 
     public static function handleMessageFile($file): JsonResponse {

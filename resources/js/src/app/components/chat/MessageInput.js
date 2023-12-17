@@ -4,8 +4,14 @@ import InputActions from "./InputActions";
 import { InputTextarea } from "primereact/inputtextarea";
 import axiosConfig from "../axiosConfig/axiosConfig";
 import { FaRegTrashAlt } from "react-icons/fa";
+import io from "socket.io-client";
 
 export default function MessageInput({ conversationId }) {
+    const port = process.env.NEXT_PUBLIC_SOCKET_PORT;
+    const websocketURL = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+    const socket = io(websocketURL + ":" + port);
+
     const [writtenMessage, setWrittenMessage] = useState("");
     const [messageType, setMessageType] = useState(1);
     const [messageFile, setMessageFile] = useState(null);
@@ -31,9 +37,7 @@ export default function MessageInput({ conversationId }) {
             .then((response) => {
                 setLoading(false);
                 setWrittenMessage("");
-                setMessageType(1);
-                setMessageFile(null);
-                setFileViewer(null);
+                handleRemoveFile()
             })
             .catch((error) => {
                 setLoading(false);
