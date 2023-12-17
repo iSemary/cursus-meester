@@ -9,17 +9,17 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('payment_transactions', function (Blueprint $table) {
+        Schema::create('payouts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->tinyInteger('status');
-            $table->tinyInteger('payment_method');
-            $table->tinyInteger('payment_type_id');
-            $table->char('reference_number', 15);
+            $table->integer('payment_transaction_id');
+            $table->integer('payment_transaction_items_id');
+            $table->string('reference_number', 255);
             $table->string('transaction_number', 255)->nullable();
-            $table->string('description', 255)->nullable();
+            $table->tinyInteger('payment_method');
             $table->decimal('total_price', 10, 2);
-            $table->dateTime('expire_at');
+            $table->integer('user_id');
+            $table->tinyInteger('status')->default(0);
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('payment_transactions');
+        Schema::dropIfExists('payouts');
     }
 };

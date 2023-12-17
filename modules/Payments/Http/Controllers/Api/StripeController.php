@@ -186,6 +186,8 @@ class StripeController extends ApiController {
             $coursesId = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->pluck("course_id")->toArray();
             $userId = $paymentTransaction->user_id;
             (new PaymentController)->enrollCourses($coursesId, $userId);
+            (new PaymentController)->addToPayouts($paymentTransaction->id);
+            (new PaymentController)->pushNotification($userId, $paymentTransaction->id);
         }
 
         $this->logNotification($referenceNumber, $notification, $status);

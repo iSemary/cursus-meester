@@ -458,3 +458,25 @@ hr {
 .icon-spin-2 {
     animation: spin 2s linear infinite;
 }
+
+.font-weight-bold {
+    font-weight: bold;
+}
+
+.no-border-right-radius {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.no-border-left-radius {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.paypal-section {
+    display: flex;
+    align-items: center;
+    .paypal-title {
+        color: #002e86;
+        font-weight: bold;
+    }
+}

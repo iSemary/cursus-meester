@@ -55,7 +55,7 @@ export default function DashboardHeader() {
                 updatedNotifications.find(
                     (notification) => notification.id === id
                 ).read_at = 1;
-                setNotifications(updatedNotifications);
+                setTinyNotifications(updatedNotifications);
             })
             .catch(({ error }) => {
                 toastAlert("Something went wrong", "error");

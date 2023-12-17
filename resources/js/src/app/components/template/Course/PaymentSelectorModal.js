@@ -80,6 +80,7 @@ export default function PaymentSelectorModal({
                 const paymentStatus = Cookies.get(
                     `PAYMENT_STATUS_${referenceNumber}`
                 );
+
                 if (paymentStatus === "true") {
                     toastAlert(
                         "Cheers! Your purchase completed successfully!",

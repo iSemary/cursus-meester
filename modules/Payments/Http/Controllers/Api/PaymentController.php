@@ -3,6 +3,8 @@
 namespace modules\Payments\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Jobs\CartPurchasedMailJob;
+use App\Jobs\CoursePurchasedMailJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,7 +15,9 @@ use modules\Payments\Entities\Cart;
 use modules\Payments\Entities\EnrolledCourse;
 use modules\Payments\Entities\PaymentTransaction;
 use modules\Payments\Entities\PaymentTransactionItem;
+use modules\Payments\Entities\Payout;
 use modules\Payments\Interfaces\Payment;
+use modules\Payments\Interfaces\PaymentMethods;
 use modules\Payments\Interfaces\PaymentStatues;
 use modules\Payments\Interfaces\PaymentTypes;
 
@@ -87,7 +91,7 @@ class PaymentController extends ApiController {
      */
     private function init(string $description, int $paymentType) {
         $this->referenceNumber = $this->generateReferenceNumber();
-        $paymentTransaction = $this->initPaymentTransaction($description);
+        $paymentTransaction = $this->initPaymentTransaction($description, $paymentType);
         switch ($paymentType) {
             case PaymentTypes::SINGLE_ITEM:
                 $this->initPaymentTransactionItem($paymentTransaction->id, $this->course);
@@ -156,10 +160,11 @@ class PaymentController extends ApiController {
      * 
      * @return PaymentTransaction a PaymentTransaction object.
      */
-    private function initPaymentTransaction(string $description): PaymentTransaction {
+    private function initPaymentTransaction(string $description, int $paymentType): PaymentTransaction {
         $paymentTransaction = PaymentTransaction::create([
             'user_id' => $this->user->id,
             'payment_method' => $this->paymentMethod,
+            'payment_type_id' => $paymentType,
             'status' => PaymentStatues::PENDING,
             'reference_number' => $this->referenceNumber,
             'description' => $description,
@@ -237,6 +242,62 @@ class PaymentController extends ApiController {
     }
 
     /**
+     * The function addToPayouts adds payment transaction items to the payouts table with generated
+     * reference numbers and payment method set to PayPal.
+     * 
+     * @param int paymentTransactionId The paymentTransactionId is an integer that represents the ID of a
+     * payment transaction.
+     */
+    public function addToPayouts(int $paymentTransactionId): void {
+        $paymentTransactionItems = PaymentTransactionItem::join('courses', 'courses.id', 'payment_transaction_items.course_id')
+            ->select([
+                'payment_transaction_items.id',
+                'payment_transaction_items.total_price',
+                'courses.user_id as instructor_id',
+            ])
+            ->where("payment_transaction_id", $paymentTransactionId)->get();
+
+        foreach ($paymentTransactionItems as $paymentTransactionItem) {
+            $referenceNumber = $this->generateReferenceNumber();
+            Payout::create([
+                'payment_transaction_id' => $paymentTransactionId,
+                'payment_transaction_items_id' => $paymentTransactionItem->id,
+                'reference_number' => $referenceNumber,
+                'payment_method' => PaymentMethods::PAYPAL,
+                'user_id' => $paymentTransactionItem->instructor_id,
+                'total_price' => $paymentTransactionItem->total_price,
+            ]);
+        }
+    }
+    /**
+     * The function `pushNotification` sends a notification to a user based on a payment transaction,
+     * with different types of notifications depending on the payment type.
+     * 
+     * @param int userId The userId parameter is the ID of the user for whom the notification is being
+     * sent.
+     * @param int paymentTransactionId The paymentTransactionId parameter is an integer that represents
+     * the ID of a payment transaction.
+     */
+    public function pushNotification(int $userId, int $paymentTransactionId): void {
+        $paymentTransaction = PaymentTransaction::where("id", $paymentTransactionId)->first();
+        $user = User::where("id", $userId)->first();
+
+        $data = $paymentTransaction;
+        $data['items'] = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->get();
+
+        switch ($paymentTransaction->payment_type_id) {
+            case PaymentTypes::SINGLE_ITEM:
+                CoursePurchasedMailJob::dispatch($user, $data);
+                break;
+            case PaymentTypes::CART:
+                CartPurchasedMailJob::dispatch($user, $data);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
      * The function checks the status of a payment transaction based on a given reference number and
      * returns a JSON response indicating whether the payment was successful or not.
      * 
@@ -255,5 +316,100 @@ class PaymentController extends ApiController {
             return $this->return(400, "Payment not purchased yet", ['status' => false]);
         }
         return $this->return(400, "Payment not exists", ['status' => false]);
+    }
+
+    /**
+     * The `history` function retrieves the payment history of the authenticated user and returns it as a
+     * JSON response.
+     * 
+     * @return JsonResponse a JsonResponse.
+     */
+    public function history(): JsonResponse {
+        $user = auth()->guard("api")->user();
+        $paymentHistory = PaymentTransaction::whereUserId($user->id)->orderByDesc("id")->paginate(5);
+        foreach ($paymentHistory as $history) {
+            $history->status = PaymentStatues::STATUES_TEXT[$history->status];
+            $history->payment_type = PaymentTypes::TYPES_TEXT[$history->payment_type_id];
+            $history->payment_method = PaymentMethods::METHODS_TEXT[$history->payment_method];
+            $history->updated_at_diff = $history->updated_at->diffForHumans();
+        }
+
+        return $this->return(200, "Payment history fetched successfully", ['payment_history' => $paymentHistory]);
+    }
+
+    /**
+     * The function retrieves payout details for a user, including total transactions and total transaction
+     * price, as well as available transactions and their prices.
+     * 
+     * @return JsonResponse a JsonResponse with the following structure:
+     */
+    public function payoutDetails(): JsonResponse {
+        $user = auth()->guard("api")->user();
+        $payout = Payout::whereUserId($user->id);
+        $data = [];
+
+        $totals['totals'] = [
+            'total_transactions' => $payout->count(),
+            'total_transactions_price' => $payout->sum('total_price'),
+        ];
+
+        $available['available'] = [
+            'total_transactions' => $payout->where("status", PaymentStatues::PENDING)->count(),
+            'total_transactions_price' => $payout->where("status", PaymentStatues::PENDING)->sum('total_price'),
+        ];
+
+        $data = array_merge($totals, $available);
+
+        $data['can_get_paid'] = ($data['available']['total_transactions_price'] > 0 ? true : false);
+        $data['email'] = $user->email;
+        $data['rate'] = Payout::PLATFORM_RATE;
+        $data['currency'] = "$";
+        $data['final_amount'] = $this->calculatePayOutAmount($user->id);
+
+        return $this->return(200, "Available payout details", ['data' => $data]);
+    }
+
+
+    /**
+     * The function calculates the payout amount for a given user by summing the total prices of payout
+     * records with a status of 0, subtracting the platform rate, and returning the result.
+     * 
+     * @param userId The userId parameter is the unique identifier of the user for whom we want to
+     * calculate the payout amount.
+     * 
+     * @return the calculated payout amount after deducting the platform rate.
+     */
+    public function calculatePayOutAmount($userId) {
+        $totalPayOutAmount = Payout::whereUserId($userId)->where("status", 0)->sum('total_price');
+
+        if ($totalPayOutAmount) {
+            $totalRate = ($totalPayOutAmount * (Payout::PLATFORM_RATE / 100));
+            return $totalPayOutAmount - $totalRate;
+        }
+
+        return $totalPayOutAmount;
+    }
+
+    public function payout(): JsonResponse {
+
+        return $this->return(200, "Paid out successfully");
+    }
+
+    /**
+     * The function retrieves the payout history for a user, formats the payout status, payment method,
+     * and updated at time, and returns the result as a JSON response.
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200, a success message of "Payout
+     * history fetched successfully", and an array containing the payout history data.
+     */
+    public function payoutHistory(): JsonResponse {
+        $user = auth()->guard("api")->user();
+        $payouts = Payout::where("user_id", $user->id)->paginate(5);
+        foreach ($payouts as $payout) {
+            $payout->status = PaymentStatues::STATUES_TEXT[$payout->status];
+            $payout->payment_method = PaymentMethods::METHODS_TEXT[$payout->payment_method];
+            $payout->updated_at_diff = $payout->updated_at->diffForHumans();
+        }
+        return $this->return(200, "Payout history fetched successfully", ['payout_history' => $payouts]);
     }
 }

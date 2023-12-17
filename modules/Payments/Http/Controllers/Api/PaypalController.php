@@ -203,7 +203,7 @@ class PaypalController extends ApiController {
                 if (isset($response->id)) {
                     $paymentLink = $response->links[1]->href;
 
-                    return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink, 'reference_number', $referenceNumber]);
+                    return $this->return(200, "Payment link generated successfully", ['payment_link' => $paymentLink, 'reference_number' => $referenceNumber]);
                 }
             } else {
                 return $this->return(400, "Something went wrong!");
@@ -240,10 +240,9 @@ class PaypalController extends ApiController {
             ]
         );
 
+        if ($response->getStatusCode() == 200) {
+            $response = json_decode($response->getBody(), true);
 
-        if ($response->getStatusCode() == 201) {
-            $response = json_decode($response->getBody());
-            
             $status = ($response['status'] == $this->successStatus) ? PaymentStatues::SUCCESS : PaymentStatues::FAILED;
 
             $this->logNotification($transactionNumber, $response, $status);
@@ -255,12 +254,14 @@ class PaypalController extends ApiController {
                 $coursesId = PaymentTransactionItem::where("payment_transaction_id", $paymentTransaction->id)->pluck("course_id")->toArray();
                 $userId = $paymentTransaction->user_id;
                 (new PaymentController)->enrollCourses($coursesId, $userId);
-                (new RedirectionController)->success($referenceNumber);
+                (new PaymentController)->addToPayouts($paymentTransaction->id);
+                (new PaymentController)->pushNotification($userId, $paymentTransaction->id);
+                return (new RedirectionController)->success($referenceNumber);
             } else {
-                (new RedirectionController)->cancel($referenceNumber);
+                return (new RedirectionController)->cancel($referenceNumber);
             }
         } else {
-            (new RedirectionController)->cancel($referenceNumber);
+            return (new RedirectionController)->cancel($referenceNumber);
         }
     }
 
