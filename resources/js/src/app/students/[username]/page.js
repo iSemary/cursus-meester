@@ -7,6 +7,8 @@ import toastAlert from "../../components/utilities/Alert";
 import SocialLinks from "../../components/SocialLinks/SocialLinks";
 import { ProfileLoader } from "../../components/loaders/ProfileLoader";
 import Image from "next/image";
+import Link from "next/link";
+import { IoIosSend } from "react-icons/io";
 
 export default function StudentProfile({ params }) {
     const username = params.username;
@@ -34,26 +36,48 @@ export default function StudentProfile({ params }) {
                         {/* Student Information */}
                         <div className="col-md-6">
                             <div className="student-details">
-                                <div className="row">
-                                    <div className="col-4 text-center">
-                                        <Image
-                                            alt="student-avatar"
-                                            className="student-profile-image"
-                                            width={150}
-                                            src={student?.info?.avatar}
-                                            height={150}
-                                        />
+                                <div>
+                                    <div className="row">
+                                        <div className="col-4 text-center">
+                                            <Image
+                                                alt="student-avatar"
+                                                className="student-profile-image"
+                                                width={150}
+                                                src={
+                                                    student?.info?.avatar
+                                                        ? student?.info?.avatar
+                                                        : student?.info
+                                                              ?.base_avatar
+                                                }
+                                                height={150}
+                                            />
+                                        </div>
+                                        <div className="col-8 text-left pt-5">
+                                            <h3 className="color-primary font-weight-bold">
+                                                {student?.info?.full_name}
+                                            </h3>
+                                            <p>{student?.info?.position}</p>
+                                        </div>
                                     </div>
-                                    <div className="col-8 text-left pt-5">
-                                        <h3 className="color-primary font-weight-bold">
-                                            {student?.info?.full_name}
-                                        </h3>
-                                        <p>{student?.info?.position}</p>
+                                    <div className="text-right">
+                                        <Link
+                                            href={
+                                                "/messages?to=" +
+                                                student?.info?.username
+                                            }
+                                            className="btn btn-primary no-link text-white"
+                                        >
+                                            <IoIosSend
+                                                size={20}
+                                                className="mb-1"
+                                            />
+                                            Send Message
+                                        </Link>
                                     </div>
                                 </div>
-                                <hr className="home-hr" />
                                 {student?.info?.bio && (
                                     <>
+                                        <hr className="home-hr" />
                                         <h5 className="font-weight-bold">
                                             Summary
                                         </h5>

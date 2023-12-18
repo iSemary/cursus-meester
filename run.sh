@@ -7,6 +7,9 @@ composer install
 # run the laravel app
 gnome-terminal -- bash -c "php artisan serve"
 
+# run the nodejs app
+gnome-terminal -- bash -c "cd websocket && node server.js"
+
 # Change directory to resources/js
 cd resources/js
 

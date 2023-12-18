@@ -21,7 +21,6 @@ export default function ChatScreen({ activeConversation }) {
                 .then((response) => {
                     setChatMessages(response.data.data.messages.data);
                     setUserDetails(response.data.data.user);
-                    console.log(response.data.data.messages.data);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -34,8 +33,11 @@ export default function ChatScreen({ activeConversation }) {
             {activeConversation ? (
                 <div className="chat-screen">
                     <ChatHeader userDetails={userDetails} />
-                    <MessageList messages={chatMessages} />
-                    <MessageInput conversationId={activeConversation} />
+                    <MessageList
+                        userDetails={userDetails}
+                        messages={chatMessages}
+                        activeConversation={activeConversation}
+                    />
                 </div>
             ) : (
                 <DefaultBackgroundScreen />

@@ -7,6 +7,8 @@ import toastAlert from "../../components/utilities/Alert";
 import SocialLinks from "../../components/SocialLinks/SocialLinks";
 import { ProfileLoader } from "../../components/loaders/ProfileLoader";
 import Image from "next/image";
+import Link from "next/link";
+import { IoIosSend } from "react-icons/io";
 
 export default function InstructorProfile({ params }) {
     const username = params.username;
@@ -34,21 +36,40 @@ export default function InstructorProfile({ params }) {
                         {/* Instructor Information */}
                         <div className="col-md-6">
                             <div className="instructor-details">
-                                <div className="row">
-                                    <div className="col-4 text-center">
-                                        <Image
-                                            className="instructor-profile-image"
-                                            src={instructor?.info?.avatar}
-                                            width={150}
-                                            height={150}
-                                            alt="avatar"
-                                        />
+                                <div>
+                                    <div className="row">
+                                        <div className="col-4 text-center">
+                                            <Image
+                                                className="instructor-profile-image"
+                                                src={instructor?.info?.avatar}
+                                                width={150}
+                                                height={150}
+                                                alt="avatar"
+                                            />
+                                        </div>
+                                        <div className="col-8 text-left pt-5">
+                                            <h3 className="color-primary font-weight-bold">
+                                                {instructor?.info?.full_name}
+                                            </h3>
+                                            <p>{instructor?.info?.position}</p>
+                                        </div>
                                     </div>
-                                    <div className="col-8 text-left pt-5">
-                                        <h3 className="color-primary font-weight-bold">
-                                            {instructor?.info?.full_name}
-                                        </h3>
-                                        <p>{instructor?.info?.position}</p>
+                                </div>
+                                <div>
+                                    <div className="text-right">
+                                        <Link
+                                            href={
+                                                "/messages?to=" +
+                                                instructor?.info?.username
+                                            }
+                                            className="btn btn-primary no-link text-white"
+                                        >
+                                            <IoIosSend
+                                                size={20}
+                                                className="mb-1"
+                                            />
+                                            Send Message
+                                        </Link>
                                     </div>
                                 </div>
                                 <hr className="home-hr" />

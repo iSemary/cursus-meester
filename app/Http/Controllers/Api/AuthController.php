@@ -25,6 +25,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use modules\Instructors\Entities\InstructorProfile;
+use modules\Students\Entities\StudentProfile;
+use Illuminate\Support\Str;
 
 class AuthController extends ApiController {
     /**
@@ -40,10 +42,17 @@ class AuthController extends ApiController {
      */
     public function register(RegisterUserRequest $request): JsonResponse {
         /* Requested data passed the validation */
+        $userRequest = $request->validated();
+        $email = $userRequest['email'];
+        $username = strtok($email, '@');
+        // Adding username to the $userRequest array
+        $userRequest['username'] = $username .  Str::random(4);
         // Create new user record
-        $user = User::create($request->validated());
+        $user = User::create();
         // Assign student role
         $user->assignRole("student");
+        // Create new student Profile
+        StudentProfile::create(['user_id' => $user->id]);
         // Create email token
         $token = EmailToken::createToken($user->id);
         // Fire Email Confirmation Queue

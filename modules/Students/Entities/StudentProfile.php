@@ -45,7 +45,7 @@ class StudentProfile extends Model {
     public static function getPublicInfo(int $userId) {
         $data = [];
         $data = self::leftJoin('users', 'users.id', 'student_profiles.user_id')
-            ->select(['user_id', 'position', 'bio', 'avatar', 'users.full_name', 'users.username'])
+            ->select(['user_id', 'position', 'bio', 'avatar', 'users.full_name', 'users.username', 'users.username'])
             ->where("user_id", $userId)->first();
 
         return $data;

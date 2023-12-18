@@ -40,7 +40,12 @@ E-learning platform that brings together passionate instructors and curious lear
  - [x] Translation Module
 	 - [x] CURD in database
 	 - [x] Generating translation JSON files
- - [ ] Payment Module
+ - [x] Payment Module
+     - [x] Stripe Integration
+     - [x] Paypal Integration
+     - [x] Instructor Payout via Paypal
+     - [x] Payment History
+     - [x] Payment Log
  - [ ] Built-in Real-time Chat System
  - [ ] Real-time Notifications System
 

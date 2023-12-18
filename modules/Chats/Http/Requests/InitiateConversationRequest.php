@@ -20,7 +20,7 @@ class InitiateConversationRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'receiver_id' => 'required|numeric|exists:users,id',
+            'receiver_username' => 'required|max:255|exists:users,username',
         ];
     }
 }
