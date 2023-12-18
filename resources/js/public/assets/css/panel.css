@@ -132,7 +132,8 @@
     word-wrap: break-word;
     width: fit-content;
     position: relative;
-    min-width: 100px; }
+    min-width: 100px;
+    height: fit-content; }
     .message-list-container .message-bubble .d-flex {
       align-items: center; }
     .message-list-container .message-bubble img {

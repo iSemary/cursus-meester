@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import InputActions from "./InputActions";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -6,7 +6,7 @@ import axiosConfig from "../axiosConfig/axiosConfig";
 import { FaRegTrashAlt } from "react-icons/fa";
 import io from "socket.io-client";
 
-export default function MessageInput({ conversationId }) {
+export default function MessageInput({ conversationId, appendMessageBubble }) {
     const port = process.env.NEXT_PUBLIC_SOCKET_PORT;
     const websocketURL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
@@ -36,8 +36,15 @@ export default function MessageInput({ conversationId }) {
             })
             .then((response) => {
                 setLoading(false);
+                const newMessage = response.data.data.message;
+                socket.emit("sendMessage", {
+                    conversationId: conversationId,
+                    message: newMessage,
+                });
+                appendMessageBubble(newMessage);
+
                 setWrittenMessage("");
-                handleRemoveFile()
+                handleRemoveFile();
             })
             .catch((error) => {
                 setLoading(false);

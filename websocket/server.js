@@ -1,12 +1,28 @@
+require("dotenv").config();
+
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
 
-require('dotenv').config()
-
+const cors = require("cors");
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+
+app.use(
+    cors({
+        origin: "http://127.0.0.1:3000", // Allow requests from this origin
+        methods: ["GET", "POST"], // Specify the allowed HTTP methods
+        credentials: false, // Allow credentials, if needed
+    })
+);
+
+const io = socketIO(server, {
+    cors: {
+        origin: "http://127.0.0.1:3000", // Allow requests from this origin
+        methods: ["GET", "POST"], // Specify the allowed HTTP methods
+        credentials: false, // Allow credentials, if needed
+    },
+});
 
 // Connection event
 io.on("connection", (socket) => {
@@ -15,10 +31,17 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("Client disconnected");
     });
+
+    // Join conversation
+    socket.on("joinConversation", (conversationId) => {
+        socket.join(conversationId);
+        console.log(`User joined conversation: ${conversationId}`);
+    });
+
     // Sending message event
-    socket.on("chat-message", (message) => {
-        console.log(message);
-        io.emit("chat-message", message);
+    socket.on("sendMessage", ({ conversationId, message }) => {
+        console.log(`New Message in conversation : ${message.message_text}`);
+        io.to(conversationId).emit("privateMessage", message);
     });
 });
 

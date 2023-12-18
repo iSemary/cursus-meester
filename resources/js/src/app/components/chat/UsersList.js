@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import UsersSearch from "./UsersSearch";
 import axiosConfig from "../axiosConfig/axiosConfig";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 export default function UsersList({
     activeConversation,
     setActiveConversation,
 }) {
     const [conversations, setConversations] = useState([]);
     const [list, setList] = useState([]);
-
+    const router = useRouter();
     // Set Active Conversation To the current user id
     // After that the chat history will appears in the right side
-    const openChat = (userId) => {
-        setActiveConversation(userId);
+    const openChat = (conversationId) => {
+        setActiveConversation(conversationId);
     };
 
     useEffect(() => {

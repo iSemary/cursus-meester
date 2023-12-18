@@ -10,6 +10,7 @@ use modules\Chats\Entities\Conversation;
 use modules\Chats\Entities\Message;
 use modules\Chats\Http\Requests\InitiateConversationRequest;
 use modules\Chats\Http\Requests\SendMessageRequest;
+use modules\Chats\Interfaces\MessageType;
 
 class ChatController extends ApiController {
 
@@ -24,9 +25,10 @@ class ChatController extends ApiController {
      * successfully", and an array containing the initiated conversation.
      */
     public function initiate(InitiateConversationRequest $initiateConversationRequest): JsonResponse {
+        $receiver = User::whereUsername($initiateConversationRequest->validated()['receiver_username'])->first();
         $conversation = Conversation::initiate(
             auth()->guard('api')->id(),
-            $initiateConversationRequest->validated()['receiver_id'],
+            $receiver->id,
             1
         );
 
@@ -97,12 +99,15 @@ class ChatController extends ApiController {
         foreach ($conversations as $key => $conversation) {
             $userId = ($conversation->sender_id == $auth->id ? $conversation->receiver_id : $conversation->sender_id);
             $conversation->latest_message = Message::select(['id', 'message_text', 'sender_id', 'seen_at', 'updated_at'])->where("conversation_id", $conversation->id)->latest()->first();
-            $conversation->latest_message->updated_at_diff = $conversation->latest_message->updated_at->diffForHumans();
+            if ($conversation->latest_message) {
+                $conversation->latest_message->updated_at_diff = $conversation->latest_message->updated_at->diffForHumans();
+            }
             $conversation->user = User::select(['id', 'full_name', 'username'])->where("id", $userId)->first();
         }
 
         return $this->return(200, "Conversations fetched successfully", ['conversations' => $conversations]);
     }
+
     public function messages(int $conversationId): JsonResponse {
         $auth = auth()->guard('api')->user();
         $conversation = Conversation::whereId($conversationId)
@@ -118,18 +123,9 @@ class ChatController extends ApiController {
         $user = User::select(['users.id', 'full_name', 'username'])->whereId($conversation->receiver_id == $auth->id ? $conversation->sender_id : $conversation->receiver_id)->first();
         $messages = Message::where("conversation_id", $conversationId)->latest('id')->paginate(20);
         foreach ($messages as $message) {
-            $message = $this->formatMessage($message, $auth->id);
+            $message = Message::formatMessage($message, $auth->id);
         }
-        return $this->return(
-            200,
-            "Conversation fetched successfully",
-            ['messages' => $messages, 'user' => $user]
-        );
-    }
-
-    public function formatMessage($message, $authId) {
-        $message->type = $authId == $message->sender_id ? "out" : "in";
-
-        return $message;
+        
+        return $this->return(200, "Conversation fetched successfully", ['messages' => $messages, 'user' => $user]);
     }
 }

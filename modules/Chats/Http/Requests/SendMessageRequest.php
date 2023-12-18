@@ -35,7 +35,7 @@ class SendMessageRequest extends FormRequest {
             'conversation_id' => 'required|numeric|exists:conversations,id',
             'message_text' => 'sometimes|max:5000',
             'message_type' => 'required|numeric|in:' . $this->messageTypes,
-            'message_file' => 'sometimes|file|mimes:png,jpg,pdf,xlsx,csv,doc,docx',
+            'message_file' => 'sometimes|file|mimes:png,jpg,pdf,xlsx,csv,doc,docx,mp3,ogg',
         ];
     }
 }

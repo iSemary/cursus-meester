@@ -24,8 +24,8 @@ export default function InputActions({
             fileViewElement = (
                 <Image
                     src={URL.createObjectURL(file)}
-                    width="45px"
-                    height="45px"
+                    width={45}
+                    height={45}
                     alt="sender file viewer"
                 />
             );
