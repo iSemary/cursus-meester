@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
