@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies and Build Laravel
         run: |
-          composer install --no-interaction --no-ansi --no-progress
+          composer install --ignore-platform-reqs
           php artisan optimize
 
       - name: Build Next.js
