@@ -29,10 +29,10 @@ jobs:
 
       - name: Deploy to VPS
         env:
-          PRIVATE_KEY: ${{ secrets.VPS_HOST }}
+          PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh/
-          "${{ secrets.VPS_HOST }}" >> ~/.ssh/id_rsa
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
