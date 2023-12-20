@@ -15,7 +15,6 @@ jobs:
 
       - name: Install Dependencies and Build Laravel
         run: |
-          cd cursus-meester
           composer install
           php artisan optimize
 
