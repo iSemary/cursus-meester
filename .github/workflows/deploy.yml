@@ -32,7 +32,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.VPS_HOST }}
         run: |
           mkdir -p ~/.ssh/
-          ${{ secrets.VPS_HOST }} >> ~/.ssh/id_rsa
+          "${{ secrets.VPS_HOST }}" >> ~/.ssh/id_rsa
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
