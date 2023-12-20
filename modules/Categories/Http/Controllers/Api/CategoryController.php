@@ -28,7 +28,7 @@ class CategoryController extends ApiController {
     public function index(Request $request): JsonResponse {
         $categories = Category::orderBy('title', "DESC")
             ->when($request->parents, function ($query, $request) {
-                $query->where("parent_id", null);
+                $query->where("parent_id", 0)->orWhere("parent_id", null);
             })
             ->when($request->all, function ($query) {
                 return $query->get();
