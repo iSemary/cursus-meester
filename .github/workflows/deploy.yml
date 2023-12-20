@@ -13,20 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Pull from master
-        run: git pull origin master
-
-      - name: Install Dependencies and Build Laravel
-        run: |
-          composer install --ignore-platform-reqs
-          php artisan optimize
-
-      # - name: Build Next.js
-      #   run: |
-      #     cd resources/js
-      #     npm install
-      #     npm run build
-
       - name: Deploy to VPS
         env:
           PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
