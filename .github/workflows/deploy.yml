@@ -36,7 +36,4 @@ jobs:
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.PROJECT_DIRECTORY }} && \
-            rm -rf * && \
-            cp -R /github/workspace/cursus-meester/* ${{ secrets.PROJECT_DIRECTORY }} && \
-            cp -R /github/workspace/resources/js/build/* ${{ secrets.PROJECT_DIRECTORY }}resources/js/_next/"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.PROJECT_DIRECTORY }} && git pull origin master && composer install && php artisan migrate && cd resources/js && npm i && npm run build"
