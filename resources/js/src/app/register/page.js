@@ -11,6 +11,9 @@ import { numbers } from "../components/utilities/global/numbers";
 import IntlTelInput from "react-intl-tel-input-18";
 import "react-intl-tel-input-18/dist/main.css";
 import Cookies from "js-cookie";
+import googleIco from "/public/assets/images/icons/google.png";
+import facebookIco from "/public/assets/images/icons/facebook.png";
+import linkedinIco from "/public/assets/images/icons/linkedin.png";
 
 const Register = () => {
     const initialValues = {
@@ -156,7 +159,7 @@ const Register = () => {
                         >
                             <div className="mb-1 third-register-link">
                                 <Image
-                                    src="/assets/images/icons/google.png"
+                                    src={googleIco}
                                     width={25}
                                     height={25}
                                     alt="google login"
@@ -170,7 +173,7 @@ const Register = () => {
                         >
                             <div className="mb-1 third-register-link">
                                 <Image
-                                    src="/assets/images/icons/facebook.png"
+                                    src={facebookIco}
                                     width={25}
                                     height={25}
                                     alt="facebook login"
@@ -184,7 +187,7 @@ const Register = () => {
                         >
                             <div className="mb-1 third-register-link">
                                 <Image
-                                    src="/assets/images/icons/linkedin.png"
+                                    src={linkedinIco}
                                     width={25}
                                     height={25}
                                     alt="microsoft login"

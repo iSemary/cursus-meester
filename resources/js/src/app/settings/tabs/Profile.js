@@ -14,6 +14,7 @@ import { numbers } from "../../components/utilities/global/numbers";
 import Image from "next/image";
 import IntlTelInput from "react-intl-tel-input-18";
 import "react-intl-tel-input-18/dist/main.css";
+import avatarIco from "/public/assets/images/icons/avatar.png";
 
 export default function Profile() {
     const router = useRouter();
@@ -251,7 +252,7 @@ export default function Profile() {
                                             ? newAvatarImage
                                             : profile.avatar
                                             ? profile.avatar
-                                            : "/assets/images/icons/avatar.png"
+                                            : avatarIco
                                     }
                                     width="150"
                                     height="150"

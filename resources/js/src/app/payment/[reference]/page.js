@@ -5,6 +5,8 @@ import TaskLoader from "../../components/loaders/TaskLoader";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import "@lottiefiles/lottie-player";
 import Cookies from "js-cookie";
+import successIco from "/public/assets/images/gif/success.json";
+import failureIco from "/public/assets/images/gif/failure.json";
 
 export default function PaymentChecker({ params }) {
     const reference = params.reference;
@@ -15,7 +17,10 @@ export default function PaymentChecker({ params }) {
         axiosConfig
             .get(`payments/check/${reference}`)
             .then((response) => {
-                Cookies.set("PAYMENT_STATUS_" + reference, response.data.data.status);
+                Cookies.set(
+                    "PAYMENT_STATUS_" + reference,
+                    response.data.data.status
+                );
                 setLoading(false);
                 setStatus(response.data.data.status);
             })
@@ -43,11 +48,7 @@ export default function PaymentChecker({ params }) {
                                 margin: "0 auto",
                             }}
                             className="text-center"
-                            src={
-                                status
-                                    ? "/assets/images/gif/success.json"
-                                    : "/assets/images/gif/failure.json"
-                            }
+                            src={status ? successIco : failureIco}
                             aria-label={
                                 status
                                     ? "Success Animation"

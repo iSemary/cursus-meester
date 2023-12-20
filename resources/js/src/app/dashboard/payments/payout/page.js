@@ -9,6 +9,7 @@ import TaskLoader from "../../../components/loaders/TaskLoader";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import Image from "next/image";
+import paypalIcon from "/public/assets/images/icons/paypal.png";
 
 export default function payout() {
     const [paymentDetails, setPaymentDetails] = useState({});
@@ -111,7 +112,7 @@ export default function payout() {
                             <div className="col-6">
                                 <div className="paypal-section">
                                     <Image
-                                        src="/assets/images/icons/paypal.png"
+                                        src={paypalIcon}
                                         width="50"
                                         height="50"
                                         alt="paypal logo"

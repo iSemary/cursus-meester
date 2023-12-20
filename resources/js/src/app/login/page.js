@@ -8,6 +8,9 @@ import toastAlert from "../components/utilities/Alert";
 import { useRouter } from "next/navigation";
 import { Token } from "../components/utilities/Authentication/Token";
 import Cookies from "js-cookie";
+import googleIco from "/public/assets/images/icons/google.png";
+import facebookIco from "/public/assets/images/icons/facebook.png";
+import linkedinIco from "/public/assets/images/icons/linkedin.png";
 
 const Login = () => {
     const initialValues = {
@@ -135,7 +138,7 @@ const Login = () => {
                             onClick={() => handleSocialLogin("google")}
                         >
                             <Image
-                                src="/assets/images/icons/google.png"
+                                src={googleIco}
                                 width={40}
                                 height={40}
                                 alt="google login"
@@ -146,7 +149,7 @@ const Login = () => {
                             onClick={() => handleSocialLogin("facebook")}
                         >
                             <Image
-                                src="/assets/images/icons/facebook.png"
+                                src={facebookIco}
                                 width={40}
                                 height={40}
                                 alt="facebook login"
@@ -157,7 +160,7 @@ const Login = () => {
                             onClick={() => handleSocialLogin("linkedin")}
                         >
                             <Image
-                                src="/assets/images/icons/linkedin.png"
+                                src={linkedinIco}
                                 width={40}
                                 height={40}
                                 alt="linkedin login"

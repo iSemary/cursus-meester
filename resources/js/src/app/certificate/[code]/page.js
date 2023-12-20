@@ -4,6 +4,8 @@ import StudentTemplate from "../../Templates/StudentTemplate";
 import TaskLoader from "../../components/loaders/TaskLoader";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import Image from "next/image";
+import validCertIcon from "/public/assets/images/icons/valid-certificate.png";
+import invalidCertIcon from "/public/assets/images/icons/invalid-certificate.png";
 
 export default function certificateChecker({ params }) {
     const code = params.code;
@@ -31,7 +33,7 @@ export default function certificateChecker({ params }) {
                     <div>
                         <Image
                             alt="valid certificate"
-                            src={"/assets/images/icons/valid-certificate.png"}
+                            src={validCertIcon}
                             width={150}
                             height={150}
                         />
@@ -50,7 +52,7 @@ export default function certificateChecker({ params }) {
                 <div className="text-center">
                     <Image
                         alt="invalid certificate"
-                        src={"/assets/images/icons/invalid-certificate.png"}
+                        src={invalidCertIcon}
                         width={150}
                         height={150}
                     />

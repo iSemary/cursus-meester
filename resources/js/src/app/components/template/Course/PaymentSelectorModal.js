@@ -8,6 +8,9 @@ import toastAlert from "../../utilities/Alert";
 import Cookies from "js-cookie";
 import { FaCheckCircle } from "react-icons/fa";
 import Image from "next/image";
+import mastercardIcon from "/public/assets/images/icons/mastercard.png";
+import paypalIcon from "/public/assets/images/icons/paypal.png";
+
 
 export default function PaymentSelectorModal({
     paymentType, // 1-> Single Item | 2-> Cart
@@ -134,7 +137,7 @@ export default function PaymentSelectorModal({
                             />
                             <span>
                                 <Image
-                                    src="/assets/images/icons/mastercard.png"
+                                    src={mastercardIcon}
                                     width={35}
                                     height={25}
                                     className="mx-4"
@@ -158,7 +161,7 @@ export default function PaymentSelectorModal({
                             />
                             <span>
                                 <Image
-                                    src="/assets/images/icons/paypal.png"
+                                    src={paypalIcon}
                                     width={35}
                                     height={25}
                                     className="mx-4"
