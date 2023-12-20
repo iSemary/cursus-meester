@@ -28,14 +28,14 @@ jobs:
           npm run build
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-            ssh -i ${{ secrets.VPS_SSH_KEY }} ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.PROJECT_DIRECTORY }} && \
+        env:
+          PRIVATE_KEY: ${{ secrets.VPS_HOST }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.PROJECT_DIRECTORY }} && \
             sudo rm -rf * && \
             cp -R /github/workspace/cursus-meester/* ${{ secrets.PROJECT_DIRECTORY }} && \
             cp -R /github/workspace/resources/js/build/* ${{ secrets.PROJECT_DIRECTORY }}resources/js/_next/"
