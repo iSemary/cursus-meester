@@ -23,4 +23,4 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.PROJECT_DIRECTORY }} && git pull origin master && composer install && php artisan migrate --force && php artisan module:migrate --force && source ~/.nvm/nvm.sh && nvm use 18.13 && cd resources/js && npm i && npm run build && exit"
-          "Application deployed successfully."
+          "echo Application deployed successfully."
