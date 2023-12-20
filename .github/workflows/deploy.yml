@@ -21,18 +21,18 @@ jobs:
           composer install --ignore-platform-reqs
           php artisan optimize
 
-      - name: Build Next.js
-        run: |
-          cd resources/js
-          npm install
-          npm run build
+      # - name: Build Next.js
+      #   run: |
+      #     cd resources/js
+      #     npm install
+      #     npm run build
 
       - name: Deploy to VPS
         env:
           PRIVATE_KEY: ${{ secrets.VPS_HOST }}
         run: |
           mkdir -p ~/.ssh/
-          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          ${{ secrets.VPS_HOST }} >> ~/.ssh/id_rsa
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
