@@ -3,8 +3,9 @@ E-learning platform that brings together passionate instructors and curious lear
 
 <p align="center" style="margin:0"><img src="https://skillicons.dev/icons?i=laravel,next,react,nodejs,&perline=4"/></p>
 <p align="center">
-  <img width="70px" height="70px" src="https://api.iconify.design/devicon:socketio-wordmark.svg" alt="Socket.IO" style="margin-right: 20px;"/>
-  <img width="70px" height="70px" src="https://api.iconify.design/logos:stripe.svg" alt="Stripe" style="margin-right: 20px;"/>
+  <img width="70px" height="70px" src="https://api.iconify.design/devicon:socketio-wordmark.svg" alt="Socket.IO"/>
+  &nbsp;&nbsp;&nbsp;
+  <img width="70px" height="70px" src="https://api.iconify.design/logos:stripe.svg" alt="Stripe"/>&nbsp;&nbsp;&nbsp;
   <img width="40px" height="40px" style="margin-bottom: 10px;" src="https://api.iconify.design/logos:paypal.svg" alt="PayPal"/>
 </p>
 
