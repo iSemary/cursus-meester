@@ -1,7 +1,14 @@
 # Cursus Meester
 E-learning platform that brings together passionate instructors and curious learners from all around the world. With an extensive library of high-quality courses, ranging from programming and design to business and personal development.
 
-<p align="center" style="margin:0"><img src="https://skillicons.dev/icons?i=laravel,next,react,nodejs,&perline=4"/><img width="100px" height="100px" style="margin:30px 10px" src="https://api.iconify.design/devicon:socketio-wordmark.svg"/></p>
+<p align="center" style="margin:0"><img src="https://skillicons.dev/icons?i=laravel,next,react,nodejs,&perline=4"/></p>
+<p align="center">
+  <img width="70px" height="70px" src="https://api.iconify.design/devicon:socketio-wordmark.svg" alt="Socket.IO" style="margin-right: 20px;"/>
+  <img width="70px" height="70px" src="https://api.iconify.design/logos:stripe.svg" alt="Stripe" style="margin-right: 20px;"/>
+  <img width="40px" height="40px" style="margin-bottom: 10px;" src="https://api.iconify.design/logos:paypal.svg" alt="PayPal"/>
+</p>
+
+
 
 -   [About](#about)
 -   [Features](#features)
