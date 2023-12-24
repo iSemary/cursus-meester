@@ -1,7 +1,7 @@
 # Cursus Meester
 E-learning platform that brings together passionate instructors and curious learners from all around the world. With an extensive library of high-quality courses, ranging from programming and design to business and personal development.
 
-<p align="center"><img src="https://skillicons.dev/icons?i=laravel,next,react,&perline=3"/></p>
+<p align="center" style="margin:0"><img src="https://skillicons.dev/icons?i=laravel,next,react,nodejs,&perline=4"/><img width="100px" height="100px" style="margin:30px 10px" src="https://api.iconify.design/devicon:socketio-wordmark.svg"/></p>
 
 -   [About](#about)
 -   [Features](#features)
@@ -46,8 +46,8 @@ E-learning platform that brings together passionate instructors and curious lear
      - [x] Instructor Payout via Paypal
      - [x] Payment History
      - [x] Payment Log
- - [ ] Built-in Real-time Chat System
- - [ ] Real-time Notifications System
+ - [X] Built-in Real-time Chat System
+ - [X] Notifications System
 
 ## Get Started
 
