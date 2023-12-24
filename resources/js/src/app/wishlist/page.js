@@ -29,16 +29,8 @@ export default function Wishlist() {
     };
 
     /** handle soft delete wishlist item */
-    const handleRemoveWishlist = (id) => {
-        axiosConfig
-            .delete(`wishlist/${id}`)
-            .then((response) => {
-                toastAlert(response.data.message, "success");
-                handleContentPagination(currentPage);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const removeWishlistCallback = () => {
+        handleContentPagination(currentPage);
     };
     /** Move item to cart and Soft delete wishlist item */
     const handleMoveToCart = (id) => {
@@ -68,7 +60,7 @@ export default function Wishlist() {
                             items={courses}
                             currentPage={currentPage}
                             handlePageClick={handlePageClick}
-                            handleRemoveWishlist={handleRemoveWishlist}
+                            removeWishlistCallback={removeWishlistCallback}
                             handleMoveToCart={handleMoveToCart}
                             removeWishlist
                             changeToCart

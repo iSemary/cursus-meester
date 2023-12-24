@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
@@ -13,6 +13,8 @@ import toastAlert from "../../components/utilities/Alert";
 import { Button } from "primereact/button";
 
 export default function Categories() {
+    const [reloadKey, setReloadKey] = useState(0);
+
     const dropDownItems = (id) => [
         {
             label: "Delete",
@@ -34,6 +36,7 @@ export default function Categories() {
                 return axiosConfig
                     .delete("/categories/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -59,6 +62,7 @@ export default function Categories() {
                 ]}
             ></DashboardTitle>
             <Grid
+                key={reloadKey}
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
                     headers: {

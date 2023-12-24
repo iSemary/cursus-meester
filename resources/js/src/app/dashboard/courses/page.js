@@ -11,8 +11,11 @@ import Swal from "sweetalert2";
 import axiosConfig from "../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../components/utilities/Alert";
 import { AiOutlineVideoCameraAdd } from "react-icons/ai";
+import { useState } from "react";
 export default function viewCourses() {
     const router = useRouter();
+    const [reloadKey, setReloadKey] = useState(0);
+
     /** Split button items */
     const dropDownItems = (slug) => [
         {
@@ -55,6 +58,7 @@ export default function viewCourses() {
                 return axiosConfig
                     .delete("/courses/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -76,6 +80,7 @@ export default function viewCourses() {
                 path={[{ label: "Courses", url: "/dashboard/courses" }]}
             />
             <Grid
+                key={reloadKey}
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/courses`,
                     headers: {

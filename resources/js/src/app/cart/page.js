@@ -21,16 +21,8 @@ export default function Cart() {
             });
     };
     /** Soft deleting cart item */
-    const handleRemoveCart = (id) => {
-        axiosConfig
-            .delete(`cart/${id}`)
-            .then((response) => {
-                toastAlert(response.data.message, "success");
-                handleCartContent();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const removeCartCallback = (id) => {
+        handleCartContent();
     };
     /** Move item to wishlist and Soft delete cart item */
     const handleMoveToWishlist = (id) => {
@@ -62,7 +54,7 @@ export default function Cart() {
                                     items={courses.courses}
                                     removeCart={true}
                                     changeToWishlist={true}
-                                    handleRemoveCart={handleRemoveCart}
+                                    removeCartCallback={removeCartCallback}
                                     handleMoveToWishlist={handleMoveToWishlist}
                                 />
                             ) : (

@@ -39,10 +39,18 @@ class LectureController extends ApiController {
      * fetched successfully', and an array containing the lectures fetched.
      */
     public function getCourseLectures(string $courseSlug): JsonResponse {
-        $lectures = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
+        $userID = auth()->guard("api")->id();
+
+        $lecturesQuery = Lecture::leftJoin('courses', 'courses.id', 'lectures.course_id')
             ->select(['lectures.*'])
-            ->where('courses.slug', $courseSlug)
-            ->where("courses.user_id", auth()->guard("api")->id())->withTrashed()->orderBy('order_number', "DESC")->paginate(5);
+            ->where("courses.user_id", $userID)
+            ->withTrashed()
+            ->orderBy('order_number', "DESC");
+
+        $lectures = ($courseSlug == "all")
+            ? $lecturesQuery->paginate(5)
+            : $lecturesQuery->where('courses.slug', $courseSlug)->paginate(5);
+
         return $this->return(200, 'Lectures fetched successfully', ['lectures' => $lectures]);
     }
 
@@ -85,6 +93,21 @@ class LectureController extends ApiController {
     }
 
 
+    /**
+     * The function `markViewed` is used to mark a lecture as viewed by a user and update the lecture view
+     * record accordingly.
+     * 
+     * @param int lectureId The lectureId parameter is an integer that represents the ID of the lecture
+     * that is being marked as viewed.
+     * @param Request request The `` parameter is an instance of the `Illuminate\Http\Request`
+     * class, which represents an HTTP request. It contains information about the request, such as the
+     * request method, headers, and input data. In this case, it is used to retrieve the `playtime` value
+     * from the request
+     * 
+     * @return JsonResponse a JsonResponse with a status code of 200, a message of 'Lecture marked as
+     * viewed', and an array containing the key 'course_finished' with a boolean value indicating whether
+     * the course has been finished or not.
+     */
     public function markViewed(int $lectureId, Request $request): JsonResponse {
         $user = auth()->guard('api')->user();
         // get course id by lecture id
@@ -118,6 +141,16 @@ class LectureController extends ApiController {
     }
 
 
+    /**
+     * The function checks if a lecture has finished based on the lecture ID and the play time.
+     * 
+     * @param lectureId The lectureId parameter is the unique identifier of a lecture. It is used to
+     * retrieve the lecture file associated with the lecture.
+     * @param playTime The `playTime` parameter represents the current time (in seconds) of the lecture
+     * video that is being played.
+     * 
+     * @return bool a boolean value.
+     */
     private function checkLectureFinished($lectureId, $playTime): bool {
         $lectureFile = LectureFile::where("lecture_id", $lectureId)->where("main_file", 1)->first();
         if (!$lectureFile) return false;

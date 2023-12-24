@@ -8,7 +8,7 @@ export default function CourseListViewer({
     handlePageClick,
     removeWishlist,
     changeToCart,
-    handleRemoveWishlist,
+    removeWishlistCallback,
     handleMoveToCart,
 }) {
     return (
@@ -19,7 +19,7 @@ export default function CourseListViewer({
                         course={course}
                         containerClass={"col-3"}
                         removeWishlist={removeWishlist}
-                        handleRemoveWishlist={handleRemoveWishlist}
+                        removeWishlistCallback={removeWishlistCallback}
                         changeToCart={changeToCart}
                         handleMoveToCart={handleMoveToCart}
                     />

@@ -39,7 +39,7 @@ const DashboardSidebar = () => {
                 {
                     label: "All Lectures",
                     icon: "pi pi-list",
-                    url: "/dashboard/lectures",
+                    url: "/dashboard/courses/all/lectures",
                 },
             ],
         },

@@ -3,12 +3,14 @@ import UsersSearch from "./UsersSearch";
 import axiosConfig from "../axiosConfig/axiosConfig";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import TaskLoader from "../loaders/TaskLoader";
 export default function UsersList({
     activeConversation,
     setActiveConversation,
 }) {
     const [conversations, setConversations] = useState([]);
     const [list, setList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
     // Set Active Conversation To the current user id
     // After that the chat history will appears in the right side
@@ -21,9 +23,11 @@ export default function UsersList({
         axiosConfig
             .get("chat/conversations")
             .then((response) => {
+                setLoading(false);
                 setConversations(response.data.data.conversations);
             })
             .catch((error) => {
+                setLoading(false);
                 console.error(error);
             });
     }, []);
@@ -73,8 +77,14 @@ export default function UsersList({
 
     return (
         <div className="chat-user-list">
-            <UsersSearch />
-            <ul>{list}</ul>
+            {loading ? (
+                <TaskLoader />
+            ) : (
+                <>
+                    <UsersSearch />
+                    <ul>{list}</ul>
+                </>
+            )}
         </div>
     );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
@@ -13,6 +13,7 @@ import toastAlert from "../../components/utilities/Alert";
 import { Button } from "primereact/button";
 
 export default function Organizations() {
+    const [reloadKey, setReloadKey] = useState(0);
     const dropDownItems = (id) => [
         {
             label: "Delete",
@@ -34,6 +35,7 @@ export default function Organizations() {
                 return axiosConfig
                     .delete("/organizations/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -59,6 +61,7 @@ export default function Organizations() {
                 ]}
             ></DashboardTitle>
             <Grid
+                key={reloadKey}
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/organizations`,
                     headers: {
@@ -90,7 +93,7 @@ export default function Organizations() {
                                         <Link
                                             href={
                                                 "/admin/organizations/edit/" +
-                                                row.cells[2].data 
+                                                row.cells[2].data
                                             }
                                             className="text-white no-link"
                                         >

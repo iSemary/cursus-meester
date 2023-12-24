@@ -17,7 +17,7 @@ export default function editCourse({ params }) {
         axiosConfig
             .get(`courses/${params.slug}`)
             .then((response) => {
-                setCourse(response.data.data.course);
+                setCourse(response.data.data.data.course);
             })
             .catch(({ response }) => {
                 toastAlert(response.data.message, "error");
@@ -70,29 +70,35 @@ export default function editCourse({ params }) {
                 ]}
             />
             <div>
-                {course.id && (
-                    <FormEditor
-                        course={course}
-                        setCourse={setCourse}
-                        setThumbnailImage={setThumbnailImage}
-                        handleSubmitCourse={handleSubmitCourse}
-                        formLoading={formLoading}
-                        setFormLoading={setFormLoading}
-                        btnLabel="Update"
-                    />
-                )}
+                {course?.id && (
+                    <>
+                        <FormEditor
+                            course={course}
+                            setCourse={setCourse}
+                            setThumbnailImage={setThumbnailImage}
+                            handleSubmitCourse={handleSubmitCourse}
+                            formLoading={formLoading}
+                            setFormLoading={setFormLoading}
+                            btnLabel="Update"
+                        />
 
-                <hr />
-                <div className="col-md-3">
-                    <h5>Course Thumbnail Image</h5>
-                    <Image
-                        src={thumbnailImage ? thumbnailImage : course.thumbnail}
-                        width={"600"}
-                        height={"400"}
-                        className="thumbnail-image course"
-                        alt="thumbnail"
-                    />
-                </div>
+                        <hr />
+                        <div className="col-md-3">
+                            <h5>Course Thumbnail Image</h5>
+                            <Image
+                                src={
+                                    thumbnailImage
+                                        ? thumbnailImage
+                                        : course.thumbnail
+                                }
+                                width={"600"}
+                                height={"400"}
+                                className="thumbnail-image course"
+                                alt="thumbnail"
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </DashboardTemplate>
     );

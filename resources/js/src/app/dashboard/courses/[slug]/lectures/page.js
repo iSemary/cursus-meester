@@ -11,8 +11,11 @@ import Swal from "sweetalert2";
 import axiosConfig from "../../../../components/axiosConfig/axiosConfig";
 import toastAlert from "../../../../components/utilities/Alert";
 import { MdRestore } from "react-icons/md";
+import { useState } from "react";
 export default function viewLectures({ params }) {
     const router = useRouter();
+    const [reloadKey, setReloadKey] = useState(0);
+
     /** Split button items */
     const dropDownItems = (row) => [
         {
@@ -37,10 +40,16 @@ export default function viewLectures({ params }) {
         },
         {
             // Restore or delete lecture
-            label: row.cells[6].data ? "Restore"  : "Delete",
-            icon: row.cells[6].data ? <MdRestore className="dropdown-icon" /> : "pi pi-trash",
+            label: row.cells[6].data ? "Restore" : "Delete",
+            icon: row.cells[6].data ? (
+                <MdRestore className="dropdown-icon" />
+            ) : (
+                "pi pi-trash"
+            ),
             command: () => {
-                row.cells[6].data ? handleRestoreLecture(row.cells[1].data) : handleDeleteLecture(row.cells[1].data);
+                row.cells[6].data
+                    ? handleRestoreLecture(row.cells[1].data)
+                    : handleDeleteLecture(row.cells[1].data);
             },
         },
     ];
@@ -55,6 +64,7 @@ export default function viewLectures({ params }) {
                 return axiosConfig
                     .delete("/lectures/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -68,7 +78,7 @@ export default function viewLectures({ params }) {
             }
         });
     };
-    
+
     /** Restore lecture by slug */
     const handleRestoreLecture = (slug) => {
         Swal.fire({
@@ -80,6 +90,7 @@ export default function viewLectures({ params }) {
                 return axiosConfig
                     .post("/lectures/restore/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -105,6 +116,7 @@ export default function viewLectures({ params }) {
                 ]}
             />
             <Grid
+                key={reloadKey}
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/courses/${params.slug}/lectures`,
                     headers: {

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import DashboardTemplate from "../../Templates/DashboardTemplate";
 import DashboardTitle from "../../layouts/dashboard/DashboardTitle";
 import { Grid } from "gridjs-react";
@@ -14,6 +14,7 @@ import { Button } from "primereact/button";
 import i18next from "../../components/utilities/i18next";
 
 export default function Wordings() {
+    const [reloadKey, setReloadKey] = useState(0);
     const dropDownItems = (id) => [
         {
             label: "Delete",
@@ -46,6 +47,7 @@ export default function Wordings() {
                 return axiosConfig
                     .delete("/wordings/" + slug)
                     .then((response) => {
+                        setReloadKey((prevKey) => prevKey + 1);
                         return true;
                     })
                     .catch((error) => {
@@ -73,14 +75,12 @@ export default function Wordings() {
                         size="small"
                     />,
                     <Link href="/admin/wordings/create">
-                        <Button
-                            label="Create"
-                            size="small"
-                        />
+                        <Button label="Create" size="small" />
                     </Link>,
                 ]}
             />
             <Grid
+                key={reloadKey}
                 server={{
                     url: `${process.env.NEXT_PUBLIC_API_URL}/wordings`,
                     headers: {

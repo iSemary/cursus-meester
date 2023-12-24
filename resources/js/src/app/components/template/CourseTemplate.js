@@ -21,10 +21,13 @@ export default function CourseTemplate({
     removeWishlist = false,
     changeToWishlist = false,
     changeToCart = false,
-    handleRemoveCart,
     handleMoveToWishlist,
     handleRemoveWishlist,
     handleMoveToCart,
+    addCartCallback,
+    removeCartCallback,
+    addWishlistCallback,
+    removeWishlistCallback,
 }) {
     return (
         <div className={"course-box mb-3 " + containerClass}>
@@ -74,7 +77,7 @@ export default function CourseTemplate({
                         {removeCart && (
                             <RemoveCartBtn
                                 id={course.id}
-                                handleRemoveCart={handleRemoveCart}
+                                removeCartCallback={removeCartCallback}
                             />
                         )}
                         {changeToWishlist && (
@@ -86,17 +89,19 @@ export default function CourseTemplate({
                         {removeWishlist && (
                             <RemoveWishlistBtn
                                 id={course.id}
-                                handleRemoveWishlist={handleRemoveWishlist}
+                                removeWishlistCallback={removeWishlistCallback}
                             />
                         )}
                         {addWishlist && (
                             <AddWishlistBtn
                                 id={course.id}
+                                addWishlistCallback={addWishlistCallback}
                             />
                         )}
                         {addCart && (
                             <AddCardBtn
                                 id={course.id}
+                                addCartCallback={addCartCallback}
                             />
                         )}
                         {changeToCart && (

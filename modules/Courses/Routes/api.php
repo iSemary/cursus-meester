@@ -13,11 +13,6 @@ use modules\Courses\Http\Controllers\Api\{
     ResourceController,
 };
 
-/**
- * Course Details Page
- */
-Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
-
 // Administration Routes 
 Route::group(["middleware" => ["auth:api", "checkRole:super_admin"]], function () {
     Route::get("courses/all", [CourseController::class, "all"]);
@@ -27,7 +22,7 @@ Route::group(["middleware" => ["auth:api", "checkRole:super_admin"]], function (
 // Builder Routes [For Instructors]
 Route::group(["middleware" => ["auth:api", "checkRole:instructor"]], function () {
     // Courses Routes
-    Route::resource("courses", CourseController::class)->except(["edit"]);
+    Route::resource("courses", CourseController::class)->except(["edit", "show"]);
     Route::get("courses/modify/{courseSlug}", [CourseController::class, "getForModify"]);
     // Course Sections
     Route::get("courses/{courseId}/sections", [CourseController::class, "sections"]);
@@ -49,6 +44,10 @@ Route::group(["middleware" => ["auth:api", "checkRole:instructor"]], function ()
     Route::get("exam/results", [ExamController::class, "getResults"]);
     Route::get("exam/results/{id}", [ExamController::class, "getExamResult"]);
 });
+/**
+ * Course Details Page
+ */
+Route::get("courses/{courseSlug}", [CourseController::class, "show"]);
 
 /** Student Routes */
 Route::group(["middleware" => "auth:api"], function () {
