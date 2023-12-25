@@ -6,6 +6,9 @@ const nextConfig = {
         unoptimized: true,
     },
     distDir: "_next",
+    env: {
+        NODE_ENV: "development",
+    },
 };
 
 module.exports = nextConfig;
