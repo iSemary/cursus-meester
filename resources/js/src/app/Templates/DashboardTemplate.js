@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
+// import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "public/assets/css/theme.min.css";
 import "primeicons/primeicons.css";
 import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-utilities.min.css";
