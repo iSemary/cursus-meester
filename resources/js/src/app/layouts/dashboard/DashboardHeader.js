@@ -154,7 +154,7 @@ export default function DashboardHeader() {
                                 <p>There's no messages yet</p>
                                 <div className="text-center">
                                     <Link
-                                        href={"/dashboard/messages"}
+                                        href={"/messages"}
                                         className="p-button p-component p-button-link "
                                     >
                                         Open Messenger
