@@ -70,6 +70,7 @@ E-learning platform that brings together passionate instructors and curious lear
 
     git clone https://github.com/iSemary/cursus-meester
 
+### Laravel Project
 #### 2. Install Required Dependencies
 
     composer i
@@ -87,6 +88,7 @@ E-learning platform that brings together passionate instructors and curious lear
 
     php artisan serve
 
+### NextJS Project
 #### 5. Navigate to front end folder
 
     cd resources/js
@@ -101,8 +103,13 @@ E-learning platform that brings together passionate instructors and curious lear
 
 #### 8. Convert SCSS to CSS
 
-     sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
-     sass resources/js/public/assets/css/panel.scss:resources/js/public/assets/css/panel.css
+    sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
+    sass resources/js/public/assets/css/panel.scss:resources/js/public/assets/css/panel.css
+
+### NodeJS Project [websocket server]
+    cd websocket
+    npm install
+    node server.js
 
 ### Deployment
 
