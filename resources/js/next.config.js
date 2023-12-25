@@ -6,6 +6,7 @@ const nextConfig = {
         unoptimized: true,
     },
     distDir: "_next",
+    compress: false,
 };
 
 module.exports = nextConfig;
