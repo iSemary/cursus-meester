@@ -37,7 +37,8 @@ E-learning platform that brings together passionate instructors and curious lear
 	 - [x] Resources Up-loader
  - [x] Certificates
 	 - [x] Fully Customized Configuration
-   - [x] New Claim alert on email and notifications
+     - [x] New Claim alert on email and notifications
+     - [x] Certificate Checker
  - [x] Exam Module
 	 - [x] Fully Customized
 	 - [x] Question Answers
@@ -78,6 +79,10 @@ E-learning platform that brings together passionate instructors and curious lear
     php artisan migrate
     php artisan module:migrate
 
+#### 3. Migrate Tables
+
+    php artisan passport:install
+
 #### 4. Run application local
 
     php artisan serve
@@ -100,6 +105,38 @@ E-learning platform that brings together passionate instructors and curious lear
      sass resources/js/public/assets/css/panel.scss:resources/js/public/assets/css/panel.css
 
 ### Deployment
+
+#### 1. Auto Deploy with GitHub Actions on Master Branch
+Simplify your deployment process by utilizing GitHub Actions for automatic deployment on pushing to the master branch. Set up your secrets variables in the repository:
+
+All you have to do is to add your secrets variables into your repository: <br/>
+1- VPS_SSH_KEY:
+Generated access key for github to grant the privileges to write and read your server files
+
+2- VPS_HOST:
+for example 123.456.789
+
+3- VPS_USERNAME:
+for example ubuntu
+
+4- PROJECT_DIRECTORY:
+for example /var/www/
+
+#### 2. Manual Deploy
+[Front End Side]
+```bash
+cd resources
+```
+```bash
+npm run build
+```
+```bash
+npm start
+```
+[Back End Side]
+```bash
+php artisan serve
+```
 
 #### ~ Backup Command [Backup Database and Files over cloud]
 
