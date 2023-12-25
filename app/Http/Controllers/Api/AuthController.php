@@ -48,7 +48,7 @@ class AuthController extends ApiController {
         // Adding username to the $userRequest array
         $userRequest['username'] = $username .  Str::random(4);
         // Create new user record
-        $user = User::create();
+        $user = User::create($userRequest);
         // Assign student role
         $user->assignRole("student");
         // Create new student Profile
