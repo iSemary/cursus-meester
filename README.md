@@ -134,6 +134,8 @@ for example ubuntu
 4- PROJECT_DIRECTORY:
 for example /var/www/
 
+⚠️ Please not that the storage folder contains the courses files which is protected and requires a user authenticated token and also the user must be purchased the course.
+
 #### 2. Manual Deploy
 [Front End Side]
 ```bash
