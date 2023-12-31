@@ -34,14 +34,14 @@ export default function CourseReviews({ rates, courseSlug, canRate }) {
                                         <div className="col-10 px-0">
                                             <div>{rate?.user?.full_name}</div>
                                             <div className="row">
-                                                <span className="col-4">
+                                                <span className="col-5">
                                                     <StarsRate
                                                         rate={{
                                                             average: rate.rate,
                                                         }}
                                                     />
                                                 </span>
-                                                <span className="col-8 font-weight-bold text-muted">
+                                                <span className="col-7 font-weight-bold text-muted">
                                                     {rate.created_at_diff}
                                                 </span>
                                             </div>

@@ -81,7 +81,7 @@ class OrganizationController extends ApiController {
             ->orderBy("max_rate", "DESC")
             ->limit(10)
             ->get();
-        $response->new_courses = Course::selectPreview()->whereOrganizationId($organization->id)->latest()->limit(10)->get();
+        $response->new_courses = Course::selectPreview()->whereOrganizationId($organization->id)->orderByDesc("id")->limit(4)->get();
 
         return $this->return(200, 'Organization fetched Successfully', ['data' => $response]);
     }

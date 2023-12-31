@@ -85,9 +85,7 @@ export default function Home() {
                                             (instructor, index) => (
                                                 <InstructorProfileBoxTemplate
                                                     instructor={instructor}
-                                                    containerClass={
-                                                        "col-3 me-2"
-                                                    }
+                                                    containerClass={"col-3"}
                                                 />
                                             )
                                         )}
@@ -98,22 +96,6 @@ export default function Home() {
                 ) : (
                     <CourseListLoader classes="my-2" />
                 )}
-                <hr className="home-hr" />
-                {/* Top Soft Skills courses */}
-                <div className="courses">
-                    <h3>
-                        <BsStars /> Top Soft Skills Courses
-                    </h3>
-                    <CoursesCarousel courses={topSoftSkillsCourses?.courses} />
-                </div>
-                <hr className="home-hr" />
-                {/* Short and sweet courses */}
-                <div className="courses">
-                    <h3>
-                        <BsStars /> Short & Sweet Courses
-                    </h3>
-                    <CoursesCarousel courses={shortCourses} />
-                </div>
                 <hr className="home-hr" />
                 {/* Our Partners */}
                 <div className="partners">
@@ -150,6 +132,22 @@ export default function Home() {
                     </div>
                 </div>
                 <hr className="home-hr" />
+                {/* Top Soft Skills courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Top Soft Skills Courses
+                    </h3>
+                    <CoursesCarousel courses={topSoftSkillsCourses} />
+                </div>
+                <hr className="home-hr" />
+                {/* Short and sweet courses */}
+                <div className="courses">
+                    <h3>
+                        <BsStars /> Short & Sweet Courses
+                    </h3>
+                    <CoursesCarousel courses={shortCourses} />
+                </div>
+                <hr className="home-hr" />
                 {/* Top Rated courses */}
                 <div className="courses">
                     <h3>
@@ -161,8 +159,8 @@ export default function Home() {
                 {/* Top Rated courses */}
                 <div className="courses">
                     <h3>
-                        <BsStars /> Top {randomPopularCategoryCourses?.title}{" "}
-                        Courses
+                        <BsStars /> Top{" "}
+                        {randomPopularCategoryCourses?.category?.title} Courses
                     </h3>
                     <CoursesCarousel
                         courses={randomPopularCategoryCourses?.courses}

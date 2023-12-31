@@ -34,7 +34,7 @@ export default function joinInstructor() {
                 // Check the response status
                 toastAlert(response.data.message, "success", 3000);
                 // Navigate to home page
-                router.push("/dashboard/");
+                window.location.href = "/dashboard/";
             })
             .catch(({ response }) => {
                 if (response?.data?.message)

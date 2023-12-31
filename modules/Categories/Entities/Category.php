@@ -46,17 +46,4 @@ class Category extends Model {
             return asset('storage/' . $this->filePath . '/' . 'default.png');
         }
     }
-
-    public static function scopeGetRandomWithCourses($query) {
-        return $query->inRandomOrder()->with(['courses' => function ($query) {
-            $query->selectPreview()->limit(10);
-        }]);
-    }
-
-
-    public static function scopeGetSoftSkillsCourses($query) {
-        return $query->whereId(self::SOFT_SKILLS_ID)->with(['courses' => function ($query) {
-            $query->selectPreview()->limit(10);
-        }]);
-    }
 }

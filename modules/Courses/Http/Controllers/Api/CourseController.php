@@ -44,8 +44,16 @@ class CourseController extends ApiController {
     }
 
 
-
-    public function sections($courseId) {
+    /**
+     * The function "sections" retrieves lecture sections for a given course ID and returns a JSON response
+     * with the sections.
+     * 
+     * @param courseId The `courseId` parameter is the identifier of a course. It is used to filter the
+     * lecture sections and retrieve only the sections that belong to the specified course.
+     * 
+     * @return JsonResponse A JsonResponse object is being returned.
+     */
+    public function sections($courseId): JsonResponse {
         $sections = LectureSection::select('id', 'title')->whereCourseId($courseId)->get();
         return $this->return(200, 'Courses fetched successfully', ['sections' => $sections]);
     }
@@ -133,7 +141,7 @@ class CourseController extends ApiController {
         return [
             'total_files' => LectureFile::join('lectures', 'lectures.id', 'lecture_files.lecture_id')
                 ->join('courses', 'courses.id', 'lectures.course_id')
-                ->where("courses.id", $courseId)->count(),
+                ->where("courses.id", $courseId)->where('lecture_files.main_file', 0)->count(),
             'total_exams' => Exam::join('lectures', 'lectures.id', 'exams.lecture_id')
                 ->join('courses', 'courses.id', 'lectures.course_id')
                 ->where("courses.id", $courseId)->count()

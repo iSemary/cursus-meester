@@ -584,4 +584,7 @@
     .payment-methods-container .payment-method-input:last-of-type {
       border-bottom: 0; }
 
+.instructor-profile-image {
+  border-radius: 15px; }
+
 /*# sourceMappingURL=style.css.map */

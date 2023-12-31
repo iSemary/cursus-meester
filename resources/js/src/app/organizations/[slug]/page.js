@@ -44,8 +44,8 @@ export default function organizations({ params }) {
                             {organization?.logo && (
                                 <Image
                                     src={organization?.logo}
-                                    height={50}
-                                    width={50}
+                                    height={200}
+                                    width={200}
                                     alt="logo"
                                 />
                             )}
@@ -61,7 +61,7 @@ export default function organizations({ params }) {
                                         <PiChalkboardTeacherFill /> Our top
                                         instructors
                                     </h4>
-                                    <div className="row m-auto">
+                                    <div className="row m-auto justify-content-space-between">
                                         {topInstructors &&
                                             topInstructors.length > 0 &&
                                             topInstructors.map(
@@ -69,7 +69,7 @@ export default function organizations({ params }) {
                                                     <InstructorProfileBoxTemplate
                                                         instructor={instructor}
                                                         containerClass={
-                                                            "col-3 me-2"
+                                                            "col-3 m-1"
                                                         }
                                                     />
                                                 )

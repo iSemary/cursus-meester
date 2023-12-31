@@ -56,8 +56,12 @@ class HomeController extends ApiController {
      * 
      * @return Category a random popular category.
      */
-    public function getRandomPopularCategory(): Category {
-        return Category::getRandomWithCourses()->first();
+    public function getRandomPopularCategory(): array {
+        $category = Category::inRandomOrder()->first();
+        $courses = Course::selectPreview()->where("category_id", $category->id)->limit(10)->get();
+        $data['category'] = $category;
+        $data['courses'] = $courses;
+        return $data;
     }
 
     /**
@@ -75,7 +79,7 @@ class HomeController extends ApiController {
      * @return Collection a collection of the top 10 instructor profiles.
      */
     public function getTopInstructors(): Collection {
-        return InstructorProfile::getTop(4);
+        return InstructorProfile::getTop(5);
     }
 
     /**
@@ -93,7 +97,7 @@ class HomeController extends ApiController {
      * 
      * @return Category a soft skill with it's courses.
      */
-    public function getTopSoftSkillsCourses(): Category {
-        return Category::getSoftSkillsCourses()->first();
+    public function getTopSoftSkillsCourses(): Collection {
+        return Course::selectPreview()->where("category_id", Category::SOFT_SKILLS_ID)->limit(10)->get();
     }
 }

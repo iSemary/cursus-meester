@@ -353,7 +353,7 @@ class PaymentController extends ApiController {
             $history->status = PaymentStatues::STATUES_TEXT[$history->status];
             $history->payment_type = PaymentTypes::TYPES_TEXT[$history->payment_type_id];
             $history->payment_method = PaymentMethods::METHODS_TEXT[$history->payment_method];
-            $history->updated_at_diff = $history->updated_at->diffForHumans();
+            $history->updated_at_diff = $history->updated_at ?  $history->updated_at->diffForHumans() : "";
         }
 
         return $this->return(200, "Payment history fetched successfully", ['payment_history' => $paymentHistory]);
@@ -498,7 +498,7 @@ class PaymentController extends ApiController {
         foreach ($payouts as $payout) {
             $payout->status = PaymentStatues::STATUES_TEXT[$payout->status];
             $payout->payment_method = PaymentMethods::METHODS_TEXT[$payout->payment_method];
-            $payout->updated_at_diff = $payout->updated_at->diffForHumans();
+            $payout->updated_at_diff = $payout->updated_at ? $payout->updated_at->diffForHumans() : "";
         }
         return $this->return(200, "Payout history fetched successfully", ['payout_history' => $payouts]);
     }

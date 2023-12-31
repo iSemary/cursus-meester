@@ -10,7 +10,6 @@ use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
-use modules\Categories\Http\Controllers\Api\CategoryController;
 
 /**
  * Please note that file doesn't contain all the APIs on the application

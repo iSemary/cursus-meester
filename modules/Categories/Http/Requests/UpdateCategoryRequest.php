@@ -15,7 +15,6 @@ class UpdateCategoryRequest extends FormRequest {
         return [
             'title' => 'required|max:255|unique:categories,title,' . $this->category->id . ',id',
             'slug' => 'required|max:255|unique:categories,slug,' . $this->category->id . ',id',
-            'parent_id' => 'sometimes|numeric',
             'order_number' => 'sometimes|numeric',
             'status' => 'required|numeric',
             'icon' => 'sometimes|mimes:png,jpg,jpeg,gif'

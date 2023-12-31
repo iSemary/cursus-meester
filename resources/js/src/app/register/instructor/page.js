@@ -54,7 +54,7 @@ const RegisterInstructor = () => {
                 // Store Access token
                 Token.store(response.data.data.user.access_token);
                 // Navigate to home page
-                router.push("/dashboard/");
+                window.location.href = "/dashboard/";
             })
             .catch(({ response }) => {
                 toastAlert(response.data.message, "error");

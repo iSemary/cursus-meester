@@ -94,7 +94,7 @@ class ChatController extends ApiController {
             ->where(function ($query) use ($auth) {
                 $query->where("conversations.receiver_id", $auth->id)
                     ->orWhere("conversations.sender_id", $auth->id);
-            })->distinct('conversations.id')->get();
+            })->distinct('conversations.id')->orderBy("conversations.id", "DESC")->get();
 
         foreach ($conversations as $key => $conversation) {
             $userId = ($conversation->sender_id == $auth->id ? $conversation->receiver_id : $conversation->sender_id);

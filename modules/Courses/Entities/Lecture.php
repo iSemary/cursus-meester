@@ -2,8 +2,6 @@
 
 namespace modules\Courses\Entities;
 
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -58,29 +56,28 @@ class Lecture extends Model {
         $resources = [];
         if ($sections) {
             foreach ($sections as $key => $section) {
-                $resources[$key]['section'] = $section;
+                $sectionData['section'] = $section;
+                $sectionData['section']['resources'] = [];
+
                 $lectures = self::where('course_id', $courseId)->where("lecture_section_id", $section->id)->get();
 
-                $preparedResources = [];
+                $lecturesResources = [];
                 foreach ($lectures as $i => $lecture) {
                     $lectureFile = LectureFile::where("id", $lecture->lecture_media_id)->first();
                     $lecture->duration = $lectureFile ? $lectureFile->duration : "";
-                    $preparedResources = self::prepareLectureResources($lecture);
-                    /** Lecture Files */
-                    if ($lecture->additional_files && count($lecture->additional_files)) {
-                        foreach ($lecture->additional_files as $additionalFile) {
-                            $preparedResources[] = self::formatResource($additionalFile, ResourceTypes::FILE_TYPE);
-                        }
-                    }
+                    $lecturesResources = array_merge($lecturesResources, self::prepareLectureResources($lecture));
                 }
-                $resources[$key]['section']['resources'] = $preparedResources;
+
+
+                $sectionData['section']['resources'] = $lecturesResources;
+                $resources[] = $sectionData;
             }
         }
 
         return $resources;
     }
 
-    public static function prepareLectureResources(Lecture $lecture) {
+    public static function prepareLectureResources(Lecture $lecture): array {
         $resources = [];
         /** Main Lecture */
         $resources[] = self::formatResource($lecture, ResourceTypes::LECTURE_TYPE);
@@ -88,6 +85,12 @@ class Lecture extends Model {
         if ($lecture->has_exam) {
             $exam = Exam::select(['id', 'title', 'description'])->where("lecture_id", $lecture->id)->first();
             $resources[] = self::formatResource($exam, ResourceTypes::EXAM_TYPE);
+        }
+        /** Lecture Files */
+        if ($lecture->additional_files && count($lecture->additional_files)) {
+            foreach ($lecture->additional_files as $additionalFile) {
+                $resources[] = self::formatResource($additionalFile, ResourceTypes::FILE_TYPE);
+            }
         }
         return $resources;
     }
@@ -102,7 +105,7 @@ class Lecture extends Model {
                 $formattedResource['slug'] = $resource['slug'];
                 $duration = "";
                 if ($resource['duration']) {
-                    $duration = CarbonInterval::seconds($resource['duration'])->format('%H:%I:%S');
+                    $duration = self::formatTime($resource['duration']);
                 }
                 $formattedResource['duration'] = $duration;
                 $formattedResource['type_id'] = ResourceTypes::LECTURE_TYPE;
@@ -128,5 +131,14 @@ class Lecture extends Model {
         }
 
         return $formattedResource;
+    }
+
+
+    public static function formatTime($seconds): string {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $seconds = $seconds % 60;
+
+        return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
     }
 }

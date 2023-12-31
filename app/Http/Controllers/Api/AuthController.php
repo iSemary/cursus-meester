@@ -75,8 +75,12 @@ class AuthController extends ApiController {
      */
     public function registerAsInstructor(RegisterInstructorRequest $request): JsonResponse {
         /* Requested data passed the validation */
-        // Create new user record
-        $user = User::create($request->validated());
+        $userRequest = $request->validated();
+        $email = $userRequest['email'];
+        $username = strtok($email, '@');
+        // Adding username to the $userRequest array
+        $userRequest['username'] = $username .  Str::random(4);
+        $user = User::create($userRequest);
         // Create new instructor Profile
         InstructorProfile::create([
             'user_id' => $user->id,
