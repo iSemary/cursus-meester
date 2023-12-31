@@ -24,9 +24,10 @@ E-learning platform that brings together passionate instructors and curious lear
 
 E-learning platform that brings together passionate instructors and curious learners from all around the world. With an extensive library of high-quality courses, ranging from programming and design to business and personal development.
 
-##
+## Preview
+### Click the image below to view the showcase video
+[![Introduction to My Project](https://i.postimg.cc/sXrNTZCb/Screenshot-from-2023-12-31-10-04-05.png)](https://vimeo.com/898858928)
 
-<div style="position:relative; width:100%; height:0px; padding-bottom:56.250%"><iframe allow="fullscreen" allowfullscreen height="100%" src="https://streamable.com/e/vv4qf5?nocontrols=1" width="100%" style="border:none; width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden;"></iframe></div>
 
 ## Features
 
