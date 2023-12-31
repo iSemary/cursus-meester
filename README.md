@@ -26,7 +26,7 @@ E-learning platform that brings together passionate instructors and curious lear
 
 ## Preview
 ### Click the image below to view the showcase video
-[![Introduction to My Project](https://i.postimg.cc/sXrNTZCb/Screenshot-from-2023-12-31-10-04-05.png)](https://vimeo.com/898858928)
+[![Introduction to My Project](https://i.postimg.cc/sXrNTZCb/Screenshot-from-2023-12-31-10-04-05.png)](https://player.vimeo.com/video/898858928)
 
 
 ## Features
