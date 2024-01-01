@@ -86,20 +86,20 @@ E-learning platform that brings together passionate instructors and curious lear
     php artisan migrate
     php artisan module:migrate
 
-#### 3. Migrate Tables
+#### 4. Install Passport Keys
 
     php artisan passport:install
 
-#### 4. Run application local
+#### 5. Run application local
 
     php artisan serve
 
 ### NextJS Project
-#### 5. Navigate to front end folder
+#### 6. Navigate to front end folder
 
     cd resources/js
 
-#### 6. Install Dependencies
+#### 7. Install Dependencies
 
     npm install
 
@@ -107,7 +107,7 @@ E-learning platform that brings together passionate instructors and curious lear
 
     npx next dev
 
-#### 8. Convert SCSS to CSS
+#### 9. Convert SCSS to CSS
 
     sass resources/js/public/assets/css/style.scss:resources/js/public/assets/css/style.css
     sass resources/js/public/assets/css/panel.scss:resources/js/public/assets/css/panel.css
