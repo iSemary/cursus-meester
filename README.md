@@ -35,6 +35,7 @@ E-learning platform that brings together passionate instructors and curious lear
  - [x] Instructor Dashboard Interface
  - [x] User Module
 	 - [x] Register and Login
+	 - [x] Login via Facebook, Google, and Linkedin
 	 - [x] Verify Phone Number
 	 - [x] Verify Email Address
 	 - [x] Forget, Reset, and Change Password
